@@ -1,15 +1,18 @@
-import NavBar from './components/layout/NavBar'
-import Footer from './components/layout/Footer'
-import Hero from './components/sections/Hero'
-import SofaCollection from './pages/SofaCollection'
-
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import SelectProducts from './pages/SelectProducts';
+import SelectTexture from './pages/SelectTexture';
 
 function App() {
   return (
-    <>
-      <SofaCollection />
-    </>
+    <BrowserRouter>
+      <Routes>
+       
+        <Route path="/" element={<SelectProducts />} />
+        <Route path="/select-texture" element={<SelectTexture />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
-export default App
+export default App;
