@@ -13,7 +13,7 @@ const SelectTexture = () => {
       <div>
         <div className="sm:text-center mt-2.5">
           <div
-          className="text-l ml-2.5 mt-2.5 bg-black rounded-3xl px-3 py-2 text-white inline-block bg-blend-lighten hover:cursor-pointer flex items-center gap-2"
+          className="text-l ml-2.5 mt-2.5 bg-black rounded-3xl px-3 py-2 text-white inline-block bg-blend-lighten hover:cursor-pointer  items-center gap-2"
           onClick={() => navigate('/')}
         >
           <span className="block sm:hidden"><ArrowLeftCircle size={24} /></span>
