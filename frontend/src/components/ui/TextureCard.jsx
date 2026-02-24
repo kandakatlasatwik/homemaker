@@ -1,15 +1,26 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 import texture from "../../assets/images/texture1.png";
 
 
-const TextureCard = () => {
+
+const TextureCard = ({ image = texture, name = "Texture Name", description = "Texture description here." }) => {
+  const navigate = useNavigate();
+  
   return (
-    <div className="flex justify-center items-center">
+    <div
+      className="relative flex group hover:cursor-pointer transform transition-transform duration-300 hover:scale-102 shadow-2xl rounded-2xl sm:rounded-4xl aspect-[4/3] w-full h-full overflow-hidden bg-black"
+      onClick={()=>{navigate('/select-color')}}
+    >
       <img
-        src={texture}
-        alt="texturepng"
-        className="w-80 h-80 sm:w-[28rem] sm:h-[28rem] object-cover block rounded-2xl sm:rounded-xl shadow-lg group-hover:ring-primary/80 transition-all duration-300"
+        src={image}
+        alt={name}
+        className="w-full h-full object-cover block "
       />
+      <div className="absolute bottom-0 left-0 w-full bg-black/60 text-white p-3 rounded-lg text-lg font-semibold tracking-wider text-center z-10 opacity-100 transition-opacity duration-300">
+        {name}
+        <div className="text-xs mt-1 opacity-80">{description}</div>
+      </div>
     </div>
   );
 }

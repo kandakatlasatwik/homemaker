@@ -5,9 +5,13 @@ import { useNavigate } from 'react-router-dom';
 const NavBar = () => {
   const navigate = useNavigate();
   return ( 
-    <nav className="fixed-navbar">
-      <div className="flex flex-row items-center justify-between px-4 sm:px-8 py-3 h-20 bg-black w-full">
-        <h1
+      <nav className="fixed-navbar sticky top-0 left-0 w-full z-50 border-b border-gray-500 bg-black ">
+      {/* Blurred border highlight */}
+        <div className="absolute left-0 right-0 -bottom-1 h-3 pointer-events-none z-0">
+          <div className="w-full h-full blur-md bg-gray-600 opacity-90" />
+      </div>
+      <div className="flex flex-row items-center justify-between px-4 sm:px-8 py-3 h-20 bg-black w-full backdrop-blur-md relative z-10">
+          <h1
           className="text-2xl sm:text-3xl font-bold text-white rounded-lg attractive-border hover:cursor-pointer cursor-pointer"
           onClick={() => navigate('/')}
           title="Go to Home"

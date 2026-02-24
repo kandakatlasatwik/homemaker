@@ -7,7 +7,7 @@ const SelectProducts = () => {
   return (
     <>
     <NavBar />
-    <Hero />
+    <Hero type="product" />
     <Footer />
     </>
     
