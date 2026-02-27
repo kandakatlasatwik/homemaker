@@ -2,6 +2,7 @@ import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
 import Hero from '../components/sections/Hero';
 import ColorCard from '../components/ui/ColorCard';
+import SofaImg from '../assets/images/Sofa.png';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeftCircle } from 'lucide-react';
 
@@ -48,9 +49,15 @@ const SelectColor = () => {
         <div className="container mx-auto px-4 grid grid-cols-1 gap-8 items-center min-h-[350px]">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-3 mt-4">
             {filteredColors.length > 0 ? (
-              filteredColors.map((c, i) => (
-                <ColorCard key={c.name + i} name={c.name} description={c.description} />
-              ))
+              filteredColors.map((c, i) => {
+                const colorHex = c.name === 'Red' ? 'ff0000' : c.name === 'Blue' ? '0077ff' : '33cc66'
+                const fabricUrl = `https://via.placeholder.com/512/${colorHex}`
+                return (
+                  <div key={c.name + i} onClick={() => navigate('/display-image', { state: { base_image_url: SofaImg, fabric_image_url: fabricUrl, object_type: c.name.toLowerCase(), backendUrl: '/generate' } })} className="hover:cursor-pointer">
+                    <ColorCard name={c.name} description={c.description} />
+                  </div>
+                )
+              })
             ) : (
               <div className="col-span-full text-center text-gray-400 py-8">No colors found.</div>
             )}
