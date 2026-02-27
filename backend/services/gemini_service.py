@@ -1,11 +1,17 @@
 from google import genai
 from google.genai import types
 import requests
-import requests.packages.urllib3
+import urllib3
 import base64
-from app.core.config import GEMINI_API_KEY, MODEL_NAME
+import os
+from dotenv import load_dotenv
 
-requests.packages.urllib3.disable_warnings()
+load_dotenv()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+MODEL_NAME = "gemini-2.5-flash-preview-image"
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
