@@ -1,14 +1,17 @@
 from google import genai
 from google.genai import types
 import requests
+import requests.packages.urllib3
 import base64
 from app.core.config import GEMINI_API_KEY, MODEL_NAME
+
+requests.packages.urllib3.disable_warnings()
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 
 def image_url_to_base64(image_url: str):
-    response = requests.get(image_url)
+    response = requests.get(image_url, verify=False)
     response.raise_for_status()
     return base64.b64encode(response.content).decode("utf-8")
 
