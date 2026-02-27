@@ -21,3 +21,4 @@ python-jose[cryptography]
 python-multipart
 google-genai
 requests
+argon2-cffi
