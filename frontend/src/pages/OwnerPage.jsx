@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 const CATEGORIES = ['curtains', 'bedsheets', 'cushions', 'rugs', 'upholstery', 'sofa', 'other']
 
 const initialForm = {
+  owner: '',
   name: '',
   category: 'curtains',
   price: '',
@@ -35,6 +36,7 @@ const OwnerPage = () => {
   }
 
   const validate = () => {
+    if (!form.owner.trim()) return 'Owner name is required.'
     if (!form.name.trim()) return 'Product name is required.'
     if (form.price && (isNaN(form.price) || Number(form.price) < 0)) return 'Enter a valid price.'
     if (!form.color.trim()) return 'Color is required.'
@@ -54,8 +56,28 @@ const OwnerPage = () => {
       if (key !== 'image') payload.append(key, key === 'price' || key === 'stock' ? Number(val) : val)
     })
     payload.append('image', imageFile)
-    console.log('Product payload:', Object.fromEntries(payload))
-    setSubmitted(true)
+    // append owner_name explicitly for backend
+    if (form.owner) payload.append('owner_name', form.owner)
+    // submit to backend below
+    // send to backend
+    fetch('http://127.0.0.1:8000/fabrics/public', {
+      method: 'POST',
+      body: payload
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Upload failed')
+        return res.json()
+      })
+      .then((data) => {
+        console.log('Upload success', data)
+        setSubmitted(true)
+        setError('')
+      })
+      .catch((err) => {
+        console.error(err)
+        setError('Upload failed. Please try again.')
+        setSubmitted(false)
+      })
   }
 
   const handleReset = () => {
@@ -76,7 +98,21 @@ const OwnerPage = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="px-8 py-8 space-y-6">
-          {/* Name */}
+          {/* Owner Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Owner Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="owner"
+              value={form.owner}
+              onChange={handleChange}
+              placeholder="e.g. Rajesh"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black transition"
+            />
+          </div>
+          {/* Product Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Product Name <span className="text-red-500">*</span>

@@ -1,8 +1,11 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, File, UploadFile, Form
 from database import fabric_collection
 from schemas import Fabric
 from bson import ObjectId
 from auth import get_current_seller
+from pathlib import Path
+import time
+import os
 
 router = APIRouter(prefix="/fabrics", tags=["Fabrics"])
 
@@ -39,6 +42,46 @@ def create_fabric(
         "message": "Fabric uploaded successfully",
         "id": str(result.inserted_id)
     }
+
+
+# Public endpoint to accept multipart form data (useful for owner UI without auth)
+@router.post("/public")
+async def create_fabric_public(
+    name: str = Form(...),
+    category: str = Form(...),
+    price: float = Form(0.0),
+    color: str = Form(...),
+    texture: str = Form(...),
+    stock: int = Form(...),
+    image: UploadFile = File(...),
+    owner_name: str = Form("anonymous")
+):
+    # ensure upload directory exists
+    base_dir = Path(__file__).resolve().parents[1]
+    uploads_dir = base_dir / "uploads"
+    os.makedirs(uploads_dir, exist_ok=True)
+
+    filename = f"{int(time.time())}_{image.filename}"
+    out_path = uploads_dir / filename
+
+    contents = await image.read()
+    with open(out_path, "wb") as f:
+        f.write(contents)
+
+    fabric_doc = {
+        "name": name,
+        "category": category,
+        "price": price,
+        "color": color,
+        "texture": texture,
+        "stock": stock,
+        "image": str(filename),
+        "seller_name": owner_name
+    }
+
+    result = fabric_collection.insert_one(fabric_doc)
+
+    return {"message": "Fabric uploaded (public)", "id": str(result.inserted_id)}
 
 
 # 🔹 GET All Fabrics (Public - Customers can view)
