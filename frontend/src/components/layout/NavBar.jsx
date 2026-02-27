@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingCart, Sun } from "lucide-react";
+import { ShoppingCart, Sun, LogIn } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
@@ -27,6 +27,14 @@ const NavBar = () => {
                 <span className="block sm:hidden"><Sun size={20} /></span>
                 <span className="hidden sm:inline-flex items-center"><Sun size={18} className="mr-1" /> Light Mode</span>
               </p>
+              <button
+                onClick={() => navigate('/login-page')}
+                className="flex items-center text-white hover:text-amber-200 px-2 py-1 rounded"
+                aria-label="Login"
+              >
+                <span className="block sm:hidden"><LogIn size={20} /></span>
+                <span className="hidden sm:inline-flex items-center"><LogIn size={16} className="mr-2" /> Login</span>
+              </button>
         </div>
       </div>
     </nav>

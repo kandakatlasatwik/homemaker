@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from database import users_collection
 from schemas import SellerRegister
-from auth import hash_password, verify_password, create_access_token
+from auth import hash_password, verify_password, create_access_token, get_current_seller
 
 router = APIRouter(prefix="/seller", tags=["Seller"])
 
@@ -44,4 +44,14 @@ def login_seller(form_data: OAuth2PasswordRequestForm = Depends()):
     return {
         "access_token": access_token,
         "token_type": "bearer"
+    }
+
+
+@router.get("/me")
+def get_seller_me(current_seller=Depends(get_current_seller)):
+    return {
+        "seller_id": str(current_seller["_id"]),
+        "email": current_seller.get("email"),
+        "name": current_seller.get("name"),
+        "role": current_seller.get("role"),
     }

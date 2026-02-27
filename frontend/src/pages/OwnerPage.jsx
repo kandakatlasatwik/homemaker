@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 const CATEGORIES = ['curtains', 'bedsheets', 'cushions', 'rugs', 'upholstery', 'sofa', 'other']
 
 const initialForm = {
-  owner: '',
   name: '',
   category: 'curtains',
   price: '',
@@ -36,7 +35,6 @@ const OwnerPage = () => {
   }
 
   const validate = () => {
-    if (!form.owner.trim()) return 'Owner name is required.'
     if (!form.name.trim()) return 'Product name is required.'
     if (form.price && (isNaN(form.price) || Number(form.price) < 0)) return 'Enter a valid price.'
     if (!form.color.trim()) return 'Color is required.'
