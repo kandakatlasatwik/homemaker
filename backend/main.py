@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes import fabric
+from routes import image_generation
 from routes import seller  # ✅ Added seller router
 
 app = FastAPI(title="Fabric Visualizer API")
@@ -16,6 +17,7 @@ app.add_middleware(
 
 # Include routes
 app.include_router(fabric.router)
+app.include_router(image_generation.router)
 app.include_router(seller.router)  # ✅ Added this line
 
 @app.get("/")
