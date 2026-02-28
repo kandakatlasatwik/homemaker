@@ -14,6 +14,11 @@ allowed_origins = [FRONTEND_URL]
 prod_frontend = "https://homemakers.onrender.com"
 if prod_frontend not in allowed_origins:
     allowed_origins.append(prod_frontend)
+# Always allow localhost for development
+if "http://localhost:5173" not in allowed_origins:
+    allowed_origins.append("http://localhost:5173")
+
+print(f"Allowed CORS origins: {allowed_origins}")
 
 app.add_middleware(
     CORSMiddleware,

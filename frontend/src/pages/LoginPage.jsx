@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import NavBar from '../components/layout/NavBar'
 
 const LoginPage = () => {
@@ -7,6 +7,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState({})
   const [submitting, setSubmitting] = useState(false)
+  const location = useLocation()
 
   const validate = () => {
     const e = {}
@@ -26,6 +27,7 @@ const LoginPage = () => {
     setSubmitting(true)
 
     const api = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+    console.log('Attempting login to:', `${api}/seller/login`)
     try {
       const body = new URLSearchParams()
       body.append('username', email)
@@ -49,7 +51,10 @@ const LoginPage = () => {
       const data = await res.json()
       // store token and navigate to owner page
       localStorage.setItem('access_token', data.access_token)
-      navigate('/owner')
+      
+      // Redirect to the originally requested page or default to /owner
+      const redirectTo = location.state?.from || '/owner'
+      navigate(redirectTo, { replace: true })
 
     } catch (err) {
       setErrors({ general: 'Network error' })
@@ -97,6 +102,8 @@ const LoginPage = () => {
             <input type="checkbox" style={styles.checkbox} /> Remember me
           </label>
         </div>
+
+        {errors.general && <div style={styles.generalError}>{errors.general}</div>}
 
         <button type="submit" style={styles.button} disabled={submitting}>
           {submitting ? 'Signing in…' : 'Sign in'}
@@ -174,6 +181,15 @@ const styles = {
     fontSize: 13,
     marginTop: 6,
     marginBottom: 6,
+  },
+  generalError: {
+    color: '#b00020',
+    fontSize: 14,
+    marginTop: 12,
+    padding: '10px 12px',
+    background: '#ffebee',
+    borderRadius: 6,
+    textAlign: 'center',
   },
   row: {
     display: 'flex',
