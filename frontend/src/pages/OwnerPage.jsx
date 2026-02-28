@@ -7,7 +7,6 @@ const initialForm = {
   category: 'curtains',
   price: '',
   color: '',
-  texture: '',
   stock: '',
 }
 
@@ -38,7 +37,6 @@ const OwnerPage = () => {
     if (!form.name.trim()) return 'Product name is required.'
     if (form.price && (isNaN(form.price) || Number(form.price) < 0)) return 'Enter a valid price.'
     if (!form.color.trim()) return 'Color is required.'
-    if (!form.texture.trim()) return 'Texture is required.'
     if (!form.stock || isNaN(form.stock) || Number(form.stock) < 0) return 'Enter a valid stock quantity.'
     if (!imageFile) return 'Please upload a product image.'
     return null
@@ -48,19 +46,26 @@ const OwnerPage = () => {
     e.preventDefault()
     const err = validate()
     if (err) { setError(err); return }
-
     const payload = new FormData()
-    Object.entries(form).forEach(([key, val]) => {
-      if (key !== 'image') payload.append(key, key === 'price' || key === 'stock' ? Number(val) : val)
-    })
+    const api = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
+    // Append required fields. texture input was removed from the UI, use default.
+    const DEFAULT_TEXTURE = 'silk'
+
+    payload.append('name', form.name)
+    payload.append('category', form.category)
+    payload.append('price', Number(form.price))
+    payload.append('color', form.color)
+    payload.append('texture', DEFAULT_TEXTURE)
+    payload.append('stock', Number(form.stock))
     payload.append('image', imageFile)
-    // append owner_name explicitly for backend
-    if (form.owner) payload.append('owner_name', form.owner)
-    // submit to backend below
-    // send to backend
-    fetch('http://127.0.0.1:8000/fabrics/public', {
+
+    const token = localStorage.getItem('access_token')
+
+    fetch(`${api}/fabrics/`, {
       method: 'POST',
-      body: payload
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: payload,
     })
       .then((res) => {
         if (!res.ok) throw new Error('Upload failed')
@@ -96,20 +101,7 @@ const OwnerPage = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="px-8 py-8 space-y-6">
-          {/* Owner Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Owner Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              name="owner"
-              value={form.owner}
-              onChange={handleChange}
-              placeholder="e.g. Rajesh"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black transition"
-            />
-          </div>
+          {/* Owner Name removed */}
           {/* Product Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -176,34 +168,19 @@ const OwnerPage = () => {
             </div>
           </div>
 
-          {/* Color & Texture */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Color <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                name="color"
-                value={form.color}
-                onChange={handleChange}
-                placeholder="e.g. gold"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black transition"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Texture <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                name="texture"
-                value={form.texture}
-                onChange={handleChange}
-                placeholder="e.g. silk"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black transition"
-              />
-            </div>
+          {/* Color */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Color <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="color"
+              value={form.color}
+              onChange={handleChange}
+              placeholder="e.g. gold"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black transition"
+            />
           </div>
 
           {/* Image Upload */}
