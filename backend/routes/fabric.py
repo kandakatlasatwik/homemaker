@@ -1,8 +1,20 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
 from database import fabric_collection
-from schemas import Fabric
 from bson import ObjectId
 from auth import get_current_seller
+import cloudinary
+import cloudinary.uploader
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Configure Cloudinary
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+)
 
 router = APIRouter(prefix="/fabrics", tags=["Fabrics"])
 
@@ -22,26 +34,47 @@ def serialize_fabric(fabric):
     }
 
 
-# 🔹 CREATE Fabric (Protected - Seller Only)
+# 🔹 CREATE Fabric (Protected - Seller Only) WITH IMAGE UPLOAD
 @router.post("/")
-def create_fabric(
-    fabric: Fabric,
+async def create_fabric(
+    name: str = Form(...),
+    category: str = Form(...),
+    price: float = Form(...),
+    color: str = Form(...),
+    texture: str = Form(...),
+    stock: int = Form(...),
+    image: UploadFile = File(...),
     current_seller: dict = Depends(get_current_seller)
 ):
-    fabric_dict = fabric.dict()
+    try:
+        # Upload image to Cloudinary
+        upload_result = cloudinary.uploader.upload(image.file)
+        image_url = upload_result["secure_url"]
 
-    # Automatically attach seller ID
-    fabric_dict["seller_id"] = str(current_seller["_id"])
+        fabric_data = {
+            "name": name,
+            "category": category,
+            "price": price,
+            "color": color,
+            "texture": texture,
+            "stock": stock,
+            "image": image_url,
+            "seller_id": str(current_seller["_id"])
+        }
 
-    result = fabric_collection.insert_one(fabric_dict)
+        result = fabric_collection.insert_one(fabric_data)
 
-    return {
-        "message": "Fabric uploaded successfully",
-        "id": str(result.inserted_id)
-    }
+        return {
+            "message": "Fabric uploaded successfully",
+            "id": str(result.inserted_id),
+            "image_url": image_url
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-# 🔹 GET All Fabrics (Public - Customers can view)
+# 🔹 GET All Fabrics (Public)
 @router.get("/")
 def get_fabrics(category: str = None, color: str = None, texture: str = None):
     query = {}
@@ -72,7 +105,7 @@ def get_fabric_by_id(fabric_id: str):
     return serialize_fabric(fabric)
 
 
-# 🔹 UPDATE Stock (Protected - Seller Only)
+# 🔹 UPDATE Stock
 @router.put("/{fabric_id}/stock")
 def update_stock(
     fabric_id: str,
@@ -82,7 +115,7 @@ def update_stock(
     result = fabric_collection.update_one(
         {
             "_id": ObjectId(fabric_id),
-            "seller_id": str(current_seller["_id"])  # Seller can update only their product
+            "seller_id": str(current_seller["_id"])
         },
         {"$set": {"stock": stock}}
     )
@@ -93,20 +126,20 @@ def update_stock(
     return {"message": "Stock updated successfully"}
 
 
-# 🔹 DELETE Fabric (Protected - Seller Only)
+# 🔹 DELETE Fabric
 @router.delete("/{fabric_id}")
 def delete_fabric(
     fabric_id: str,
     current_seller: dict = Depends(get_current_seller)
 ):
-    result = fabric_collection.delete_one(
-        {
-            "_id": ObjectId(fabric_id),
-            "seller_id": str(current_seller["_id"])  # Seller can delete only their product
-        }
-    )
+    fabric = fabric_collection.find_one({"_id": ObjectId(fabric_id)})
 
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Fabric not found or not authorized")
+    if not fabric:
+        raise HTTPException(status_code=404, detail="Fabric not found")
+
+    if fabric["seller_id"] != str(current_seller["_id"]):
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    fabric_collection.delete_one({"_id": ObjectId(fabric_id)})
 
     return {"message": "Fabric deleted successfully"}
