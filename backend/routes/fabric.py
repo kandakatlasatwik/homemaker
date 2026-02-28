@@ -76,33 +76,60 @@ async def create_fabric(
 
 # 🔹 GET All Fabrics (Public)
 @router.get("/")
-def get_fabrics(category: str = None, color: str = None, texture: str = None):
-    query = {}
+def get_fabrics(category: str):
+    fabrics = fabric_collection.find(
+        {"category": category},
+        {
+            "name": 1,
+            "category": 1,
+            "color": 1,
+            "texture": 1,
+            "image": 1
+        }
+    )
 
-    if category:
-        query["category"] = category
-    if color:
-        query["color"] = color
-    if texture:
-        query["texture"] = texture
-
-    fabrics = fabric_collection.find(query)
-
-    return [serialize_fabric(f) for f in fabrics]
-
+    return [
+        {
+            "id": str(f["_id"]),
+            "name": f.get("name"),
+            "category": f.get("category"),
+            "color": f.get("color"),
+            "texture": f.get("texture"),
+            "image": f.get("image"),
+        }
+        for f in fabrics
+    ]
 
 # 🔹 GET Fabric by ID
 @router.get("/{fabric_id}")
 def get_fabric_by_id(fabric_id: str):
     try:
-        fabric = fabric_collection.find_one({"_id": ObjectId(fabric_id)})
+        fabric = fabric_collection.find_one(
+            {"_id": ObjectId(fabric_id)},
+            {
+                "name": 1,
+                "category": 1,
+                "price": 1,
+                "color": 1,
+                "texture": 1,
+                "image": 1
+            }
+        )
     except:
         raise HTTPException(status_code=400, detail="Invalid Fabric ID")
 
     if not fabric:
         raise HTTPException(status_code=404, detail="Fabric not found")
 
-    return serialize_fabric(fabric)
+    return {
+        "id": str(fabric["_id"]),
+        "name": fabric.get("name"),
+        "category": fabric.get("category"),
+        "price": fabric.get("price"),
+        "color": fabric.get("color"),
+        "texture": fabric.get("texture"),
+        "image": fabric.get("image"),
+    }
 
 
 # 🔹 UPDATE Stock
