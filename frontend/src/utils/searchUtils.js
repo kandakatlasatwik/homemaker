@@ -12,7 +12,9 @@ export function searchTextures(textures, query) {
   const lowerQuery = query.toLowerCase();
   return textures.filter(
     t =>
-      t.name.toLowerCase().includes(lowerQuery) ||
-      t.description.toLowerCase().includes(lowerQuery)
+      (t.name && t.name.toLowerCase().includes(lowerQuery)) ||
+      (t.description && t.description.toLowerCase().includes(lowerQuery)) ||
+      (t.color && t.color.toLowerCase().includes(lowerQuery)) ||
+      (t.texture && t.texture.toLowerCase().includes(lowerQuery))
   );
 }

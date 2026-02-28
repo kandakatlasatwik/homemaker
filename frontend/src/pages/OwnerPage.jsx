@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useReducer, useCallback } from 'react'
+import { Trash2 } from 'lucide-react'
 
 const CATEGORIES = ['curtains', 'bedsheets', 'cushions', 'rugs', 'upholstery', 'sofa', 'other']
 
@@ -10,12 +11,75 @@ const initialForm = {
   stock: '',
 }
 
+function fabricsReducer(state, action) {
+  switch (action.type) {
+    case 'FETCH_START':
+      return { ...state, loading: true, error: null }
+    case 'FETCH_SUCCESS':
+      return { loading: false, error: null, data: action.payload }
+    case 'FETCH_ERROR':
+      return { ...state, loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
 const OwnerPage = () => {
   const [form, setForm] = useState(initialForm)
   const [imageFile, setImageFile] = useState(null)
   const [preview, setPreview] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [activeCategory, setActiveCategory] = useState('curtains')
+
+  const api = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
+  // --- Fabric list state ---
+  const [fabricsState, dispatch] = useReducer(fabricsReducer, {
+    data: [],
+    loading: false,
+    error: null,
+  })
+
+  const [deletingIds, setDeletingIds] = useState([])
+
+  const fetchFabrics = useCallback((category) => {
+    dispatch({ type: 'FETCH_START' })
+    fetch(`${api}/fabrics/?category=${encodeURIComponent(category)}`)
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to load products')
+        return res.json()
+      })
+      .then((data) => dispatch({ type: 'FETCH_SUCCESS', payload: data }))
+      .catch((err) => dispatch({ type: 'FETCH_ERROR', payload: err.message }))
+  }, [api])
+
+  // Fetch on mount and when active category changes
+  useEffect(() => {
+    fetchFabrics(activeCategory)
+  }, [activeCategory, fetchFabrics])
+
+  const handleDelete = (id) => {
+    if (!window.confirm('Are you sure you want to delete this product?')) return
+    const token = localStorage.getItem('access_token')
+    setDeletingIds((p) => [...p, id])
+
+    fetch(`${api}/fabrics/${id}`, {
+      method: 'DELETE',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Delete failed')
+        // refresh list for current category
+        fetchFabrics(activeCategory)
+      })
+      .catch((err) => {
+        console.error(err)
+        alert('Delete failed. Check console for details.')
+      })
+      .finally(() => setDeletingIds((p) => p.filter((x) => x !== id)))
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -46,8 +110,8 @@ const OwnerPage = () => {
     e.preventDefault()
     const err = validate()
     if (err) { setError(err); return }
+    setSubmitting(true)
     const payload = new FormData()
-    const api = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
     // Append required fields. texture input was removed from the UI, use default.
     const DEFAULT_TEXTURE = 'silk'
@@ -75,11 +139,19 @@ const OwnerPage = () => {
         console.log('Upload success', data)
         setSubmitted(true)
         setError('')
+        setSubmitting(false)
+        // Refresh the list for the submitted category so it appears immediately
+        if (form.category === activeCategory) {
+          fetchFabrics(activeCategory)
+        } else {
+          setActiveCategory(form.category)
+        }
       })
       .catch((err) => {
         console.error(err)
         setError('Upload failed. Please try again.')
         setSubmitted(false)
+        setSubmitting(false)
       })
   }
 
@@ -92,7 +164,7 @@ const OwnerPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center px-4 py-12">
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-lg overflow-hidden">
         {/* Header */}
         <div className="bg-black px-8 py-6">
@@ -234,9 +306,10 @@ const OwnerPage = () => {
           <div className="flex gap-3 pt-2">
             <button
               type="submit"
-              className="flex-1 bg-black text-white rounded-lg py-2.5 text-sm font-medium hover:bg-gray-900 transition"
+              disabled={submitting}
+              className="flex-1 bg-black text-white rounded-lg py-2.5 text-sm font-medium hover:bg-gray-900 transition disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Add Product
+              {submitting ? 'Uploading…' : 'Add Product'}
             </button>
             <button
               type="button"
@@ -247,6 +320,80 @@ const OwnerPage = () => {
             </button>
           </div>
         </form>
+      </div>
+
+      {/* ─── Product Listing Section ─── */}
+      <div className="w-full max-w-4xl mt-10">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Your Products</h2>
+
+        {/* Category Tabs */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium border transition ${
+                activeCategory === cat
+                  ? 'bg-black text-white border-black'
+                  : 'bg-white text-gray-600 border-gray-300 hover:border-black'
+              }`}
+            >
+              {cat.charAt(0).toUpperCase() + cat.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        {/* Fabric Grid */}
+        {fabricsState.loading ? (
+          <div className="flex justify-center py-12">
+            <svg className="animate-spin h-8 w-8 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+            </svg>
+          </div>
+        ) : fabricsState.error ? (
+          <p className="text-center text-red-400 py-6">{fabricsState.error}</p>
+        ) : fabricsState.data.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+            {fabricsState.data.map((fabric) => (
+              <div
+                key={fabric.id}
+                className="relative group rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 bg-black aspect-4/3"
+              >
+                <img
+                  src={fabric.image}
+                  alt={fabric.name}
+                  className="w-full h-full object-cover"
+                />
+
+                {/* Delete button overlay */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleDelete(fabric.id); }}
+                  disabled={deletingIds.includes(fabric.id)}
+                  className="absolute top-2 right-2 z-20 bg-white/90 text-red-600 p-2.5 rounded-full shadow hover:bg-white hover:scale-105 transition-transform disabled:opacity-60 disabled:cursor-not-allowed"
+                  aria-label={`Delete ${fabric.name}`}
+                  title="Delete product"
+                >
+                  {deletingIds.includes(fabric.id) ? (
+                    <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                    </svg>
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
+                </button>
+
+                <div className="absolute bottom-0 left-0 w-full bg-black/60 text-white p-3 text-center">
+                  <p className="text-base font-semibold tracking-wide">{fabric.name}</p>
+                  <p className="text-xs mt-1 opacity-80">{fabric.texture} &middot; {fabric.color}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-400 py-8">No products in this category yet.</p>
+        )}
       </div>
     </div>
   )

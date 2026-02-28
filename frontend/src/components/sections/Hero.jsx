@@ -1,27 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useReducer, useCallback } from "react";
 import ProductCard from "../ui/ProductCard";
 import TextureCard from "../ui/TextureCard";
-import ColorCard from "../ui/ColorCard";
-import { useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import { searchTextures } from "../../utils/searchUtils";
+import bedImage from "../../assets/images/bed.png";
 
-const Hero = ({ type }) => {
-  const navigate = useNavigate();
-  const handleSofaClick = () => {
-    navigate("/select-texture");
-  };
+function fabricReducer(state, action) {
+  switch (action.type) {
+    case 'FETCH_START':
+      return { ...state, loading: true, error: null };
+    case 'FETCH_SUCCESS':
+      return { loading: false, error: null, data: action.payload };
+    case 'FETCH_ERROR':
+      return { ...state, loading: false, error: action.payload };
+    default:
+      return state;
+  }
+}
 
-  // Texture data
-  const textureData = [
-    { name: "Velvet Touch", description: "Soft, luxurious velvet texture for premium sofas." },
-    { name: "Linen Weave", description: "Classic linen weave, breathable and elegant." },
-    { name: "Leather Grain", description: "Durable leather grain for a timeless look." },
-    { name: "Suede Finish", description: "Smooth suede finish, perfect for cozy spaces." },
-  ];
-
+const Hero = ({ type, productType }) => {
   const [search, setSearch] = useState("");
-  const filteredTextures = type === 'texture' ? searchTextures(textureData, search) : [];
+  const [state, dispatch] = useReducer(fabricReducer, {
+    data: [],
+    loading: type === 'texture' && !!productType,
+    error: null,
+  });
+
+  const api = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+  const fetchFabrics = useCallback((category) => {
+    dispatch({ type: 'FETCH_START' });
+    fetch(`${api}/fabrics/?category=${encodeURIComponent(category)}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch fabrics');
+        return res.json();
+      })
+      .then(data => dispatch({ type: 'FETCH_SUCCESS', payload: data }))
+      .catch(err => {
+        console.error(err);
+        dispatch({ type: 'FETCH_ERROR', payload: err.message });
+      });
+  }, [api]);
+
+  useEffect(() => {
+    if (type === 'texture' && productType) {
+      fetchFabrics(productType);
+    }
+  }, [type, productType, fetchFabrics]);
+
+  const { data: fabrics, loading, error } = state;
+  const filteredTextures = type === 'texture' ? searchTextures(fabrics, search) : [];
   return (
     <section className="w-full  bg-white ">
       <div className="container mx-auto px-4 grid grid-cols-1   gap-8 items-center min-h-[350px]">
@@ -49,19 +77,29 @@ const Hero = ({ type }) => {
           
           <div className=" grid grid-cols-1 gap-5  sm:grid sm:grid-cols-3 mt-4 ">
             {type === 'texture' ? (
-              filteredTextures.length > 0 ? (
-                filteredTextures.map((t, i) => (
-                  <TextureCard key={t.name + i} name={t.name} description={t.description} />
+              loading ? (
+                <div className="col-span-full flex justify-center py-12">
+                  <Loader2 className="animate-spin text-amber-500" size={36} />
+                </div>
+              ) : error ? (
+                <div className="col-span-full text-center text-red-400 py-8">{error}</div>
+              ) : filteredTextures.length > 0 ? (
+                filteredTextures.map((t) => (
+                  <TextureCard
+                    key={t.id}
+                    name={t.name}
+                    description={`${t.texture} · ${t.color}`}
+                    image={t.image}
+                  />
                 ))
               ) : (
                 <div className="col-span-full text-center text-gray-400 py-8">No textures found.</div>
               )
             ) : (
               <>
-                <ProductCard onClick={handleSofaClick} />
+                <ProductCard type="sofa" />
+                <ProductCard type="bed" image={bedImage} />
                 <ProductCard />
-                <ProductCard />
-                {type === 'color' && <ColorCard />}
               </>
             )}
           </div>

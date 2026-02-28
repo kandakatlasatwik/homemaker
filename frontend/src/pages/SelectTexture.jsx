@@ -2,11 +2,14 @@ import React from 'react'
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
 import Hero from '../components/sections/Hero';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeftCircle } from 'lucide-react';
 
 const SelectTexture = () => {
   const navigate=useNavigate()
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const product = params.get('product');
   return (
     <>
       <NavBar />
@@ -20,7 +23,7 @@ const SelectTexture = () => {
           <span className="hidden sm:inline">{'<-Back'}</span>
         </div>
         </div>
-        <Hero type="texture" />
+        <Hero type="texture" productType={product} />
       </div>
       <Footer />
     </>

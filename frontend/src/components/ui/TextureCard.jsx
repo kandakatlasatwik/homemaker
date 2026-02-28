@@ -1,16 +1,12 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom';
 import texture from "../../assets/images/texture1.png";
 
 
 
 const TextureCard = ({ image = texture, name = "Texture Name", description = "Texture description here." }) => {
-  const navigate = useNavigate();
-  
   return (
     <div
       className="relative flex group hover:cursor-pointer transform transition-transform duration-300 hover:scale-102 shadow-2xl rounded-2xl sm:rounded-4xl aspect-[4/3] w-full h-full overflow-hidden bg-black"
-      onClick={()=>{navigate('/select-color')}}
     >
       <img
         src={image}
