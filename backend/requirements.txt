@@ -22,3 +22,4 @@ python-multipart
 google-genai
 requests
 argon2-cffi
+cloudinary==1.44.1
