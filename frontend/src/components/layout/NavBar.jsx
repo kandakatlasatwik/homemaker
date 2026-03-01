@@ -33,7 +33,7 @@ const NavBar = () => {
                 aria-label="Login"
               >
                 <span className="block sm:hidden"><LogIn size={20} /></span>
-                <span className="hidden sm:inline-flex items-center"><LogIn size={16} className="mr-2" /> Login</span>
+                <span className="hidden sm:inline-flex items-center"><LogIn size={16} className="mr-2" />Login</span>
               </button>
         </div>
       </div>
