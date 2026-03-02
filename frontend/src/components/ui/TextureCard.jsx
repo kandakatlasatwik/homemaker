@@ -2,11 +2,11 @@ import React from 'react'
 import texture from "../../assets/images/texture1.png";
 
 
-
-const TextureCard = ({ image = texture, name = "Texture Name", description = "Texture description here." }) => {
+const TextureCard = ({ image = texture, name = "Texture Name", description = "Texture description here.", onClick }) => {
   return (
     <div
       className="relative flex group hover:cursor-pointer transform transition-transform duration-300 hover:scale-102 shadow-2xl rounded-2xl sm:rounded-4xl aspect-[4/3] w-full h-full overflow-hidden bg-black"
+      onClick={onClick}
     >
       <img
         src={image}

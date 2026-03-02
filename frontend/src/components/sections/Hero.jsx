@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useReducer, useCallback } from "react";
+import { useNavigate } from 'react-router-dom';
 import ProductCard from "../ui/ProductCard";
 import TextureCard from "../ui/TextureCard";
 import { Search, Loader2 } from "lucide-react";
@@ -52,6 +53,7 @@ const Hero = ({ type, productType }) => {
     }
   }, [type, productType, fetchFabrics]);
 
+  const navigate = useNavigate();
   const { data: fabrics, loading, error } = state;
   const filteredTextures = type === 'texture' ? searchTextures(fabrics, search) : [];
   return (
@@ -94,6 +96,11 @@ const Hero = ({ type, productType }) => {
                     name={t.name}
                     description={`${t.texture} · ${t.color}`}
                     image={t.image}
+                    onClick={() => {
+                      if (productType === 'sofa') {
+                        navigate(`/sofa-room?texture=${encodeURIComponent(t.image)}`);
+                      }
+                    }}
                   />
                 ))
               ) : (
