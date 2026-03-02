@@ -4,6 +4,10 @@ import TextureCard from "../ui/TextureCard";
 import { Search, Loader2 } from "lucide-react";
 import { searchTextures } from "../../utils/searchUtils";
 import bedImage from "../../assets/images/bed.png";
+import curtainImage from "../../assets/images/curtains.png";
+import cushionImage from "../../assets/images/cushions.png";
+import rugsImage from "../../assets/images/rugs.png";
+import upholsteryImage from "../../assets/images/upholstery.png";
 
 function fabricReducer(state, action) {
   switch (action.type) {
@@ -99,7 +103,10 @@ const Hero = ({ type, productType }) => {
               <>
                 <ProductCard type="sofa" />
                 <ProductCard type="bed" image={bedImage} />
-                <ProductCard />
+                <ProductCard type="curtain" image={curtainImage} />
+                <ProductCard type="cushion" image={cushionImage} />
+                <ProductCard type="rugs" image={rugsImage} />
+                <ProductCard type="upholstery" image={upholsteryImage} />
               </>
             )}
           </div>

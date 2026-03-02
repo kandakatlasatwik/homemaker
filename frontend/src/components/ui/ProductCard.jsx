@@ -11,7 +11,20 @@ const ProductCard = ({ onClick, type, image }) => {
   };
 
   const imgSrc = image || sofa1;
-  const label = type === 'sofa' ? 'SOFA COLLECTIONS' : type === 'bed' ? 'BED COLLECTIONS' : 'PRODUCT COLLECTIONS';
+  const label =
+  type === 'sofa'
+    ? 'SOFA COLLECTIONS'
+    : type === 'bed'
+    ? 'BED COLLECTIONS'
+    : type === 'curtain'
+    ? 'CURTAIN COLLECTIONS'
+    : type === 'cushion'
+    ? 'CUSHION COLLECTIONS'
+    : type === 'rugs'
+    ? 'RUG COLLECTIONS'
+    : type === 'upholstery'
+    ? 'UPHOLSTERY COLLECTIONS'
+    : 'PRODUCT COLLECTIONS';
 
   return (
     <div
