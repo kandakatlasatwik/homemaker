@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-MODEL_NAME = "gemini-2.5-flash-preview-image"
+MODEL_NAME = "gemini-2.5-flash-image"
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -33,6 +33,33 @@ async def generate_image(base_image_url: str, fabric_image_url: str, prompt: str
             prompt,
             types.Part.from_bytes(
                 data=base64.b64decode(base_img_b64),
+                mime_type="image/jpeg",
+            ),
+            types.Part.from_bytes(
+                data=base64.b64decode(fabric_img_b64),
+                mime_type="image/jpeg",
+            ),
+        ],
+    )
+
+    for part in response.candidates[0].content.parts:
+        if part.inline_data:
+            return part.inline_data.data
+
+    return None
+
+
+async def generate_image_with_base64(base_image_b64: str, fabric_image_url: str, prompt: str):
+    """Generate image using base64 for base image and URL for fabric image."""
+    
+    fabric_img_b64 = image_url_to_base64(fabric_image_url)
+
+    response = client.models.generate_content(
+        model=MODEL_NAME,
+        contents=[
+            prompt,
+            types.Part.from_bytes(
+                data=base64.b64decode(base_image_b64),
                 mime_type="image/jpeg",
             ),
             types.Part.from_bytes(

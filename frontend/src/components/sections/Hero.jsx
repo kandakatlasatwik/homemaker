@@ -98,7 +98,7 @@ const Hero = ({ type, productType }) => {
                     image={t.image}
                     onClick={() => {
                       if (productType === 'sofa') {
-                        navigate(`/sofa-room?texture=${encodeURIComponent(t.image)}`);
+                        navigate(`/sofa-room?type=sofa&texture=${encodeURIComponent(t.image)}`);
                       }
                     }}
                   />
