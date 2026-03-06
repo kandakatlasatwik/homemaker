@@ -86,7 +86,7 @@ const SelectRoom = () => {
   }
 
   return (
-    <div className={`min-h-screen ${theme.bg} transition-colors duration-300`}>
+    <div className={`min-h-screen ${theme.bg} transition-colors duration-300 pt-20`}>
       <NavBar />
       <div className="container mx-auto py-4 sm:py-8 px-3 sm:px-4">
         {/* Back Button */}

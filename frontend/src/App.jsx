@@ -9,6 +9,7 @@ import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import SelectRoom from './pages/SelectRoom';
 import GenerateImage from './pages/GenerateImage';
+import CartPage from './pages/CartPage';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/" element={<SelectProducts />} />
           <Route path="/select-texture" element={<SelectTexture />} />
           <Route path="/owner" element={<ProtectedRoute><OwnerPage /></ProtectedRoute>} />
+          <Route path="/cart" element={<CartPage />} />
           <Route path="*" element={<NotFound />} />
           <Route path="select-room" element={<SelectRoom />} />
         </Routes>

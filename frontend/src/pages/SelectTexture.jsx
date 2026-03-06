@@ -13,7 +13,7 @@ const SelectTexture = () => {
   const product = params.get('product');
   const theme = useTheme();
   return (
-    <div className={`min-h-screen ${theme.bg} transition-colors duration-300`}>
+    <div className={`min-h-screen ${theme.bg} transition-colors duration-300 pt-20`}>
       <NavBar />
       <div>
         <div className="sm:text-center mt-2.5">

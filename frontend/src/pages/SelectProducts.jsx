@@ -7,7 +7,7 @@ import { useTheme } from '../context/ThemeContext';
 const SelectProducts = () => {
   const theme = useTheme();
   return (
-    <div className={`min-h-screen ${theme.bg} transition-colors duration-300`}>
+    <div className={`min-h-screen ${theme.bg} transition-colors duration-300 pt-20`}>
       <NavBar />
       <Hero type="product" />
       <Footer />
