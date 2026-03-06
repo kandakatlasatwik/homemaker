@@ -7,12 +7,14 @@ import LoginPage from './pages/LoginPage';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import SofaRoom from './pages/SofaRoom';
+import GenerateImage from './pages/GenerateImage';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login-page" element={<LoginPage />} />       
+        <Route path="/login-page" element={<LoginPage />} />   
+        <Route path="/generate-image" element={<GenerateImage />} />       
         <Route path="/" element={<SelectProducts />} />
         <Route path="/select-texture" element={<SelectTexture />} />
         <Route path="/owner" element={<ProtectedRoute><OwnerPage /></ProtectedRoute>} />
