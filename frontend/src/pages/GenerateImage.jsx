@@ -79,25 +79,41 @@ const GenerateImage = () => {
 
   const [loading, setLoading] = useState(false);
   const [generatedImage, setGeneratedImage] = useState(null);
+  const [generatedImageId, setGeneratedImageId] = useState(null);
   const [error, setError] = useState(null);
+  const [addingToCart, setAddingToCart] = useState(false);
 
   const api = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+  // Get or create guest ID
+  const getGuestId = () => {
+    let guestId = localStorage.getItem('guest_id');
+    if (!guestId) {
+      guestId = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      localStorage.setItem('guest_id', guestId);
+    }
+    return guestId;
+  };
 
   const handleGenerate = async () => {
     if (isNaN(roomIndex) || !textureUrl) return;
     setLoading(true);
     setError(null);
     setGeneratedImage(null);
+    setGeneratedImageId(null);
     try {
       const imagesForType = roomImagesByType[objectType] || roomImagesByType['sofa'];
       const roomImage = imagesForType[roomIndex];
       const roomImageBase64 = await imageToBase64(roomImage.src);
+      const guestId = getGuestId();
+      
       const response = await fetch(`${api}/generate/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          guest_id: guestId,
           object_type: objectType,
           texture: textureUrl,
           base_image_base64: roomImageBase64,
@@ -109,6 +125,7 @@ const GenerateImage = () => {
       }
       const data = await response.json();
       setGeneratedImage(data.generated_image_base64);
+      setGeneratedImageId(data.image_id);
     } catch (err) {
       setError(err.message || 'Failed to generate image');
     } finally {
@@ -116,8 +133,39 @@ const GenerateImage = () => {
     }
   };
 
+  const handleAddToCart = async () => {
+    if (!generatedImageId) return;
+    
+    setAddingToCart(true);
+    try {
+      const guestId = getGuestId();
+      const response = await fetch(`${api}/cart/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          guest_id: guestId,
+          image_id: generatedImageId,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to add to cart');
+      }
+
+      alert('✅ Image added to cart successfully!');
+      navigate('/cart');
+    } catch (err) {
+      alert(`❌ ${err.message}`);
+    } finally {
+      setAddingToCart(false);
+    }
+  };
+
   return (
-    <div className={`min-h-screen ${theme.bg} transition-colors duration-300`}>
+    <div className={`min-h-screen ${theme.bg} transition-colors duration-300 pt-20`}>
       <NavBar />
       <div className="container mx-auto py-4 sm:py-8 px-3 sm:px-4">
         {/* Back Button */}
@@ -146,7 +194,7 @@ const GenerateImage = () => {
         {/* Card for generated image */}
         <GenerateImageCard generatedImage={generatedImage} loading={loading} />
         {/* Generate Image button */}
-        <div className="mt-4 sm:mt-6 flex justify-center">
+        <div className="mt-4 sm:mt-6 flex justify-center gap-4 flex-wrap">
             <button
               className="bg-linear-to-r from-amber-500 to-amber-600 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 hover:from-amber-600 hover:to-amber-700 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold"
             onClick={handleGenerate}
@@ -154,6 +202,16 @@ const GenerateImage = () => {
           >
             {loading ? 'Generating...' : '✨ Generate Image'}
           </button>
+          
+          {generatedImage && generatedImageId && (
+            <button
+              className="bg-linear-to-r from-green-500 to-green-600 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 hover:from-green-600 hover:to-green-700 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold"
+              onClick={handleAddToCart}
+              disabled={addingToCart}
+            >
+              {addingToCart ? 'Adding...' : '🛒 Add to Cart'}
+            </button>
+          )}
         </div>
       </div>
       <Footer />

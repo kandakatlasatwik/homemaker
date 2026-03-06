@@ -21,7 +21,10 @@ const NavBar = () => {
           Homemakers
         </h1>
         <div className="flex flex-row items-center space-x-4 sm:space-x-6 ml-auto">
-              <p className={`${theme.navText} cursor-pointer flex items-center gap-1 ${theme.navHover} transition-colors duration-300`}>
+              <p 
+                className={`${theme.navText} cursor-pointer flex items-center gap-1 ${theme.navHover} transition-colors duration-300`}
+                onClick={() => navigate('/cart')}
+              >
                 <span className="block sm:hidden"><ShoppingCart size={20} /></span>
                 <span className="hidden sm:inline-flex items-center hover:cursor"><ShoppingCart size={18} className="mr-1" /> Cart</span>
               </p>

@@ -168,7 +168,7 @@ const OwnerPage = () => {
   const handleBack = () => window.history.back();
 
   return (
-    <div className={`min-h-screen ${theme.bg} flex flex-col items-center px-4 py-12 transition-colors duration-300`}>
+    <div className={`min-h-screen ${theme.bg} flex flex-col items-center px-4 py-12 transition-colors duration-300 pt-20`}>
       {/* Back Button */}
       <div className="w-full max-w-2xl flex items-center mt-2 mb-4">
         <button

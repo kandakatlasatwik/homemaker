@@ -66,7 +66,7 @@ const LoginPage = () => {
   }
 
   return (
-    <div className={`min-h-screen ${theme.bg} transition-colors duration-300`}>
+    <div className={`min-h-screen ${theme.bg} transition-colors duration-300 pt-20`}>
       <NavBar />
       <div className="flex items-center justify-center px-6 pt-24 pb-12" style={{ minHeight: '70vh' }}>
         <form onSubmit={handleSubmit} className={`w-full max-w-[420px] p-6 rounded-lg ${theme.bgCard} ${theme.shadowCard} border ${theme.border} flex flex-col transition-colors duration-300`} aria-labelledby="login-heading">

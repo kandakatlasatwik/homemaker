@@ -1,18 +1,16 @@
-/* Fix footer to the bottom */
-.fixed-footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  z-index: 1000;
-}
-/* ...existing code... */
+/* Fixed navbar at top */
 .fixed-navbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   background: #000;
-  z-index: 1000;
+  z-index: 50;
 }
+
+/* Main content padding for fixed navbar */
+.content-wrapper {
+  padding-top: 5rem; /* 80px for navbar height */
+}
+
 /* ...existing code... */

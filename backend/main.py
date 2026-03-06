@@ -4,6 +4,8 @@ import os
 from routes import fabric
 from routes import image_generation
 from routes import seller  # ✅ Added seller router
+from routes import cart  # ✅ Added cart router
+from cleanup_task import start_cleanup_task
 
 app = FastAPI(title="Fabric Visualizer API")
 
@@ -32,6 +34,12 @@ app.add_middleware(
 app.include_router(fabric.router)
 app.include_router(image_generation.router)
 app.include_router(seller.router)  # ✅ Added this line
+app.include_router(cart.router)  # ✅ Added cart router
+
+# 🔹 Startup event to start background cleanup task
+@app.on_event("startup")
+async def startup_event():
+    start_cleanup_task()
 
 @app.get("/")
 def root():
