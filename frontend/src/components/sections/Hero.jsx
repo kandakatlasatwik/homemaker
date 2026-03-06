@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useReducer, useCallback } from "react";
+import { useNavigate } from 'react-router-dom';
 import ProductCard from "../ui/ProductCard";
 import TextureCard from "../ui/TextureCard";
 import { Search, Loader2 } from "lucide-react";
 import { searchTextures } from "../../utils/searchUtils";
+import { useTheme } from '../../context/ThemeContext';
 import bedImage from "../../assets/images/bed.png";
 import curtainImage from "../../assets/images/curtains.png";
 import cushionImage from "../../assets/images/cushions.png";
@@ -23,6 +25,14 @@ function fabricReducer(state, action) {
 }
 
 const Hero = ({ type, productType }) => {
+  // Map frontend product types to DB category names
+  const typeToCategoryMap = {
+    bed: 'bedsheets',
+    curtain: 'curtains',
+    cushion: 'cushions',
+  };
+  const dbCategory = typeToCategoryMap[productType] || productType;
+
   const [search, setSearch] = useState("");
   const [state, dispatch] = useReducer(fabricReducer, {
     data: [],
@@ -48,30 +58,32 @@ const Hero = ({ type, productType }) => {
 
   useEffect(() => {
     if (type === 'texture' && productType) {
-      fetchFabrics(productType);
+      fetchFabrics(dbCategory);
     }
-  }, [type, productType, fetchFabrics]);
+  }, [type, productType, dbCategory, fetchFabrics]);
 
+  const navigate = useNavigate();
+  const theme = useTheme();
   const { data: fabrics, loading, error } = state;
   const filteredTextures = type === 'texture' ? searchTextures(fabrics, search) : [];
   return (
-    <section className="w-full  bg-white ">
-      <div className="container mx-auto px-4 grid grid-cols-1   gap-8 items-center min-h-[350px]">
+    <section className={`w-full ${theme.bg} transition-colors duration-300`}>
+      <div className="container mx-auto px-4 grid grid-cols-1 gap-8 items-center min-h-[350px]">
         <div className="flex flex-col justify-center space-y-4">
           {type !== 'texture' && (
             <>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 text-center mt-8">Welcome to Homemakers</h1>
-              <p className="text-lg text-gray-600 text-center">Your one-stop shop for home essentials.</p>
+              <h1 className={`text-4xl md:text-5xl font-bold ${theme.textHeading} text-center mt-8 transition-colors duration-300`}>Welcome to Homemakers</h1>
+              <p className={`text-lg ${theme.textSecondary} text-center transition-colors duration-300`}>Your one-stop shop for home essentials.</p>
             </>
           )}
           {type === 'texture' && (
             <div className="flex justify-center mt-4">
-              <div className="flex items-center w-full max-w-md border border-gray-300 rounded-lg px-3 py-2 bg-white transition-all duration-200 focus-within:border-amber-400 hover:border-amber-400 shadow-sm">
-                <Search className="text-gray-400 mr-2" size={20} />
+              <div className={`flex items-center w-full max-w-md border ${theme.border} rounded-lg px-3 py-2 ${theme.bgInput} transition-all duration-300 focus-within:border-amber-400 ${theme.borderHover} ${theme.shadow}`}>
+                <Search className={`${theme.textMuted} mr-2`} size={20} />
                 <input
                   type="text"
                   placeholder="Search textures..."
-                  className="w-full outline-none bg-transparent text-gray-700 placeholder-gray-400"
+                  className={`w-full outline-none bg-transparent ${theme.text} placeholder-gray-400`}
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                 />
@@ -79,7 +91,7 @@ const Hero = ({ type, productType }) => {
             </div>
           )}
           
-          <div className=" grid grid-cols-1 gap-5  sm:grid sm:grid-cols-3 mt-4 ">
+          <div className="grid grid-cols-1 gap-5 sm:grid sm:grid-cols-3 mt-4">
             {type === 'texture' ? (
               loading ? (
                 <div className="col-span-full flex justify-center py-12">
@@ -94,10 +106,13 @@ const Hero = ({ type, productType }) => {
                     name={t.name}
                     description={`${t.texture} · ${t.color}`}
                     image={t.image}
+                    onClick={() => {
+                      navigate(`/select-room?type=${encodeURIComponent(productType)}&texture=${encodeURIComponent(t.image)}`);
+                    }}
                   />
                 ))
               ) : (
-                <div className="col-span-full text-center text-gray-400 py-8">No textures found.</div>
+                <div className={`col-span-full text-center ${theme.textMuted} py-8`}>No textures found.</div>
               )
             ) : (
               <>
