@@ -24,6 +24,14 @@ function fabricReducer(state, action) {
 }
 
 const Hero = ({ type, productType }) => {
+  // Map frontend product types to DB category names
+  const typeToCategoryMap = {
+    bed: 'bedsheets',
+    curtain: 'curtains',
+    cushion: 'cushions',
+  };
+  const dbCategory = typeToCategoryMap[productType] || productType;
+
   const [search, setSearch] = useState("");
   const [state, dispatch] = useReducer(fabricReducer, {
     data: [],
@@ -49,9 +57,9 @@ const Hero = ({ type, productType }) => {
 
   useEffect(() => {
     if (type === 'texture' && productType) {
-      fetchFabrics(productType);
+      fetchFabrics(dbCategory);
     }
-  }, [type, productType, fetchFabrics]);
+  }, [type, productType, dbCategory, fetchFabrics]);
 
   const navigate = useNavigate();
   const { data: fabrics, loading, error } = state;
@@ -97,9 +105,7 @@ const Hero = ({ type, productType }) => {
                     description={`${t.texture} · ${t.color}`}
                     image={t.image}
                     onClick={() => {
-                      if (productType === 'sofa') {
-                        navigate(`/sofa-room?type=sofa&texture=${encodeURIComponent(t.image)}`);
-                      }
+                      navigate(`/select-room?type=${encodeURIComponent(productType)}&texture=${encodeURIComponent(t.image)}`);
                     }}
                   />
                 ))

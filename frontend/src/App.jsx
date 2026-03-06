@@ -6,7 +6,7 @@ import OwnerPage from './pages/OwnerPage';
 import LoginPage from './pages/LoginPage';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
-import SofaRoom from './pages/SofaRoom';
+import SelectRoom from './pages/SelectRoom';
 import GenerateImage from './pages/GenerateImage';
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
         <Route path="/select-texture" element={<SelectTexture />} />
         <Route path="/owner" element={<ProtectedRoute><OwnerPage /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
-        <Route path="sofa-room" element={<SofaRoom />} />
+        <Route path="select-room" element={<SelectRoom />} />
       </Routes>
     </BrowserRouter>
   );
