@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import NavBar from '../components/layout/NavBar'
+import bgVideo from "../assets/videos/background.mp4";
 
 const LoginPage = () => {
   const [email, setEmail] = useState('')
