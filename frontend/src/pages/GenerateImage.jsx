@@ -8,6 +8,7 @@ import Footer from '../components/layout/Footer';
 import GenerateImageCard from '../components/ui/GenerateImageCard';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeftCircle } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 import sofaroom1 from "../assets/sofarooms/sofaroom1.png";
 import sofaroom2 from "../assets/sofarooms/sofaroom2.png";
@@ -71,6 +72,7 @@ const GenerateImage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
+  const theme = useTheme();
   const objectType = params.get('type') || 'sofa';
   const textureUrl = params.get('texture');
   const roomIndex = parseInt(params.get('room'), 10);
@@ -115,13 +117,13 @@ const GenerateImage = () => {
   };
 
   return (
-    <>
+    <div className={`min-h-screen ${theme.bg} transition-colors duration-300`}>
       <NavBar />
       <div className="container mx-auto py-4 sm:py-8 px-3 sm:px-4">
         {/* Back Button */}
         <div className="sm:text-center mt-2 sm:mt-2.5">
           <div
-            className="text-l ml-1 sm:ml-2.5 mt-2 sm:mt-2.5 bg-black rounded-3xl px-3 py-2 text-white inline-flex items-center gap-2 hover:cursor-pointer hover:bg-gray-800 transition-colors"
+            className={`text-l ml-1 sm:ml-2.5 mt-2 sm:mt-2.5 rounded-3xl px-3 py-2 inline-flex items-center gap-2 hover:cursor-pointer transition-colors duration-300 ${theme.btnBack}`}
             onClick={() => navigate(-1)}
           >
             <span className="block sm:hidden"><ArrowLeftCircle size={24} /></span>
@@ -131,10 +133,10 @@ const GenerateImage = () => {
         {/* Show selected room and texture info */}
         <div className="mt-4 sm:mt-6 mb-4 sm:mb-6 flex flex-col sm:flex-row gap-4 sm:gap-6 items-center justify-center">
           {roomIndex >= 0 && (roomImagesByType[objectType] || roomImagesByType['sofa'])[roomIndex] && (
-            <img src={(roomImagesByType[objectType] || roomImagesByType['sofa'])[roomIndex].src} alt="Selected Room" className="w-24 h-18 sm:w-32 sm:h-24 object-cover rounded-lg shadow-md" />
+            <img src={(roomImagesByType[objectType] || roomImagesByType['sofa'])[roomIndex].src} alt="Selected Room" className={`w-24 h-18 sm:w-32 sm:h-24 object-cover rounded-lg ${theme.shadowCard}`} />
           )}
           {textureUrl && (
-            <img src={textureUrl} alt="Selected Texture" className="w-14 h-14 sm:w-16 sm:h-16 object-cover rounded shadow-md" />
+            <img src={textureUrl} alt="Selected Texture" className={`w-14 h-14 sm:w-16 sm:h-16 object-cover rounded ${theme.shadowCard}`} />
           )}
         </div>
         {/* Error message */}
@@ -155,7 +157,7 @@ const GenerateImage = () => {
         </div>
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
 
