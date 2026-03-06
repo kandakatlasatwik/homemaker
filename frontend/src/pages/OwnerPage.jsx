@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useReducer, useCallback } from 'react'
-import { Trash2 } from 'lucide-react'
+import { Trash2, ArrowLeftCircle } from 'lucide-react'
 
-const CATEGORIES = ['curtains', 'bedsheets', 'cushions', 'rugs', 'upholstery', 'sofa', 'other']
+const CATEGORIES = ['sofa', 'curtains', 'bedsheets', 'cushions', 'rugs', 'upholstery', 'other']
 
 const initialForm = {
   name: '',
@@ -163,8 +163,20 @@ const OwnerPage = () => {
     setError('')
   }
 
+  const handleBack = () => window.history.back();
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center px-4 py-12">
+      {/* Back Button */}
+      <div className="w-full max-w-2xl flex items-center mt-2 mb-4">
+        <button
+          className="flex items-center gap-2 text-black hover:text-gray-700 text-base font-medium px-2 py-1 rounded-lg transition-colors"
+          onClick={handleBack}
+        >
+          <ArrowLeftCircle size={22} />
+          <span>Back</span>
+        </button>
+      </div>
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-lg overflow-hidden">
         {/* Header */}
         <div className="bg-black px-8 py-6">

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from services.gemini_service import generate_image_with_base64
+from services.gemini_service import generate_image
 from prompts.object_prompts import PROMPT_MAP
 import base64
 
@@ -35,7 +35,7 @@ async def generate(data: GenerateRequest):
 
     # 🔹 Call Gemini Service
     try:
-        image_bytes = await generate_image_with_base64(
+        image_bytes = await generate_image(
             data.base_image_base64,
             data.texture,
             prompt
