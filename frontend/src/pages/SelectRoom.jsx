@@ -8,6 +8,7 @@ import Footer from "../components/layout/Footer";
 import TextureCard from "../components/ui/TextureCard";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeftCircle } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 import sofaroom1 from "../assets/sofarooms/sofaroom1.png";
 import sofaroom2 from "../assets/sofarooms/sofaroom2.png";
@@ -65,6 +66,7 @@ const typeLabels = {
 const SelectRoom = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
+  const theme = useTheme();
   
   // Get params from URL
   const objectType = params.get('type') || 'sofa';
@@ -84,13 +86,13 @@ const SelectRoom = () => {
   }
 
   return (
-    <>
+    <div className={`min-h-screen ${theme.bg} transition-colors duration-300`}>
       <NavBar />
       <div className="container mx-auto py-4 sm:py-8 px-3 sm:px-4">
         {/* Back Button */}
         <div className="sm:text-center mt-2 sm:mt-2.5">
           <div
-            className="text-l ml-1 sm:ml-2.5 mt-2 sm:mt-2.5 bg-black rounded-3xl px-3 py-2 text-white inline-flex items-center gap-2 hover:cursor-pointer hover:bg-gray-800 transition-colors"
+            className={`text-l ml-1 sm:ml-2.5 mt-2 sm:mt-2.5 rounded-3xl px-3 py-2 inline-flex items-center gap-2 hover:cursor-pointer transition-colors duration-300 ${theme.btnBack}`}
             onClick={() => navigate(-1)}
           >
             <span className="block sm:hidden"><ArrowLeftCircle size={24} /></span>
@@ -99,20 +101,20 @@ const SelectRoom = () => {
         </div>
         {/* Display selected texture info */}
         {textureUrl && (
-          <div className="mb-6 p-4 bg-gray-100 rounded-lg flex items-center gap-4">
+          <div className={`mb-6 p-4 ${theme.bgSecondary} rounded-lg flex items-center gap-4 border ${theme.border} transition-colors duration-300`}>
             <img src={textureUrl} alt="Selected texture" className="w-16 h-16 object-cover rounded" />
             <div>
-              <p className="text-sm text-gray-500">Selected Texture</p>
-              <p className="text-sm text-gray-700">Type: {typeLabel}</p>
+              <p className={`text-sm ${theme.textMuted}`}>Selected Texture</p>
+              <p className={`text-sm ${theme.textSecondary}`}>Type: {typeLabel}</p>
             </div>
           </div>
         )}
 
-        <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Select a Room</h2>
+        <h2 className={`text-xl sm:text-2xl font-bold mb-3 sm:mb-4 ${theme.text} transition-colors duration-300`}>Select a Room</h2>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {roomImages.map((img, idx) => (
-            <div key={idx} className={`${selectedIndex === idx ? 'ring-4 ring-amber-400 rounded-2xl' : ''}`}>
+            <div key={idx} className={`${selectedIndex === idx ? `ring-4 ${theme.ring} rounded-2xl` : ''}`}>
               <TextureCard
                 image={img.src}
                 name={img.name}
@@ -135,7 +137,7 @@ const SelectRoom = () => {
         )}
       </div>
       <Footer />
-    </>
+    </div>
   )
 }
 

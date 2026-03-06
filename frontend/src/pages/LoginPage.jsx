@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import NavBar from '../components/layout/NavBar'
+import { useTheme } from '../context/ThemeContext'
 
 const LoginPage = () => {
   const [email, setEmail] = useState('')
@@ -8,6 +9,7 @@ const LoginPage = () => {
   const [errors, setErrors] = useState({})
   const [submitting, setSubmitting] = useState(false)
   const location = useLocation()
+  const theme = useTheme()
 
   const validate = () => {
     const e = {}
@@ -64,155 +66,56 @@ const LoginPage = () => {
   }
 
   return (
-    <div>
+    <div className={`min-h-screen ${theme.bg} transition-colors duration-300`}>
       <NavBar />
-      <div style={styles.page}>
-        <form onSubmit={handleSubmit} style={styles.card} aria-labelledby="login-heading">
-        <div style={styles.headerRow}>
-          <button type="button" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))} style={styles.backButton}>
-            ← Back
+      <div className="flex items-center justify-center px-6 pt-24 pb-12" style={{ minHeight: '70vh' }}>
+        <form onSubmit={handleSubmit} className={`w-full max-w-[420px] p-6 rounded-lg ${theme.bgCard} ${theme.shadowCard} border ${theme.border} flex flex-col transition-colors duration-300`} aria-labelledby="login-heading">
+          <div className="flex items-center gap-3 mb-2">
+            <button type="button" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))} className={`bg-transparent border-none ${theme.text} text-sm cursor-pointer px-2 py-1.5`}>
+              ← Back
+            </button>
+            <h2 id="login-heading" className={`m-0 mb-4 text-xl font-semibold ${theme.text}`}>Welcome back</h2>
+          </div>
+
+          <label className={`text-[13px] mb-1.5 ${theme.textSecondary}`} htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={`px-3 py-2.5 text-sm rounded-md border ${theme.border} ${theme.bgInput} ${theme.text} outline-none focus:ring-2 ${theme.isDark ? 'focus:ring-amber-500' : 'focus:ring-gray-900'} transition`}
+            aria-invalid={errors.email ? 'true' : 'false'}
+          />
+          {errors.email && <div className="text-red-500 text-[13px] mt-1.5 mb-1.5">{errors.email}</div>}
+
+          <label className={`text-[13px] mb-1.5 mt-3 ${theme.textSecondary}`} htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={`px-3 py-2.5 text-sm rounded-md border ${theme.border} ${theme.bgInput} ${theme.text} outline-none focus:ring-2 ${theme.isDark ? 'focus:ring-amber-500' : 'focus:ring-gray-900'} transition`}
+            aria-invalid={errors.password ? 'true' : 'false'}
+          />
+          {errors.password && <div className="text-red-500 text-[13px] mt-1.5 mb-1.5">{errors.password}</div>}
+
+          <div className="flex items-center justify-between mt-2.5">
+            <label className={`text-[13px] flex items-center gap-2 ${theme.textSecondary}`}>
+              <input type="checkbox" className="w-3.5 h-3.5" /> Remember me
+            </label>
+          </div>
+
+          {errors.general && <div className="text-red-500 text-sm mt-3 px-3 py-2.5 bg-red-50 rounded-md text-center">{errors.general}</div>}
+
+          <button type="submit" className={`mt-4 px-3.5 py-2.5 rounded-md border-none font-semibold cursor-pointer transition ${theme.isDark ? 'bg-amber-500 text-black hover:bg-amber-400' : 'bg-gray-900 text-white hover:bg-gray-800'}`} disabled={submitting}>
+            {submitting ? 'Signing in…' : 'Sign in'}
           </button>
-          <h2 id="login-heading" style={styles.heading}>Welcome back</h2>
-        </div>
 
-        <label style={styles.label} htmlFor="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={styles.input}
-          aria-invalid={errors.email ? 'true' : 'false'}
-        />
-        {errors.email && <div style={styles.error}>{errors.email}</div>}
-
-        <label style={{ ...styles.label, marginTop: 12 }} htmlFor="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={styles.input}
-          aria-invalid={errors.password ? 'true' : 'false'}
-        />
-        {errors.password && <div style={styles.error}>{errors.password}</div>}
-
-        <div style={styles.row}>
-          <label style={styles.checkboxLabel}>
-            <input type="checkbox" style={styles.checkbox} /> Remember me
-          </label>
-        </div>
-
-        {errors.general && <div style={styles.generalError}>{errors.general}</div>}
-
-        <button type="submit" style={styles.button} disabled={submitting}>
-          {submitting ? 'Signing in…' : 'Sign in'}
-        </button>
-
-        <div style={styles.footerText}> login is only for owner</div>
+          <div className={`mt-3 text-[13px] ${theme.textMuted} text-center`}>login is only for owner</div>
         </form>
       </div>
     </div>
   )
-}
-
-const styles = {
-  page: {
-    minHeight: '70vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-    paddingTop: 96,
-  },
-  card: {
-    width: '100%',
-    maxWidth: 420,
-    padding: 24,
-    borderRadius: 8,
-    boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
-    background: '#fff',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  heading: {
-    margin: 0,
-    marginBottom: 18,
-    fontSize: 20,
-    fontWeight: 600,
-  },
-  headerRow: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 12,
-    marginBottom: 8,
-  },
-  backButton: {
-    background: 'transparent',
-    border: 'none',
-    color: '#111827',
-    fontSize: 14,
-    cursor: 'pointer',
-    padding: '6px 8px',
-  },
-  label: {
-    fontSize: 13,
-    marginBottom: 6,
-  },
-  input: {
-    padding: '10px 12px',
-    fontSize: 14,
-    borderRadius: 6,
-    border: '1px solid #ddd',
-    outline: 'none',
-  },
-  button: {
-    marginTop: 18,
-    padding: '10px 14px',
-    borderRadius: 6,
-    border: 'none',
-    background: '#111827',
-    color: '#fff',
-    fontWeight: 600,
-    cursor: 'pointer',
-  },
-  error: {
-    color: '#b00020',
-    fontSize: 13,
-    marginTop: 6,
-    marginBottom: 6,
-  },
-  generalError: {
-    color: '#b00020',
-    fontSize: 14,
-    marginTop: 12,
-    padding: '10px 12px',
-    background: '#ffebee',
-    borderRadius: 6,
-    textAlign: 'center',
-  },
-  row: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 10,
-  },
-  checkboxLabel: {
-    fontSize: 13,
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-  },
-  checkbox: {
-    width: 14,
-    height: 14,
-  },
-  footerText: {
-    marginTop: 12,
-    fontSize: 13,
-    color: '#6b7280',
-    textAlign: 'center',
-  },
 }
 
 export default LoginPage
