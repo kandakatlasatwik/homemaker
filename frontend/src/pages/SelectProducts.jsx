@@ -3,7 +3,7 @@ import NavBar from '../components/layout/NavBar';
 import Footer from '../components/layout/Footer';
 import Hero from '../components/sections/Hero'
 import { useTheme } from '../context/ThemeContext';
-import UploadImage from "../UploadImage";
+import UploadImage from "./UploadImage";
 
 const SelectProducts = () => {
   const theme = useTheme();
