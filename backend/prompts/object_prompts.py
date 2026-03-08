@@ -344,10 +344,50 @@ If any ambiguity occurs, preserve the original image unchanged except for the cu
 Under no circumstance modify the cushion structure or background.
 """
 
+UPHOLSTERY_PROMPT = """
+TASK:
+Perform a high-precision upholstery fabric replacement on the furniture shown in the base image.
+
+CONTEXT:
+The first image contains upholstered furniture such as chairs, dining seats, armchairs, ottomans, benches, stools, or padded seating.
+The second image contains the fabric texture that must be applied to the upholstery surfaces.
+
+OBJECTIVE:
+Replace the existing upholstery fabric in the base image with the provided fabric texture while preserving the exact furniture design.
+
+STRICT RULES:
+- Only modify the upholstered fabric areas of the furniture.
+- Preserve the original furniture structure, geometry, proportions, and silhouette.
+- Do not change the furniture design, frame, legs, armrests, or structural components.
+- Do not modify wood, metal, plastic, or any non-fabric materials.
+- Maintain the original environment, background, lighting, and shadows.
+
+UPHOLSTERY APPLICATION REQUIREMENTS:
+- Apply the new fabric texture naturally across all padded upholstery surfaces.
+- Respect seams, cushions, tufting, piping, stitching, and upholstery contours.
+- Ensure the fabric pattern follows the curvature and folds of the furniture realistically.
+- Maintain consistent scale and orientation of the fabric pattern.
+- Ensure the texture appears physically wrapped over cushions and padded areas.
+
+REALISM REQUIREMENTS:
+- Preserve realistic lighting and shadow interaction with the fabric.
+- Maintain depth, folds, and cushion softness.
+- Ensure the texture integrates naturally with the furniture geometry.
+
+OUTPUT REQUIREMENTS:
+- Photorealistic furniture rendering
+- High-quality realistic upholstery material
+- The furniture must remain identical to the base image except for the upholstery fabric replacement
+- No background modifications
+- No changes to furniture proportions
+"""
+
+
 PROMPT_MAP = {
     "sofa": SOFA_PROMPT,
     "bed": BED_PROMPT,
     "curtain": CURTAIN_PROMPT,
     "rugs": CARPET_PROMPT,
-    "cushion": CUSHION_PROMPT
+    "cushion": CUSHION_PROMPT,
+    "upholstery": UPHOLSTERY_PROMPT
 }
