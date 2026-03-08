@@ -19,7 +19,7 @@ async def delete_old_images():
             })
             
             if result.deleted_count > 0:
-                print(f"🗑️ Deleted {result.deleted_count} old images (older than 6 hours)")
+                print(f"Deleted {result.deleted_count} old images")
             
             # Delete old cart items
             cart_result = cart_collection.delete_many({
@@ -27,7 +27,7 @@ async def delete_old_images():
             })
             
             if cart_result.deleted_count > 0:
-                print(f"🛒 Deleted {cart_result.deleted_count} old cart items (older than 6 hours)")
+                print(f"Deleted {cart_result.deleted_count} old cart items")
             
         except Exception as e:
             print(f"❌ Error deleting old data: {e}")
