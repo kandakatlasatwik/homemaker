@@ -1,6 +1,7 @@
 """
 Background task to delete images older than 6 hours from the database
 """
+
 from database import imagegen_collection, cart_collection
 from datetime import datetime, timedelta
 import asyncio
@@ -8,30 +9,31 @@ import asyncio
 
 async def delete_old_images():
     """Delete images and cart items older than 6 hours"""
+
     while True:
         try:
             # Calculate cutoff time (6 hours ago)
             cutoff_time = datetime.utcnow() - timedelta(hours=6)
-            
+
             # Delete old generated images
             result = imagegen_collection.delete_many({
                 "created_at": {"$lt": cutoff_time}
             })
-            
+
             if result.deleted_count > 0:
                 print(f"Deleted {result.deleted_count} old images")
-            
+
             # Delete old cart items
             cart_result = cart_collection.delete_many({
                 "added_at": {"$lt": cutoff_time}
             })
-            
+
             if cart_result.deleted_count > 0:
                 print(f"Deleted {cart_result.deleted_count} old cart items")
-            
+
         except Exception as e:
             print(f"❌ Error deleting old data: {e}")
-        
+
         # Run every 30 minutes
         await asyncio.sleep(1800)  # 1800 seconds = 30 minutes
 
