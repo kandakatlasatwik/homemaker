@@ -15,6 +15,26 @@ import sofaroom2 from "../assets/sofarooms/sofaroom2.png";
 import sofaroom3 from "../assets/sofarooms/sofaroom3.png";
 import sofaroom4 from "../assets/sofarooms/sofaroom4.png";
 
+import curtain1 from "../assets/curtainrooms/curtain1.png";
+import curtain2 from "../assets/curtainrooms/curtain2.png";
+import curtain3 from "../assets/curtainrooms/curtain3.png";
+import curtain4 from "../assets/curtainrooms/curtain4.png";
+
+import cushion1 from "../assets/cushionrooms/cushions1.png";
+import cushion2 from "../assets/cushionrooms/cushions2.png";
+import cushion3 from "../assets/cushionrooms/cushions3.png";
+import cushion4 from "../assets/cushionrooms/cushions4.png";
+
+import rug1 from "../assets/rugrooms/rug1.png";
+import rug2 from "../assets/rugrooms/rug2.png";
+import rug3 from "../assets/rugrooms/rug3.png";
+import rug4 from "../assets/rugrooms/rug4.png";
+
+import upholstery1 from "../assets/upholsteryrooms/upholstery1.png";
+import upholstery2 from "../assets/upholsteryrooms/upholstery2.png";
+import upholstery3 from "../assets/upholsteryrooms/upholstery3.png";
+import upholstery4 from "../assets/upholsteryrooms/upholstery4.png";
+
 const roomImagesByType = {
   sofa: [
     { src: sofaroom1, name: 'Living Room 1', description: 'Cozy living room with neutral tones.' },
@@ -29,28 +49,28 @@ const roomImagesByType = {
     { src: bedroom4, name: 'Bedroom 4', description: 'Classic bedroom with elegant decor.' },
   ],
   curtain: [
-    { src: sofaroom1, name: 'Room 1', description: 'Bright room with large windows.' },
-    { src: sofaroom2, name: 'Room 2', description: 'Elegant room with tall windows.' },
-    { src: sofaroom3, name: 'Room 3', description: 'Minimalist room with natural light.' },
-    { src: sofaroom4, name: 'Room 4', description: 'Classic room with warm tones.' },
+    { src: curtain1, name: 'Curtain Room 1', description: 'Bright room with large windows.' },
+    { src: curtain2, name: 'Curtain Room 2', description: 'Elegant room with tall windows.' },
+    { src: curtain3, name: 'Curtain Room 3', description: 'Minimalist room with natural light.' },
+    { src: curtain4, name: 'Curtain Room 4', description: 'Classic room with warm tones.' },
   ],
   cushion: [
-    { src: sofaroom1, name: 'Lounge 1', description: 'Cozy lounge with plush seating.' },
-    { src: sofaroom2, name: 'Lounge 2', description: 'Modern lounge with accent pillows.' },
-    { src: sofaroom3, name: 'Lounge 3', description: 'Spacious lounge with natural vibes.' },
-    { src: sofaroom4, name: 'Lounge 4', description: 'Classic lounge with warm accents.' },
+    { src: cushion1, name: 'Cushion Room 1', description: 'Cozy lounge with plush seating.' },
+    { src: cushion2, name: 'Cushion Room 2', description: 'Modern lounge with accent pillows.' },
+    { src: cushion3, name: 'Cushion Room 3', description: 'Spacious lounge with natural vibes.' },
+    { src: cushion4, name: 'Cushion Room 4', description: 'Classic lounge with warm accents.' },
   ],
   rugs: [
-    { src: sofaroom1, name: 'Floor Space 1', description: 'Open floor with neutral tones.' },
-    { src: sofaroom2, name: 'Floor Space 2', description: 'Modern space with clean design.' },
-    { src: sofaroom3, name: 'Floor Space 3', description: 'Spacious area with natural light.' },
-    { src: sofaroom4, name: 'Floor Space 4', description: 'Classic space with warm accents.' },
+    { src: rug1, name: 'Rug Room 1', description: 'Open floor with neutral tones.' },
+    { src: rug2, name: 'Rug Room 2', description: 'Modern space with clean design.' },
+    { src: rug3, name: 'Rug Room 3', description: 'Spacious area with natural light.' },
+    { src: rug4, name: 'Rug Room 4', description: 'Classic space with warm accents.' },
   ],
   upholstery: [
-    { src: sofaroom1, name: 'Room 1', description: 'Cozy space with comfortable seating.' },
-    { src: sofaroom2, name: 'Room 2', description: 'Modern furniture arrangement.' },
-    { src: sofaroom3, name: 'Room 3', description: 'Spacious room with natural light.' },
-    { src: sofaroom4, name: 'Room 4', description: 'Classic room with warm accents.' },
+    { src: upholstery1, name: 'Upholstery Room 1', description: 'Cozy space with comfortable seating.' },
+    { src: upholstery2, name: 'Upholstery Room 2', description: 'Modern furniture arrangement.' },
+    { src: upholstery3, name: 'Upholstery Room 3', description: 'Spacious room with natural light.' },
+    { src: upholstery4, name: 'Upholstery Room 4', description: 'Classic room with warm accents.' },
   ],
 };
 

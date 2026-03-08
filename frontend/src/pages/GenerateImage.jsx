@@ -15,6 +15,26 @@ import sofaroom2 from "../assets/sofarooms/sofaroom2.png";
 import sofaroom3 from "../assets/sofarooms/sofaroom3.png";
 import sofaroom4 from "../assets/sofarooms/sofaroom4.png";
 
+import curtain1 from "../assets/curtainrooms/curtain1.png";
+import curtain2 from "../assets/curtainrooms/curtain2.png";
+import curtain3 from "../assets/curtainrooms/curtain3.png";
+import curtain4 from "../assets/curtainrooms/curtain4.png";
+
+import cushion1 from "../assets/cushionrooms/cushions1.png";
+import cushion2 from "../assets/cushionrooms/cushions2.png";
+import cushion3 from "../assets/cushionrooms/cushions3.png";
+import cushion4 from "../assets/cushionrooms/cushions4.png";
+
+import rug1 from "../assets/rugrooms/rug1.png";
+import rug2 from "../assets/rugrooms/rug2.png";
+import rug3 from "../assets/rugrooms/rug3.png";
+import rug4 from "../assets/rugrooms/rug4.png";
+
+import upholstery1 from "../assets/upholsteryrooms/upholstery1.png";
+import upholstery2 from "../assets/upholsteryrooms/upholstery2.png";
+import upholstery3 from "../assets/upholsteryrooms/upholstery3.png";
+import upholstery4 from "../assets/upholsteryrooms/upholstery4.png";
+
 
 // Room images by type (match SelectRoom)
 const roomImagesByType = {
@@ -31,28 +51,28 @@ const roomImagesByType = {
     { src: bedroom4 },
   ],
   curtain: [
-    { src: sofaroom1 },
-    { src: sofaroom2 },
-    { src: sofaroom3 },
-    { src: sofaroom4 },
+    { src: curtain1 },
+    { src: curtain2 },
+    { src: curtain3 },
+    { src: curtain4 },
   ],
   cushion: [
-    { src: sofaroom1 },
-    { src: sofaroom2 },
-    { src: sofaroom3 },
-    { src: sofaroom4 },
+    { src: cushion1 },
+    { src: cushion2 },
+    { src: cushion3 },
+    { src: cushion4 },
   ],
   rugs: [
-    { src: sofaroom1 },
-    { src: sofaroom2 },
-    { src: sofaroom3 },
-    { src: sofaroom4 },
+    { src: rug1 },
+    { src: rug2 },
+    { src: rug3 },
+    { src: rug4 },
   ],
   upholstery: [
-    { src: sofaroom1 },
-    { src: sofaroom2 },
-    { src: sofaroom3 },
-    { src: sofaroom4 },
+    { src: upholstery1 },
+    { src: upholstery2 },
+    { src: upholstery3 },
+    { src: upholstery4 },
   ],
 };
 
