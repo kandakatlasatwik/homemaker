@@ -104,7 +104,7 @@ const Hero = ({ type, productType }) => {
                   <TextureCard
                     key={t.id}
                     name={t.name}
-                    description={`${t.texture} · ${t.color}`}
+                    description={t.color}
                     image={t.image}
                     onClick={() => {
                       navigate(`/select-room?type=${encodeURIComponent(productType)}&texture=${encodeURIComponent(t.image)}`);

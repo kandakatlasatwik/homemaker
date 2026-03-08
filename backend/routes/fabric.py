@@ -27,7 +27,6 @@ def serialize_fabric(fabric):
         "category": fabric.get("category"),
         "price": fabric.get("price"),
         "color": fabric.get("color"),
-        "texture": fabric.get("texture"),
         "stock": fabric.get("stock"),
         "image": fabric.get("image"),
         "seller_id": fabric.get("seller_id")
@@ -41,7 +40,6 @@ async def create_fabric(
     category: str = Form(...),
     price: float = Form(...),
     color: str = Form(...),
-    texture: str = Form(...),
     stock: int = Form(...),
     image: UploadFile = File(...),
     current_seller: dict = Depends(get_current_seller)
@@ -56,7 +54,6 @@ async def create_fabric(
             "category": category,
             "price": price,
             "color": color,
-            "texture": texture,
             "stock": stock,
             "image": image_url,
             "seller_id": str(current_seller["_id"])
@@ -83,7 +80,6 @@ def get_fabrics(category: str):
             "name": 1,
             "category": 1,
             "color": 1,
-            "texture": 1,
             "image": 1
         }
     )
@@ -94,11 +90,11 @@ def get_fabrics(category: str):
             "name": f.get("name"),
             "category": f.get("category"),
             "color": f.get("color"),
-            "texture": f.get("texture"),
             "image": f.get("image"),
         }
         for f in fabrics
     ]
+
 
 # 🔹 GET Fabric by ID
 @router.get("/{fabric_id}")
@@ -111,7 +107,6 @@ def get_fabric_by_id(fabric_id: str):
                 "category": 1,
                 "price": 1,
                 "color": 1,
-                "texture": 1,
                 "image": 1
             }
         )
@@ -127,7 +122,6 @@ def get_fabric_by_id(fabric_id: str):
         "category": fabric.get("category"),
         "price": fabric.get("price"),
         "color": fabric.get("color"),
-        "texture": fabric.get("texture"),
         "image": fabric.get("image"),
     }
 
