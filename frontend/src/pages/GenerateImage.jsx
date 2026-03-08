@@ -76,6 +76,7 @@ const GenerateImage = () => {
   const objectType = params.get('type') || 'sofa';
   const textureUrl = params.get('texture');
   const roomIndex = parseInt(params.get('room'), 10);
+  const uploadedRoomImage = location.state?.uploadedRoomImage || null;
 
   const [loading, setLoading] = useState(false);
   const [generatedImage, setGeneratedImage] = useState(null);
@@ -102,9 +103,14 @@ const GenerateImage = () => {
     setGeneratedImage(null);
     setGeneratedImageId(null);
     try {
-      const imagesForType = roomImagesByType[objectType] || roomImagesByType['sofa'];
-      const roomImage = imagesForType[roomIndex];
-      const roomImageBase64 = await imageToBase64(roomImage.src);
+      let roomImageBase64;
+      if (uploadedRoomImage) {
+        roomImageBase64 = await imageToBase64(uploadedRoomImage);
+      } else {
+        const imagesForType = roomImagesByType[objectType] || roomImagesByType['sofa'];
+        const roomImage = imagesForType[roomIndex];
+        roomImageBase64 = await imageToBase64(roomImage.src);
+      }
       const guestId = getGuestId();
       
       const response = await fetch(`${api}/generate/`, {
@@ -180,7 +186,9 @@ const GenerateImage = () => {
         </div>
         {/* Show selected room and texture info */}
         <div className="mt-4 sm:mt-6 mb-4 sm:mb-6 flex flex-col sm:flex-row gap-4 sm:gap-6 items-center justify-center">
-          {roomIndex >= 0 && (roomImagesByType[objectType] || roomImagesByType['sofa'])[roomIndex] && (
+          {uploadedRoomImage ? (
+            <img src={uploadedRoomImage} alt="Your Uploaded Room" className={`w-24 h-18 sm:w-32 sm:h-24 object-cover rounded-lg ${theme.shadowCard}`} />
+          ) : roomIndex >= 0 && (roomImagesByType[objectType] || roomImagesByType['sofa'])[roomIndex] && (
             <img src={(roomImagesByType[objectType] || roomImagesByType['sofa'])[roomIndex].src} alt="Selected Room" className={`w-24 h-18 sm:w-32 sm:h-24 object-cover rounded-lg ${theme.shadowCard}`} />
           )}
           {textureUrl && (
@@ -198,7 +206,7 @@ const GenerateImage = () => {
             <button
               className="bg-linear-to-r from-amber-500 to-amber-600 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 hover:from-amber-600 hover:to-amber-700 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold"
             onClick={handleGenerate}
-            disabled={loading || isNaN(roomIndex) || !textureUrl}
+            disabled={loading || (!uploadedRoomImage && isNaN(roomIndex)) || !textureUrl}
           >
             {loading ? 'Generating...' : '✨ Generate Image'}
           </button>
