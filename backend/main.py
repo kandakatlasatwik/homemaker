@@ -44,3 +44,8 @@ async def startup_event():
 @app.get("/")
 def root():
     return {"message": "Backend running successfully"}
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
