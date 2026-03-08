@@ -3,7 +3,7 @@ import { useTheme } from '../../context/ThemeContext';
 import texture from "../../assets/images/texture1.png";
 
 
-const TextureCard = ({ image = texture, name = "Texture Name", description = "Texture description here.", onClick }) => {
+const TextureCard = ({ image = texture, name = "Texture Name", description = "Texture description here.", onClick, onImageLoad }) => {
   const theme = useTheme();
   return (
     <div
@@ -14,6 +14,7 @@ const TextureCard = ({ image = texture, name = "Texture Name", description = "Te
         src={image}
         alt={name}
         className="w-full h-full object-cover block"
+        onLoad={onImageLoad}
       />
       <div className={`absolute bottom-0 left-0 w-full ${theme.isDark ? 'bg-black/70 text-amber-50' : 'bg-white/80 text-gray-900'} p-3 rounded-lg text-lg font-semibold tracking-wider text-center z-10 opacity-100 transition-opacity duration-300`}>
         {name}
