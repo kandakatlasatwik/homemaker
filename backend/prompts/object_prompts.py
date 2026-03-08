@@ -383,6 +383,27 @@ OUTPUT REQUIREMENTS:
 """
 
 
+ORTHOGRAPHIC_VIEWS_PROMPT = """
+TASK:
+Generate three orthographic views of the furniture shown in the input image.
+
+VIEWS REQUIRED:
+1. Top view
+2. Front view
+3. Left side view
+
+INSTRUCTIONS:
+- Maintain the exact same furniture design and fabric texture.
+- The fabric pattern must remain identical in all views.
+- Only change the viewing angle.
+- Do not redesign or alter the furniture.
+
+OUTPUT FORMAT:
+- A clean layout showing three images side-by-side
+- Each labeled: Top View, Front View, Side View
+- Photorealistic rendering
+"""
+
 PROMPT_MAP = {
     "sofa": SOFA_PROMPT,
     "bed": BED_PROMPT,

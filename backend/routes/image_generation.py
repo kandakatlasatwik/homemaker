@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from services.gemini_service import generate_image
-from prompts.object_prompts import PROMPT_MAP
+from services.gemini_service import generate_image, generate_views
+from prompts.object_prompts import PROMPT_MAP, ORTHOGRAPHIC_VIEWS_PROMPT
 from database import imagegen_collection
 from datetime import datetime
 import base64
@@ -72,6 +72,50 @@ async def generate(data: GenerateRequest):
         "image_id": str(result.inserted_id),
         "object_type": object_type,
         "generated_image_base64": encoded_image
+    }
+
+
+# 🔹 Request Schema for Orthographic Views
+class ViewsRequest(BaseModel):
+    image_base64: str  # The generated image in base64
+
+
+# 🔹 Generate Orthographic Views
+@router.post("/views")
+async def generate_orthographic_views(data: ViewsRequest):
+
+    if not data.image_base64.strip():
+        raise HTTPException(status_code=400, detail="Image base64 is required")
+
+    try:
+        image_bytes = await generate_views(
+            data.image_base64,
+            ORTHOGRAPHIC_VIEWS_PROMPT
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Gemini error: {str(e)}"
+        )
+
+    if not image_bytes:
+        raise HTTPException(status_code=500, detail="Views generation failed")
+
+    encoded_image = base64.b64encode(image_bytes).decode("utf-8")
+
+    # Save views image to DB so it can be added to cart
+    views_doc = {
+        "object_type": "orthographic_views",
+        "texture_url": "",
+        "generated_image_base64": encoded_image,
+        "created_at": datetime.utcnow()
+    }
+    result = imagegen_collection.insert_one(views_doc)
+
+    return {
+        "status": "success",
+        "image_id": str(result.inserted_id),
+        "views_image_base64": encoded_image
     }
 
 

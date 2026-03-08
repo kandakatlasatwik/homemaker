@@ -103,6 +103,10 @@ const GenerateImage = () => {
   const [generatedImageId, setGeneratedImageId] = useState(null);
   const [error, setError] = useState(null);
   const [addingToCart, setAddingToCart] = useState(false);
+  const [viewsLoading, setViewsLoading] = useState(false);
+  const [viewsImage, setViewsImage] = useState(null);
+  const [viewsImageId, setViewsImageId] = useState(null);
+  const [addingViewsToCart, setAddingViewsToCart] = useState(false);
 
   const api = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -152,6 +156,8 @@ const GenerateImage = () => {
       const data = await response.json();
       setGeneratedImage(data.generated_image_base64);
       setGeneratedImageId(data.image_id);
+      setViewsImage(null);
+      setViewsImageId(null);
     } catch (err) {
       setError(err.message || 'Failed to generate image');
     } finally {
@@ -188,6 +194,53 @@ const GenerateImage = () => {
       alert(`❌ ${err.message}`);
     } finally {
       setAddingToCart(false);
+    }
+  };
+
+  const handleGenerateViews = async () => {
+    if (!generatedImage) return;
+    setViewsLoading(true);
+    setError(null);
+    setViewsImage(null);
+    try {
+      const response = await fetch(`${api}/generate/views`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image_base64: generatedImage }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to generate views');
+      }
+      const data = await response.json();
+      setViewsImage(data.views_image_base64);
+      setViewsImageId(data.image_id);
+    } catch (err) {
+      setError(err.message || 'Failed to generate views');
+    } finally {
+      setViewsLoading(false);
+    }
+  };
+
+  const handleAddViewsToCart = async () => {
+    if (!viewsImageId) return;
+    setAddingViewsToCart(true);
+    try {
+      const guestId = getGuestId();
+      const response = await fetch(`${api}/cart/add`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guest_id: guestId, image_id: viewsImageId }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to add views to cart');
+      }
+      alert('\u2705 Orthographic views added to cart successfully!');
+    } catch (err) {
+      alert(`\u274C ${err.message}`);
+    } finally {
+      setAddingViewsToCart(false);
     }
   };
 
@@ -241,7 +294,62 @@ const GenerateImage = () => {
               {addingToCart ? 'Adding...' : '🛒 Add to Cart'}
             </button>
           )}
+
+          {generatedImage && (
+            <button
+              className="bg-linear-to-r from-purple-500 to-purple-600 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 hover:from-purple-600 hover:to-purple-700 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold"
+              onClick={handleGenerateViews}
+              disabled={viewsLoading}
+            >
+              {viewsLoading ? 'Generating Views...' : '📐 Generate Three Views'}
+            </button>
+          )}
         </div>
+
+        {/* Orthographic Views Section */}
+        {(viewsLoading || viewsImage) && (
+          <div className="mt-6 sm:mt-8">
+            <h3 className={`text-center text-lg sm:text-xl font-semibold mb-4 ${theme.text}`}>
+              Orthographic Views
+            </h3>
+            <div className={`w-full max-w-3xl mx-auto ${theme.bgCard} rounded-2xl ${theme.shadowCard} p-4 sm:p-6 flex flex-col items-center justify-center overflow-hidden border ${theme.border} transition-colors duration-300`}>
+              {viewsLoading ? (
+                <div className="relative w-full h-64 sm:h-80 flex flex-col items-center justify-center">
+                  <div className={`absolute inset-0 ${theme.isDark ? 'bg-linear-to-r from-gray-800 via-gray-700 to-gray-800' : 'bg-linear-to-r from-gray-200 via-gray-100 to-gray-200'} animate-pulse rounded-xl`} />
+                  <div className="relative z-10 flex flex-col items-center gap-4">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 border-4 border-purple-400 border-t-transparent rounded-full animate-spin" />
+                    <div className="flex items-center gap-2">
+                      <span className="text-purple-600 font-semibold text-base sm:text-lg">Generating Views</span>
+                      <span className="flex gap-1">
+                        <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                      </span>
+                    </div>
+                    <span className={`${theme.textMuted} text-xs sm:text-sm`}>AI is generating orthographic views...</span>
+                  </div>
+                </div>
+              ) : viewsImage ? (
+                <img
+                  src={`data:image/png;base64,${viewsImage}`}
+                  alt="Orthographic Views - Top, Front, Side"
+                  className="max-w-full rounded-xl shadow-lg object-contain"
+                />
+              ) : null}
+            </div>
+            {viewsImage && viewsImageId && (
+              <div className="mt-4 flex justify-center">
+                <button
+                  className="bg-linear-to-r from-green-500 to-green-600 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 hover:from-green-600 hover:to-green-700 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold"
+                  onClick={handleAddViewsToCart}
+                  disabled={addingViewsToCart}
+                >
+                  {addingViewsToCart ? 'Adding...' : '\ud83d\uded2 Add Views to Cart'}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <Footer />
     </div>

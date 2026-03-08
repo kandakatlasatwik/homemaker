@@ -118,3 +118,31 @@ async def generate_image(base_image_data, fabric_image_data, prompt):
 
     except Exception as e:
         raise Exception(f"Gemini error: {str(e)}")
+
+
+# Generate orthographic views from a single image
+async def generate_views(image_data: str, prompt: str):
+    try:
+        img_bytes = url_or_base64_to_bytes(image_data)
+        img_bytes = resize_image(img_bytes)
+        img_mime = get_mime_type(image_data)
+
+        response = client.models.generate_content(
+            model="gemini-2.5-flash-image",
+            contents=[
+                prompt,
+                types.Part.from_bytes(
+                    data=img_bytes,
+                    mime_type=img_mime
+                ),
+            ]
+        )
+
+        for part in response.candidates[0].content.parts:
+            if part.inline_data:
+                return part.inline_data.data
+
+        return None
+
+    except Exception as e:
+        raise Exception(f"Gemini error: {str(e)}")
