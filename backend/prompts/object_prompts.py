@@ -348,6 +348,6 @@ PROMPT_MAP = {
     "sofa": SOFA_PROMPT,
     "bed": BED_PROMPT,
     "curtain": CURTAIN_PROMPT,
-    "carpet": CARPET_PROMPT,
+    "rugs": CARPET_PROMPT,
     "cushion": CUSHION_PROMPT
 }

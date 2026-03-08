@@ -176,7 +176,8 @@ const GenerateImage = () => {
       }
 
       alert('✅ Image added to cart successfully!');
-      navigate('/cart');
+      setGeneratedImage(null);
+      setGeneratedImageId(null);
     } catch (err) {
       alert(`❌ ${err.message}`);
     } finally {

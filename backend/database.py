@@ -34,8 +34,9 @@ try:
     imagegen_collection.create_index("guest_id")
     imagegen_collection.create_index("created_at")
     
-    # 🔹 Create index for cart (guest_id)
+    # 🔹 Create index for cart (guest_id and added_at for auto-deletion)
     cart_collection.create_index("guest_id")
+    cart_collection.create_index("added_at")
 
     print("✅ Connected to MongoDB successfully")
 

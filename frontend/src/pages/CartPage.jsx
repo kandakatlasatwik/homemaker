@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import NavBar from '../components/layout/NavBar';
 import Footer from '../components/layout/Footer';
 import '../App.css';
+import { useTheme } from '../context/ThemeContext';
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const CartPage = () => {
+  const theme = useTheme();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -86,10 +88,10 @@ const CartPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col pt-20">
+      <div className={`min-h-screen flex flex-col pt-20 ${theme.bg} transition-colors duration-300`}>
         <NavBar />
         <div className="grow flex items-center justify-center">
-          <div className="text-xl">Loading cart...</div>
+          <div className={`text-xl ${theme.text}`}>Loading cart...</div>
         </div>
         <Footer />
       </div>
@@ -97,12 +99,12 @@ const CartPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-linear-to-br from-purple-50 to-pink-50 pt-20">
+    <div className={`min-h-screen flex flex-col ${theme.bg} transition-colors duration-300 pt-20`}>
       <NavBar />
       
       <div className="grow container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800">
+          <h1 className={`text-4xl font-bold ${theme.textHeading} transition-colors duration-300`}>
             🛒 My Cart
           </h1>
           {cartItems.length > 0 && (
@@ -116,23 +118,23 @@ const CartPage = () => {
         </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+          <div className={`${theme.isDark ? 'bg-red-900/30 border-red-500/50 text-red-300' : 'bg-red-100 border-red-400 text-red-700'} border px-4 py-3 rounded mb-6 transition-colors duration-300`}>
             {error}
           </div>
         )}
 
         {cartItems.length === 0 ? (
-          <div className="text-center py-16">
+          <div className={`text-center py-16 ${theme.textSecondary}`}>
             <div className="text-6xl mb-4">🛒</div>
-            <h2 className="text-2xl font-semibold text-gray-700 mb-2">
+            <h2 className={`text-2xl font-semibold ${theme.textHeading} mb-2 transition-colors duration-300`}>
               Your cart is empty
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className={`${theme.textSecondary} mb-6 transition-colors duration-300`}>
               Generate some images and add them to your cart!
             </p>
             <a
               href="/"
-              className="inline-block px-8 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              className={`inline-block px-8 py-3 ${theme.isDark ? 'bg-amber-500 hover:bg-amber-600 text-black' : 'bg-purple-600 hover:bg-purple-700 text-white'} rounded-lg transition-colors duration-300 font-medium`}
             >
               Start Creating
             </a>
@@ -142,7 +144,7 @@ const CartPage = () => {
             {cartItems.map((item) => (
               <div
                 key={item._id}
-                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+                className={`${theme.bgCard} rounded-xl ${theme.shadowCard} overflow-hidden hover:${theme.shadowCard} transition-shadow duration-300 border ${theme.isDark ? 'border-gray-700' : 'border-gray-200'}`}
               >
                 <img
                   src={`data:image/png;base64,${item.generated_image_base64}`}
@@ -151,12 +153,12 @@ const CartPage = () => {
                 />
                 <div className="p-4">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-semibold text-gray-800 capitalize">
+                    <h3 className={`text-lg font-semibold ${theme.textHeading} capitalize transition-colors duration-300`}>
                       {item.object_type.replace('_', ' ')}
                     </h3>
                     <button
                       onClick={() => deleteCartItem(item._id)}
-                      className="text-red-500 hover:text-red-700 transition-colors"
+                      className={`${theme.isDark ? 'text-red-400 hover:text-red-300' : 'text-red-500 hover:text-red-700'} transition-colors duration-300`}
                       title="Remove from cart"
                     >
                       <svg
@@ -175,14 +177,14 @@ const CartPage = () => {
                       </svg>
                     </button>
                   </div>
-                  <p className="text-sm text-gray-600 mb-2">
+                  <p className={`text-sm ${theme.textSecondary} mb-2 transition-colors duration-300`}>
                     Added: {new Date(item.added_at).toLocaleString()}
                   </p>
                   <div className="mt-4">
                     <img
                       src={item.texture_url}
                       alt="Texture"
-                      className="w-20 h-20 object-cover rounded-lg border-2 border-gray-200"
+                      className={`w-20 h-20 object-cover rounded-lg border-2 ${theme.isDark ? 'border-gray-600' : 'border-gray-200'}`}
                       title="Original texture"
                     />
                   </div>
@@ -192,26 +194,7 @@ const CartPage = () => {
           </div>
         )}
 
-        {cartItems.length > 0 && (
-          <div className="mt-8 bg-white rounded-xl shadow-lg p-6">
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="text-2xl font-bold text-gray-800">
-                  Total Items: {cartItems.length}
-                </h3>
-                <p className="text-gray-600 mt-2">
-                  Ready to proceed with your selections?
-                </p>
-              </div>
-              <button
-                className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold"
-                onClick={() => alert('Checkout functionality coming soon!')}
-              >
-                Proceed to Checkout
-              </button>
-            </div>
-          </div>
-        )}
+
       </div>
 
       <Footer />
