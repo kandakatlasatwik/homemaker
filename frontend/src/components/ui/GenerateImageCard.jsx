@@ -1,5 +1,7 @@
 import React from 'react'
 import { useTheme } from '../../context/ThemeContext';
+import { Grid } from 'ldrs/react'
+import 'ldrs/react/Grid.css'
 
 const GenerateImageCard = ({ generatedImage, loading }) => {
   const theme = useTheme();
@@ -10,7 +12,7 @@ const GenerateImageCard = ({ generatedImage, loading }) => {
           <div className={`absolute inset-0 ${theme.isDark ? 'bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800' : 'bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200'} animate-pulse rounded-xl`} />
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent animate-[shimmer_2s_infinite] rounded-xl" style={{ backgroundSize: '200% 100%' }} />
           <div className="relative z-10 flex flex-col items-center gap-4">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 border-4 border-amber-400 border-t-transparent rounded-full animate-spin" />
+            <Grid size="70" speed="1.5" color={theme.isDark ? '#f59e0b' : '#000'} />
             <div className="flex items-center gap-2">
               <span className="text-amber-600 font-semibold text-base sm:text-lg">Generating</span>
               <span className="flex gap-1">

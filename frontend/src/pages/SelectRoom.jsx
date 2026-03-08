@@ -3,6 +3,8 @@ import bedroom2 from "../assets/bedrooms/bedroom2.png";
 import bedroom3 from "../assets/bedrooms/bedroom3.png";
 import bedroom4 from "../assets/bedrooms/bedroom4.png";
 import React, { useState, useRef } from 'react'
+import { Metronome } from 'ldrs/react'
+import 'ldrs/react/Metronome.css'
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
 import TextureCard from "../components/ui/TextureCard";
@@ -97,23 +99,38 @@ const SelectRoom = () => {
 
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [uploadedImages, setUploadedImages] = useState([]);
+  const [loadingIdx, setLoadingIdx] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const galleryInputRef = useRef(null);
   const cameraInputRef = useRef(null);
   const navigate = useNavigate();
 
   const handleSelect = (idx) => {
-    setSelectedIndex(prev => (prev === idx ? null : idx));
+    if (selectedIndex === idx) {
+      setSelectedIndex(null);
+      return;
+    }
+    setLoadingIdx(idx);
+    setTimeout(() => {
+      setSelectedIndex(idx);
+      setLoadingIdx(null);
+    }, 800);
   }
 
   const handleUpload = (event) => {
     const files = Array.from(event.target.files);
+    if (files.length === 0) return;
+    setUploading(true);
     const newImages = files.map((file) => ({
       src: URL.createObjectURL(file),
       name: file.name.replace(/\.[^/.]+$/, ''),
       description: 'Your uploaded room image',
       isUploaded: true,
     }));
-    setUploadedImages((prev) => [...prev, ...newImages]);
+    setTimeout(() => {
+      setUploadedImages((prev) => [...prev, ...newImages]);
+      setUploading(false);
+    }, 800);
     event.target.value = '';
   };
 
@@ -147,7 +164,7 @@ const SelectRoom = () => {
       <NavBar />
       <div className="container mx-auto py-4 sm:py-8 px-3 sm:px-4">
         {/* Back Button */}
-        <div className="sm:text-center mt-2 sm:mt-2.5">
+        <div className="sm:text-center mt-2 sm:mt-2.5 mb-6">
           <div
             className={`text-l ml-1 sm:ml-2.5 mt-2 sm:mt-2.5 rounded-3xl px-3 py-2 inline-flex items-center gap-2 hover:cursor-pointer transition-colors duration-300 ${theme.btnBack}`}
             onClick={() => navigate(-1)}
@@ -172,7 +189,12 @@ const SelectRoom = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {/* Sample room images */}
           {roomImages.map((img, idx) => (
-            <div key={`sample-${idx}`} className={`${selectedIndex === idx ? `ring-4 ${theme.ring} rounded-2xl` : ''}`}>
+            <div key={`sample-${idx}`} className={`relative ${selectedIndex === idx ? `ring-4 ${theme.ring} rounded-2xl` : ''}`}>
+              {loadingIdx === idx && (
+                <div className="absolute inset-0 flex items-center justify-center z-20 rounded-2xl backdrop-blur-sm" style={{ backgroundColor: theme.isDark ? 'rgba(26,26,46,0.7)' : 'rgba(243,244,246,0.7)' }}>
+                  <Metronome size="40" speed="1.6" color={theme.isDark ? '#f59e0b' : '#000'} />
+                </div>
+              )}
               <TextureCard
                 image={img.src}
                 name={img.name}
@@ -187,35 +209,49 @@ const SelectRoom = () => {
             const globalIdx = roomImages.length + idx;
             return (
               <div key={`uploaded-${idx}`} className={`relative ${selectedIndex === globalIdx ? `ring-4 ${theme.ring} rounded-2xl` : ''}`}>
+                {loadingIdx === globalIdx && (
+                  <div className="absolute inset-0 flex items-center justify-center z-20 rounded-2xl backdrop-blur-sm" style={{ backgroundColor: theme.isDark ? 'rgba(26,26,46,0.7)' : 'rgba(243,244,246,0.7)' }}>
+                    <Metronome size="40" speed="1.6" color={theme.isDark ? '#f59e0b' : '#000'} />
+                  </div>
+                )}
                 <TextureCard
                   image={img.src}
                   name={img.name}
                   description={img.description}
                   onClick={() => handleSelect(globalIdx)}
                 />
-                <button
-                  className="absolute top-2 right-2 z-20 bg-white/90 text-red-600 p-2 rounded-full shadow-md hover:bg-white hover:scale-105 transition-transform duration-200"
-                  onClick={(e) => { e.stopPropagation(); handleDeleteUploaded(idx); }}
-                >
-                  <Trash2 size={18} />
-                </button>
+                {selectedIndex === globalIdx && (
+                  <button
+                    className="absolute top-2 right-2 z-30 bg-white/90 text-red-600 p-2 rounded-full shadow-md hover:bg-white hover:scale-105 transition-transform duration-200"
+                    onClick={(e) => { e.stopPropagation(); handleDeleteUploaded(idx); }}
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                )}
               </div>
             );
           })}
 
           {/* Upload card */}
           <div className={`relative flex flex-col items-center justify-center rounded-2xl sm:rounded-4xl aspect-[4/3] w-full h-full border-2 border-dashed ${theme.isDark ? 'border-amber-500/40 bg-amber-950/20' : 'border-gray-300 bg-gray-50'} gap-3 cursor-pointer transition-colors duration-300`}>
+            {uploading && (
+              <div className="absolute inset-0 flex items-center justify-center z-20 rounded-2xl backdrop-blur-sm" style={{ backgroundColor: theme.isDark ? 'rgba(26,26,46,0.7)' : 'rgba(243,244,246,0.7)' }}>
+                <Metronome size="40" speed="1.6" color={theme.isDark ? '#f59e0b' : '#000'} />
+              </div>
+            )}
             <p className={`text-sm font-semibold ${theme.isDark ? 'text-amber-200' : 'text-gray-600'}`}>Upload Your Room</p>
             <div className="flex gap-3">
               <button
                 className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors text-sm font-medium"
                 onClick={() => galleryInputRef.current?.click()}
+                disabled={uploading}
               >
                 <Upload size={16} /> Gallery
               </button>
               <button
                 className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors text-sm font-medium"
                 onClick={() => cameraInputRef.current?.click()}
+                disabled={uploading}
               >
                 <Camera size={16} /> Camera
               </button>
