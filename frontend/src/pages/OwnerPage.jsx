@@ -122,7 +122,6 @@ const OwnerPage = () => {
     payload.append('category', form.category)
     payload.append('price', Number(form.price))
     payload.append('color', form.color)
-    payload.append('texture', DEFAULT_TEXTURE)
     payload.append('stock', Number(form.stock))
     payload.append('image', imageFile)
 
@@ -403,7 +402,7 @@ const OwnerPage = () => {
 
                 <div className="absolute bottom-0 left-0 w-full bg-black/60 text-white p-3 text-center">
                   <p className="text-base font-semibold tracking-wide">{fabric.name}</p>
-                  <p className="text-xs mt-1 opacity-80">{fabric.texture} &middot; {fabric.color}</p>
+                  <p className="text-xs mt-1 opacity-80">{fabric.color}</p>
                 </div>
               </div>
             ))}

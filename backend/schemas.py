@@ -18,7 +18,6 @@ class Fabric(BaseModel):
     category: Category
     price: float
     color: str
-    texture: str
     stock: int
     image: str
     seller_id: str
