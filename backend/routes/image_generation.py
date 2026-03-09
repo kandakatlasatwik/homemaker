@@ -12,8 +12,9 @@ router = APIRouter(prefix="/generate", tags=["Image Generation"])
 # 🔹 Request Schema
 class GenerateRequest(BaseModel):
     object_type: str
-    texture: str                 # Fabric image URL
-    base_image_base64: str       # Room image in base64
+    texture: str
+    texture_secondary: str | None = None
+    base_image_base64: str
 
 
 # 🔹 Generate Image
@@ -22,7 +23,7 @@ async def generate(data: GenerateRequest):
 
     object_type = data.object_type.lower()
 
-    # 🔹 Validate object type
+    # Validate object type
     prompt = PROMPT_MAP.get(object_type)
     if not prompt:
         raise HTTPException(
@@ -30,37 +31,59 @@ async def generate(data: GenerateRequest):
             detail=f"Unsupported object type: {object_type}"
         )
 
-    # 🔹 Validate texture URL
-    if not data.texture.strip():
-        raise HTTPException(status_code=400, detail="Texture URL is required")
-
-    # 🔹 Validate base image
+    # Validate base image
     if not data.base_image_base64.strip():
-        raise HTTPException(status_code=400, detail="Base image base64 is required")
+        raise HTTPException(
+            status_code=400,
+            detail="Base image base64 is required"
+        )
 
-    # 🔹 Call Gemini Service
+    # Curtain requires two textures
+    if object_type == "curtain":
+
+        if not data.texture or not data.texture_secondary:
+            raise HTTPException(
+                status_code=400,
+                detail="Curtains require both main and sheer textures"
+            )
+
+    else:
+
+        if not data.texture:
+            raise HTTPException(
+                status_code=400,
+                detail="Texture URL is required"
+            )
+
+    # 🔹 Call Gemini
     try:
+
         image_bytes = await generate_image(
             data.base_image_base64,
             data.texture,
-            prompt
+            prompt,
+            data.texture_secondary
         )
+
     except Exception as e:
+
         raise HTTPException(
             status_code=500,
             detail=f"Gemini error: {str(e)}"
         )
 
     if not image_bytes:
-        raise HTTPException(status_code=500, detail="Image generation failed")
+        raise HTTPException(
+            status_code=500,
+            detail="Image generation failed"
+        )
 
-    # 🔹 Convert to base64
     encoded_image = base64.b64encode(image_bytes).decode("utf-8")
 
-    # 🔹 Save generated image
     image_doc = {
         "object_type": object_type,
         "texture_url": data.texture,
+        "texture_secondary": data.texture_secondary if object_type == "curtain" else "",
         "generated_image_base64": encoded_image,
         "created_at": datetime.utcnow()
     }
@@ -75,9 +98,9 @@ async def generate(data: GenerateRequest):
     }
 
 
-# 🔹 Request Schema for Orthographic Views
+# 🔹 Request Schema for Views
 class ViewsRequest(BaseModel):
-    image_base64: str  # The generated image in base64
+    image_base64: str
 
 
 # 🔹 Generate Orthographic Views
@@ -85,31 +108,40 @@ class ViewsRequest(BaseModel):
 async def generate_orthographic_views(data: ViewsRequest):
 
     if not data.image_base64.strip():
-        raise HTTPException(status_code=400, detail="Image base64 is required")
+        raise HTTPException(
+            status_code=400,
+            detail="Image base64 is required"
+        )
 
     try:
+
         image_bytes = await generate_views(
             data.image_base64,
             ORTHOGRAPHIC_VIEWS_PROMPT
         )
+
     except Exception as e:
+
         raise HTTPException(
             status_code=500,
             detail=f"Gemini error: {str(e)}"
         )
 
     if not image_bytes:
-        raise HTTPException(status_code=500, detail="Views generation failed")
+        raise HTTPException(
+            status_code=500,
+            detail="Views generation failed"
+        )
 
     encoded_image = base64.b64encode(image_bytes).decode("utf-8")
 
-    # Save views image to DB so it can be added to cart
     views_doc = {
         "object_type": "orthographic_views",
         "texture_url": "",
         "generated_image_base64": encoded_image,
         "created_at": datetime.utcnow()
     }
+
     result = imagegen_collection.insert_one(views_doc)
 
     return {
@@ -128,10 +160,12 @@ async def get_all_images():
     formatted_images = []
 
     for img in images:
+
         formatted_images.append({
             "image_id": str(img["_id"]),
             "object_type": img["object_type"],
-            "texture_url": img["texture_url"],
+            "texture_url": img.get("texture_url", ""),
+            "texture_secondary": img.get("texture_secondary", ""),
             "generated_image_base64": img["generated_image_base64"],
             "created_at": img["created_at"].isoformat()
         })

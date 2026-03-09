@@ -122,83 +122,53 @@ If any ambiguity occurs, prioritize preserving the original image unchanged exce
 Under no circumstance modify the background or bed structure.
 """
 
-CURTAIN_PROMPT = """
-TASK: High-precision curtain fabric replacement.
+CURTAIN_DUAL_PROMPT = """
+TASK:
+Perform a dual-fabric curtain visualization using the provided textures.
 
-Replace ONLY the curtain fabric in the base image using the uploaded curtain reference image.
+CURTAIN STRUCTURE:
+The curtain system consists of two distinct curtain types:
 
-STRICT REQUIREMENTS:
+1. MAIN CURTAINS
+   - Located on the far LEFT and RIGHT sides of the window.
+   - Thick decorative curtains that frame the window.
+   - These curtains are typically heavier fabric.
 
-1. Modify ONLY the curtain material.
-2. Curtains must remain positioned on both the left and right sides of the window.
-3. Preserve the original curtain layout:
-   - Length (floor-length, sill-length, or custom)
-   - Pleats and folds
-   - Drape direction
-   - Curtain rod placement
-   - Hanging structure
-   - Fabric density
-   - Tie-backs if present
+2. SHEER CURTAIN
+   - Located in the CENTER directly in front of the window glass.
+   - Lightweight semi-transparent curtain.
+   - Covers the full window width behind the side curtains.
 
-4. Do NOT modify:
-   - Window glass
-   - Window frame
-   - Wall
-   - Ceiling
-   - Furniture
-   - Floor
-   - Decor
-   - Lighting
-   - Shadows
-   - Perspective
-   - Camera angle
-   - Composition
+INPUT TEXTURES:
+- Texture Image 1 → MUST be applied to the MAIN SIDE CURTAINS (left and right panels).
+- Texture Image 2 → MUST be applied to the CENTER SHEER CURTAIN.
 
-5. Preserve exact room geometry and spatial layout.
+STRICT RULES:
+- Do NOT swap the textures.
+- Side curtains must ONLY use Texture 1.
+- Center curtain must ONLY use Texture 2.
+- Preserve the exact curtain layout from the original image.
+- Maintain the curtain folds, drapes, rod placement, and proportions.
+- Do not modify the window, wall, furniture, or environment.
 
-TEXTURE APPLICATION RULES:
+FABRIC APPLICATION:
+- Apply the main curtain texture naturally along the folds of the side panels.
+- The sheer curtain must appear semi-transparent and lightweight.
+- Maintain realistic transparency so outside light passes through the sheer curtain.
+- Keep correct scale and orientation of both fabrics.
 
-6. Use the uploaded curtain reference image as the exact fabric source.
-7. Map the fabric naturally across all folds and pleats.
-8. Maintain realistic gravity flow and draping behavior.
-9. Ensure correct pattern scale (no oversized or miniature repetition).
-10. Avoid visible tiling artifacts.
-11. Preserve natural fabric tension at rod and bottom hem.
-12. Maintain symmetrical alignment between left and right curtains if originally symmetrical.
+REALISM REQUIREMENTS:
+- Preserve original lighting and shadows.
+- Maintain natural curtain folds and gravity.
+- Ensure textures follow the vertical draping pattern.
 
-LIGHTING & REALISM:
+Interpret the second texture as the sheer curtain and apply it only to the transparent center curtain behind the side curtains.
 
-13. Preserve original lighting direction.
-14. Maintain natural shadow falloff on folds.
-15. Keep accurate translucency if curtains are sheer.
-16. No artificial color grading.
-17. No stylization.
-18. Photorealistic result only.
-
-WINDOW SIZE CONDITION:
-
-19. Adapt fabric mapping correctly whether the window is:
-    - Tall
-    - Short
-    - Wide
-    - Narrow
-
-20. Curtains must visually fit the window dimensions naturally without distortion.
-
-PROHIBITED:
-
-- No background edits.
-- No resizing of window.
-- No redesign of curtain structure.
-- No additional elements.
-- No removal of existing room objects.
-
-FINAL RESULT:
-
-A hyper-realistic image where only the curtain fabric is replaced with the uploaded reference image, while the entire room, window structure, lighting, and composition remain pixel-identical to the original.
-
-If any ambiguity occurs, preserve the original image unchanged except for the curtain fabric.
-Under no circumstance modify the window, wall, or room structure.
+OUTPUT:
+Produce a photorealistic interior image where:
+- Left and right curtains use the main curtain texture.
+- The center curtain uses the sheer texture.
+- The overall curtain structure remains identical to the original image.
 """
 
 CARPET_PROMPT = """
@@ -407,7 +377,7 @@ OUTPUT FORMAT:
 PROMPT_MAP = {
     "sofa": SOFA_PROMPT,
     "bed": BED_PROMPT,
-    "curtain": CURTAIN_PROMPT,
+    "curtain": CURTAIN_DUAL_PROMPT,
     "rugs": CARPET_PROMPT,
     "cushion": CUSHION_PROMPT,
     "upholstery": UPHOLSTERY_PROMPT
