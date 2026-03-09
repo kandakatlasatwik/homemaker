@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError
 import os
+import sys
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -8,13 +9,17 @@ load_dotenv()
 MONGO_URL = os.getenv("MONGO_URL")
 
 if not MONGO_URL:
-    raise ValueError("MONGO_URL not found in environment variables")
+    print("❌ MONGO_URL not found in environment variables")
+    sys.exit(1)
 
 try:
     client = MongoClient(
         MONGO_URL,
-        serverSelectionTimeoutMS=5000,
-        retryWrites=True
+        serverSelectionTimeoutMS=10000,
+        retryWrites=True,
+        retryReads=True,
+        connectTimeoutMS=10000,
+        socketTimeoutMS=20000,
     )
 
     # Test connection
@@ -41,5 +46,9 @@ try:
     print("✅ Connected to MongoDB successfully")
 
 except ServerSelectionTimeoutError as e:
-    print("❌ MongoDB connection failed:", e)
-    raise RuntimeError("Database connection failed. Check Mongo URL and network.")
+    print(f"❌ MongoDB connection failed: {e}")
+    print("Check: 1) MONGO_URL is correct  2) IP is whitelisted in Atlas  3) Network is reachable")
+    sys.exit(1)
+except Exception as e:
+    print(f"❌ Unexpected database error: {e}")
+    sys.exit(1)
