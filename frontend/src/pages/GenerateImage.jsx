@@ -9,6 +9,8 @@ import GenerateImageCard from '../components/ui/GenerateImageCard';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeftCircle } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { Grid } from 'ldrs/react'
+import 'ldrs/react/Grid.css'
 
 import sofaroom1 from "../assets/sofarooms/sofaroom1.png";
 import sofaroom2 from "../assets/sofarooms/sofaroom2.png";
@@ -315,9 +317,10 @@ const GenerateImage = () => {
             <div className={`w-full max-w-3xl mx-auto ${theme.bgCard} rounded-2xl ${theme.shadowCard} p-4 sm:p-6 flex flex-col items-center justify-center overflow-hidden border ${theme.border} transition-colors duration-300`}>
               {viewsLoading ? (
                 <div className="relative w-full h-64 sm:h-80 flex flex-col items-center justify-center">
-                  <div className={`absolute inset-0 ${theme.isDark ? 'bg-linear-to-r from-gray-800 via-gray-700 to-gray-800' : 'bg-linear-to-r from-gray-200 via-gray-100 to-gray-200'} animate-pulse rounded-xl`} />
+                  <div className={`absolute inset-0 ${theme.isDark ? 'bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800' : 'bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200'} animate-pulse rounded-xl`} />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent animate-[shimmer_2s_infinite] rounded-xl" style={{ backgroundSize: '200% 100%' }} />
                   <div className="relative z-10 flex flex-col items-center gap-4">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 border-4 border-purple-400 border-t-transparent rounded-full animate-spin" />
+                    <Grid size="70" speed="1.5" color={theme.isDark ? '#a855f7' : '#7e22ce'} />
                     <div className="flex items-center gap-2">
                       <span className="text-purple-600 font-semibold text-base sm:text-lg">Generating Views</span>
                       <span className="flex gap-1">
