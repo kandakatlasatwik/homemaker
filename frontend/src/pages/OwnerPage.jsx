@@ -178,7 +178,7 @@ const OwnerPage = () => {
           <span>Back</span>
         </button>
       </div>
-      <div className={`w-full max-w-2xl ${theme.bgCard} rounded-2xl ${theme.shadowCard} overflow-hidden border ${theme.border} transition-colors duration-300`}>
+      <div className={`animate-float-up w-full max-w-2xl ${theme.bgCard} rounded-2xl ${theme.shadowCard} overflow-hidden border ${theme.border} transition-colors duration-300`}>
         {/* Header */}
         <div className={`${theme.isDark ? 'bg-gray-900' : 'bg-gray-900'} px-8 py-6`}>
           <h1 className="text-2xl font-semibold text-white tracking-wide">Add New Product</h1>
@@ -371,10 +371,11 @@ const OwnerPage = () => {
           <p className="text-center text-red-400 py-6">{fabricsState.error}</p>
         ) : fabricsState.data.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-            {fabricsState.data.map((fabric) => (
+            {fabricsState.data.map((fabric, index) => (
               <div
                 key={fabric.id}
-                className={`relative group rounded-2xl overflow-hidden ${theme.shadowCard} hover:shadow-xl transition-shadow duration-300 ${theme.isDark ? 'bg-gray-900' : 'bg-white'} aspect-4/3 border ${theme.border}`}
+                className={`animate-float-up relative group rounded-2xl overflow-hidden ${theme.shadowCard} hover:shadow-xl transition-shadow duration-300 ${theme.isDark ? 'bg-gray-900' : 'bg-white'} aspect-4/3 border ${theme.border}`}
+                style={{ animationDelay: `${index * 100}ms` }}
               >
                 <img
                   src={fabric.image}

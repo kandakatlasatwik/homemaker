@@ -3,11 +3,12 @@ import { useTheme } from '../../context/ThemeContext';
 import texture from "../../assets/images/texture1.png";
 
 
-const TextureCard = ({ image = texture, name = "Texture Name", description = "Texture description here.", onClick, onImageLoad }) => {
+const TextureCard = ({ image = texture, name = "Texture Name", description = "Texture description here.", onClick, onImageLoad, animationDelay = 0 }) => {
   const theme = useTheme();
   return (
     <div
-      className={`relative flex group hover:cursor-pointer transform transition-all duration-300 hover:scale-102 rounded-2xl sm:rounded-4xl aspect-[4/3] w-full h-full overflow-hidden border ${theme.isDark ? 'border-amber-500/20 hover:border-amber-400/60' : 'border-gray-200 hover:border-gray-400'} ${theme.shadowCard}`}
+      className={`animate-float-up relative flex group hover:cursor-pointer transform transition-all duration-300 hover:scale-102 rounded-2xl sm:rounded-4xl aspect-[4/3] w-full h-full overflow-hidden border ${theme.isDark ? 'border-amber-500/20 hover:border-amber-400/60' : 'border-gray-200 hover:border-gray-400'} ${theme.shadowCard}`}
+      style={{ animationDelay: `${animationDelay}ms` }}
       onClick={onClick}
     >
       <img

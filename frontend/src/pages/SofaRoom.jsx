@@ -66,7 +66,7 @@ const SofaRoom = () => {
         
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {roomImages.map((img, idx) => (
-            <div key={idx} className={`${selectedIndex === idx ? 'ring-4 ring-amber-400 rounded-2xl' : ''}`}>
+            <div key={idx} className={`animate-float-up ${selectedIndex === idx ? 'ring-4 ring-amber-400 rounded-2xl' : ''}`} style={{ animationDelay: `${idx * 100}ms` }}>
               <TextureCard
                 image={img.src}
                 name={img.name}

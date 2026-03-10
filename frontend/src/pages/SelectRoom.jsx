@@ -189,7 +189,7 @@ const SelectRoom = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {/* Sample room images */}
           {roomImages.map((img, idx) => (
-            <div key={`sample-${idx}`} className={`relative ${selectedIndex === idx ? `ring-4 ${theme.ring} rounded-2xl` : ''}`}>
+            <div key={`sample-${idx}`} className={`animate-float-up relative ${selectedIndex === idx ? `ring-4 ${theme.ring} rounded-2xl` : ''}`} style={{ animationDelay: `${idx * 100}ms` }}>
               {loadingIdx === idx && (
                 <div className="absolute inset-0 flex items-center justify-center z-20 rounded-2xl backdrop-blur-sm" style={{ backgroundColor: theme.isDark ? 'rgba(26,26,46,0.7)' : 'rgba(243,244,246,0.7)' }}>
                   <Metronome size="40" speed="1.6" color={theme.isDark ? '#f59e0b' : '#000'} />
@@ -208,7 +208,7 @@ const SelectRoom = () => {
           {uploadedImages.map((img, idx) => {
             const globalIdx = roomImages.length + idx;
             return (
-              <div key={`uploaded-${idx}`} className={`relative ${selectedIndex === globalIdx ? `ring-4 ${theme.ring} rounded-2xl` : ''}`}>
+              <div key={`uploaded-${idx}`} className={`animate-float-up relative ${selectedIndex === globalIdx ? `ring-4 ${theme.ring} rounded-2xl` : ''}`} style={{ animationDelay: `${globalIdx * 100}ms` }}>
                 {loadingIdx === globalIdx && (
                   <div className="absolute inset-0 flex items-center justify-center z-20 rounded-2xl backdrop-blur-sm" style={{ backgroundColor: theme.isDark ? 'rgba(26,26,46,0.7)' : 'rgba(243,244,246,0.7)' }}>
                     <Metronome size="40" speed="1.6" color={theme.isDark ? '#f59e0b' : '#000'} />
@@ -233,7 +233,7 @@ const SelectRoom = () => {
           })}
 
           {/* Upload card */}
-          <div className={`relative flex flex-col items-center justify-center rounded-2xl sm:rounded-4xl aspect-[4/3] w-full h-full border-2 border-dashed ${theme.isDark ? 'border-amber-500/40 bg-amber-950/20' : 'border-gray-300 bg-gray-50'} gap-3 cursor-pointer transition-colors duration-300`}>
+          <div className={`animate-float-up relative flex flex-col items-center justify-center rounded-2xl sm:rounded-4xl aspect-[4/3] w-full h-full border-2 border-dashed ${theme.isDark ? 'border-amber-500/40 bg-amber-950/20' : 'border-gray-300 bg-gray-50'} gap-3 cursor-pointer transition-colors duration-300`} style={{ animationDelay: `${(roomImages.length + uploadedImages.length) * 100}ms` }}>
             {uploading && (
               <div className="absolute inset-0 flex items-center justify-center z-20 rounded-2xl backdrop-blur-sm" style={{ backgroundColor: theme.isDark ? 'rgba(26,26,46,0.7)' : 'rgba(243,244,246,0.7)' }}>
                 <Metronome size="40" speed="1.6" color={theme.isDark ? '#f59e0b' : '#000'} />

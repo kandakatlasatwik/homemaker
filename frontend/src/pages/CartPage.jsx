@@ -141,10 +141,11 @@ const CartPage = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {cartItems.map((item) => (
+            {cartItems.map((item, index) => (
               <div
                 key={item._id}
-                className={`${theme.bgCard} rounded-xl ${theme.shadowCard} overflow-hidden hover:${theme.shadowCard} transition-shadow duration-300 border ${theme.isDark ? 'border-gray-700' : 'border-gray-200'}`}
+                className={`animate-float-up ${theme.bgCard} rounded-xl ${theme.shadowCard} overflow-hidden hover:${theme.shadowCard} transition-shadow duration-300 border ${theme.isDark ? 'border-gray-700' : 'border-gray-200'}`}
+                style={{ animationDelay: `${index * 100}ms` }}
               >
                 <img
                   src={`data:image/png;base64,${item.generated_image_base64}`}

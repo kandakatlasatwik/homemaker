@@ -57,6 +57,7 @@
 .image-card{
   position:relative;
   width:220px;
+  animation: floatUp 0.6s ease-out both;
 }
 
 

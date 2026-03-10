@@ -314,7 +314,7 @@ const GenerateImage = () => {
             <h3 className={`text-center text-lg sm:text-xl font-semibold mb-4 ${theme.text}`}>
               Orthographic Views
             </h3>
-            <div className={`w-full max-w-3xl mx-auto ${theme.bgCard} rounded-2xl ${theme.shadowCard} p-4 sm:p-6 flex flex-col items-center justify-center overflow-hidden border ${theme.border} transition-colors duration-300`}>
+            <div className={`animate-float-up w-full max-w-3xl mx-auto ${theme.bgCard} rounded-2xl ${theme.shadowCard} p-4 sm:p-6 flex flex-col items-center justify-center overflow-hidden border ${theme.border} transition-colors duration-300`}>
               {viewsLoading ? (
                 <div className="relative w-full h-64 sm:h-80 flex flex-col items-center justify-center">
                   <div className={`absolute inset-0 ${theme.isDark ? 'bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800' : 'bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200'} animate-pulse rounded-xl`} />

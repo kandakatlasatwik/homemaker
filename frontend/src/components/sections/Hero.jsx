@@ -100,12 +100,13 @@ const Hero = ({ type, productType }) => {
               ) : error ? (
                 <div className="col-span-full text-center text-red-400 py-8">{error}</div>
               ) : filteredTextures.length > 0 ? (
-                filteredTextures.map((t) => (
+                filteredTextures.map((t, index) => (
                   <TextureCard
                     key={t.id}
                     name={t.name}
                     description={t.color}
                     image={t.image}
+                    animationDelay={index * 100}
                     onClick={() => {
                       navigate(`/select-room?type=${encodeURIComponent(productType)}&texture=${encodeURIComponent(t.image)}`);
                     }}
@@ -116,12 +117,12 @@ const Hero = ({ type, productType }) => {
               )
             ) : (
               <>
-                <ProductCard type="sofa" />
-                <ProductCard type="bed" image={bedImage} />
-                <ProductCard type="curtain" image={curtainImage} />
-                <ProductCard type="cushion" image={cushionImage} />
-                <ProductCard type="rugs" image={rugsImage} />
-                <ProductCard type="upholstery" image={upholsteryImage} />
+                <ProductCard type="sofa" animationDelay={0} />
+                <ProductCard type="bed" image={bedImage} animationDelay={100} />
+                <ProductCard type="curtain" image={curtainImage} animationDelay={200} />
+                <ProductCard type="cushion" image={cushionImage} animationDelay={300} />
+                <ProductCard type="rugs" image={rugsImage} animationDelay={400} />
+                <ProductCard type="upholstery" image={upholsteryImage} animationDelay={500} />
               </>
             )}
           </div>
