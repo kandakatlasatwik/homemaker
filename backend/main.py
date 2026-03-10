@@ -3,8 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 from routes import fabric
 from routes import image_generation
-from routes import seller  # ✅ Added seller router
-from routes import cart  # ✅ Added cart router
+from routes import seller
+from routes import cart
+from routes import pending
 from cleanup_task import start_cleanup_task
 
 app = FastAPI(title="Fabric Visualizer API")
@@ -33,8 +34,9 @@ app.add_middleware(
 # Include routes
 app.include_router(fabric.router)
 app.include_router(image_generation.router)
-app.include_router(seller.router)  # ✅ Added this line
-app.include_router(cart.router)  # ✅ Added cart router
+app.include_router(seller.router)
+app.include_router(cart.router)
+app.include_router(pending.router)
 
 # 🔹 Startup event to start background cleanup task
 @app.on_event("startup")

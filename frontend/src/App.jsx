@@ -4,6 +4,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import SelectProducts from './pages/SelectProducts';
 import SelectTexture from './pages/SelectTexture';
 import OwnerPage from './pages/OwnerPage';
+import AssistantPage from './pages/AssistantPage';
 import LoginPage from './pages/LoginPage';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -20,7 +21,8 @@ function App() {
           <Route path="/generate-image" element={<GenerateImage />} />       
           <Route path="/" element={<SelectProducts />} />
           <Route path="/select-texture" element={<SelectTexture />} />
-          <Route path="/owner" element={<ProtectedRoute><OwnerPage /></ProtectedRoute>} />
+          <Route path="/owner" element={<ProtectedRoute allowedRoles={['seller']}><OwnerPage /></ProtectedRoute>} />
+          <Route path="/assistant" element={<ProtectedRoute allowedRoles={['assistant']}><AssistantPage /></ProtectedRoute>} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="*" element={<NotFound />} />
           <Route path="select-room" element={<SelectRoom />} />

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
-from database import fabric_collection
+from database import fabric_collection, pending_fabrics_collection
 from bson import ObjectId
 from auth import get_current_seller
 import cloudinary
@@ -162,5 +162,8 @@ def delete_fabric(
         raise HTTPException(status_code=403, detail="Not authorized")
 
     fabric_collection.delete_one({"_id": ObjectId(fabric_id)})
+
+    # Also remove from pending_fabrics so it disappears from assistant's submissions
+    pending_fabrics_collection.delete_many({"fabric_id": fabric_id})
 
     return {"message": "Fabric deleted successfully"}

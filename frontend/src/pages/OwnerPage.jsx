@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer, useCallback } from 'react'
-import { Trash2, ArrowLeftCircle } from 'lucide-react'
+import { Trash2, ArrowLeftCircle, Check, X, UserPlus } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
 
 const CATEGORIES = ['sofa', 'curtains', 'bedsheets', 'cushions', 'rugs', 'upholstery', 'other']
@@ -46,6 +46,17 @@ const OwnerPage = () => {
 
   const [deletingIds, setDeletingIds] = useState([])
 
+  // --- Pending approvals state ---
+  const [pendingFabrics, setPendingFabrics] = useState([])
+  const [pendingLoading, setPendingLoading] = useState(false)
+  const [processingIds, setProcessingIds] = useState([])
+  const [activeTab, setActiveTab] = useState('products') // 'products' | 'pending' | 'assistant'
+
+  // --- Register assistant state ---
+  const [assistantForm, setAssistantForm] = useState({ name: '', email: '', password: '' })
+  const [assistantSubmitting, setAssistantSubmitting] = useState(false)
+  const [assistantMsg, setAssistantMsg] = useState({ type: '', text: '' })
+
   const fetchFabrics = useCallback((category) => {
     dispatch({ type: 'FETCH_START' })
     fetch(`${api}/fabrics/?category=${encodeURIComponent(category)}`)
@@ -61,6 +72,89 @@ const OwnerPage = () => {
   useEffect(() => {
     fetchFabrics(activeCategory)
   }, [activeCategory, fetchFabrics])
+
+  // Fetch pending fabrics
+  const fetchPending = useCallback(() => {
+    const token = localStorage.getItem('access_token')
+    if (!token) return
+    setPendingLoading(true)
+    fetch(`${api}/pending/`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to load pending')
+        return res.json()
+      })
+      .then((data) => setPendingFabrics(data))
+      .catch(() => setPendingFabrics([]))
+      .finally(() => setPendingLoading(false))
+  }, [api])
+
+  useEffect(() => {
+    fetchPending()
+  }, [fetchPending])
+
+  const handleApprove = (id) => {
+    const token = localStorage.getItem('access_token')
+    setProcessingIds((p) => [...p, id])
+    fetch(`${api}/pending/${id}/approve`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Approve failed')
+        fetchPending()
+        fetchFabrics(activeCategory)
+      })
+      .catch((err) => alert('Approve failed: ' + err.message))
+      .finally(() => setProcessingIds((p) => p.filter((x) => x !== id)))
+  }
+
+  const handleReject = (id) => {
+    if (!window.confirm('Are you sure you want to reject this request?')) return
+    const token = localStorage.getItem('access_token')
+    setProcessingIds((p) => [...p, id])
+    fetch(`${api}/pending/${id}/reject`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Reject failed')
+        fetchPending()
+      })
+      .catch((err) => alert('Reject failed: ' + err.message))
+      .finally(() => setProcessingIds((p) => p.filter((x) => x !== id)))
+  }
+
+  const handleRegisterAssistant = (e) => {
+    e.preventDefault()
+    if (!assistantForm.name.trim() || !assistantForm.email.trim() || !assistantForm.password.trim()) {
+      setAssistantMsg({ type: 'error', text: 'All fields are required' })
+      return
+    }
+    if (assistantForm.password.length < 6) {
+      setAssistantMsg({ type: 'error', text: 'Password must be at least 6 characters' })
+      return
+    }
+    setAssistantSubmitting(true)
+    const token = localStorage.getItem('access_token')
+    fetch(`${api}/seller/register-assistant`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(assistantForm),
+    })
+      .then(async (res) => {
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.detail || 'Registration failed')
+        setAssistantMsg({ type: 'success', text: 'Assistant registered successfully!' })
+        setAssistantForm({ name: '', email: '', password: '' })
+      })
+      .catch((err) => setAssistantMsg({ type: 'error', text: err.message }))
+      .finally(() => setAssistantSubmitting(false))
+  }
 
   const handleDelete = (id) => {
     if (!window.confirm('Are you sure you want to delete this product?')) return
@@ -334,8 +428,35 @@ const OwnerPage = () => {
         </form>
       </div>
 
+      {/* ─── Tab Navigation ─── */}
+      <div className="w-full max-w-4xl mt-10 flex gap-3 mb-6">
+        {['products', 'pending', 'assistant'].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-5 py-2 rounded-full text-sm font-medium border transition relative ${
+              activeTab === tab
+                ? theme.isDark
+                  ? 'bg-amber-500 text-black border-amber-500'
+                  : 'bg-gray-900 text-white border-gray-900'
+                : theme.isDark
+                  ? 'bg-gray-900 text-gray-300 border-gray-700 hover:border-amber-400'
+                  : 'bg-white text-gray-600 border-gray-300 hover:border-gray-900'
+            }`}
+          >
+            {tab === 'products' ? 'Your Products' : tab === 'pending' ? 'Pending Approvals' : 'Register Assistant'}
+            {tab === 'pending' && pendingFabrics.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                {pendingFabrics.length}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+
       {/* ─── Product Listing Section ─── */}
-      <div className="w-full max-w-4xl mt-10">
+      {activeTab === 'products' && (
+      <div className="w-full max-w-4xl">
         <h2 className={`text-xl font-semibold ${theme.text} mb-4 transition-colors duration-300`}>Your Products</h2>
 
         {/* Category Tabs */}
@@ -412,6 +533,133 @@ const OwnerPage = () => {
           <p className={`text-center ${theme.textMuted} py-8`}>No products in this category yet.</p>
         )}
       </div>
+      )}
+
+      {/* ─── Pending Approvals Section ─── */}
+      {activeTab === 'pending' && (
+      <div className="w-full max-w-4xl">
+        <h2 className={`text-xl font-semibold ${theme.text} mb-4 transition-colors duration-300`}>Pending Approvals</h2>
+        {pendingLoading ? (
+          <div className="flex justify-center py-12">
+            <svg className={`animate-spin h-8 w-8 ${theme.textMuted}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+            </svg>
+          </div>
+        ) : pendingFabrics.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+            {pendingFabrics.map((fabric, index) => (
+              <div
+                key={fabric.id}
+                className={`animate-float-up relative group rounded-2xl overflow-hidden ${theme.shadowCard} hover:shadow-xl transition-shadow duration-300 ${theme.isDark ? 'bg-gray-900' : 'bg-white'} border ${theme.border}`}
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="aspect-4/3">
+                  <img
+                    src={fabric.image}
+                    alt={fabric.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                <div className={`p-3 ${theme.isDark ? 'bg-gray-900' : 'bg-white'}`}>
+                  <p className={`text-base font-semibold ${theme.text}`}>{fabric.name}</p>
+                  <p className={`text-xs ${theme.textMuted} mt-0.5`}>{fabric.category} &bull; {fabric.color}</p>
+                  <p className={`text-xs ${theme.textMuted}`}>Price: ₹{fabric.price} &bull; Stock: {fabric.stock}</p>
+                  <p className={`text-xs mt-1 ${theme.isDark ? 'text-amber-400' : 'text-blue-600'}`}>
+                    By: {fabric.assistant_name}
+                  </p>
+
+                  <div className="flex gap-2 mt-3">
+                    <button
+                      onClick={() => handleApprove(fabric.id)}
+                      disabled={processingIds.includes(fabric.id)}
+                      className="flex-1 flex items-center justify-center gap-1 bg-green-600 text-white text-sm py-1.5 rounded-lg hover:bg-green-700 transition disabled:opacity-60"
+                    >
+                      <Check size={16} /> Approve
+                    </button>
+                    <button
+                      onClick={() => handleReject(fabric.id)}
+                      disabled={processingIds.includes(fabric.id)}
+                      className="flex-1 flex items-center justify-center gap-1 bg-red-600 text-white text-sm py-1.5 rounded-lg hover:bg-red-700 transition disabled:opacity-60"
+                    >
+                      <X size={16} /> Reject
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className={`text-center ${theme.textMuted} py-8`}>No pending approvals.</p>
+        )}
+      </div>
+      )}
+
+      {/* ─── Register Assistant Section ─── */}
+      {activeTab === 'assistant' && (
+      <div className="w-full max-w-lg">
+        <div className={`${theme.bgCard} rounded-2xl ${theme.shadowCard} overflow-hidden border ${theme.border} transition-colors duration-300`}>
+          <div className={`bg-gray-900 px-8 py-6`}>
+            <h2 className="text-xl font-semibold text-white tracking-wide flex items-center gap-2">
+              <UserPlus size={22} /> Register New Assistant
+            </h2>
+            <p className="text-gray-400 text-sm mt-1">Create an assistant account who can upload fabrics for your approval.</p>
+          </div>
+
+          <form onSubmit={handleRegisterAssistant} className="px-8 py-8 space-y-5">
+            <div>
+              <label className={`block text-sm font-medium ${theme.textSecondary} mb-1`}>Name <span className="text-red-500">*</span></label>
+              <input
+                type="text"
+                value={assistantForm.name}
+                onChange={(e) => setAssistantForm((p) => ({ ...p, name: e.target.value }))}
+                placeholder="Assistant name"
+                className={`w-full border ${theme.border} rounded-lg px-4 py-2.5 text-sm ${theme.bgInput} ${theme.text} focus:outline-none focus:ring-2 ${theme.isDark ? 'focus:ring-amber-500' : 'focus:ring-gray-900'} transition`}
+              />
+            </div>
+            <div>
+              <label className={`block text-sm font-medium ${theme.textSecondary} mb-1`}>Email <span className="text-red-500">*</span></label>
+              <input
+                type="email"
+                value={assistantForm.email}
+                onChange={(e) => setAssistantForm((p) => ({ ...p, email: e.target.value }))}
+                placeholder="assistant@example.com"
+                className={`w-full border ${theme.border} rounded-lg px-4 py-2.5 text-sm ${theme.bgInput} ${theme.text} focus:outline-none focus:ring-2 ${theme.isDark ? 'focus:ring-amber-500' : 'focus:ring-gray-900'} transition`}
+              />
+            </div>
+            <div>
+              <label className={`block text-sm font-medium ${theme.textSecondary} mb-1`}>Password <span className="text-red-500">*</span></label>
+              <input
+                type="password"
+                value={assistantForm.password}
+                onChange={(e) => setAssistantForm((p) => ({ ...p, password: e.target.value }))}
+                placeholder="Min 6 characters"
+                className={`w-full border ${theme.border} rounded-lg px-4 py-2.5 text-sm ${theme.bgInput} ${theme.text} focus:outline-none focus:ring-2 ${theme.isDark ? 'focus:ring-amber-500' : 'focus:ring-gray-900'} transition`}
+              />
+            </div>
+
+            {assistantMsg.text && (
+              <p className={`text-sm px-4 py-2 rounded-lg border ${
+                assistantMsg.type === 'success'
+                  ? 'text-green-600 bg-green-50 border-green-200'
+                  : 'text-red-500 bg-red-50 border-red-200'
+              }`}>
+                {assistantMsg.text}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={assistantSubmitting}
+              className={`w-full rounded-lg py-2.5 text-sm font-medium transition disabled:opacity-60 disabled:cursor-not-allowed ${theme.isDark ? 'bg-amber-500 text-black hover:bg-amber-400' : 'bg-gray-900 text-white hover:bg-gray-800'}`}
+            >
+              {assistantSubmitting ? 'Registering…' : 'Register Assistant'}
+            </button>
+          </form>
+        </div>
+      </div>
+      )}
     </div>
   )
 }

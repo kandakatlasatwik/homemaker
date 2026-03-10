@@ -48,10 +48,39 @@ def get_current_seller(token: str = Depends(oauth2_scheme)):
 
         seller = users_collection.find_one({"_id": ObjectId(seller_id)})
 
-        if seller is None or seller["role"] != "seller":
+        if seller is None or seller["role"] not in ("seller", "assistant"):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Not authorized",
+            )
+
+        return seller
+
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token is invalid or expired",
+        )
+
+
+def get_current_owner(token: str = Depends(oauth2_scheme)):
+    """Only allows users with role 'seller' (the owner)."""
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        seller_id: str = payload.get("seller_id")
+
+        if seller_id is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token",
+            )
+
+        seller = users_collection.find_one({"_id": ObjectId(seller_id)})
+
+        if seller is None or seller["role"] != "seller":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Owner access only",
             )
 
         return seller

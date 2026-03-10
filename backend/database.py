@@ -31,9 +31,14 @@ try:
     users_collection = db["users"]
     imagegen_collection = db["imagegen"]
     cart_collection = db["cart"]
+    pending_fabrics_collection = db["pending_fabrics"]
 
     # 🔹 Create unique index for seller email
     users_collection.create_index("email", unique=True)
+    
+    # 🔹 Create index for pending fabrics
+    pending_fabrics_collection.create_index("assistant_id")
+    pending_fabrics_collection.create_index("status")
     
     # 🔹 Create index for imagegen (guest_id and created_at for auto-deletion)
     imagegen_collection.create_index("guest_id")

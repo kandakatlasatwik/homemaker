@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, allowedRoles }) => {
   const [checked, setChecked] = useState(false)
   const [allowed, setAllowed] = useState(false)
   const location = useLocation()
@@ -20,9 +20,17 @@ const ProtectedRoute = ({ children }) => {
         const res = await fetch(`${api}/seller/me`, { headers: { Authorization: `Bearer ${token}` } })
 
         if (res.ok) {
-          setAllowed(true)
+          const data = await res.json()
+          localStorage.setItem('user_role', data.role)
+          // Check if role is allowed for this route
+          if (allowedRoles && !allowedRoles.includes(data.role)) {
+            setAllowed(false)
+          } else {
+            setAllowed(true)
+          }
         } else {
           localStorage.removeItem('access_token')
+          localStorage.removeItem('user_role')
           setAllowed(false)
         }
       } catch (err) {
@@ -33,7 +41,7 @@ const ProtectedRoute = ({ children }) => {
     }
 
     check()
-  }, [])
+  }, [allowedRoles])
 
   if (!checked) return null
 
