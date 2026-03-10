@@ -1,4 +1,5 @@
 import os
+import time
 import requests
 import mimetypes
 import base64
@@ -9,6 +10,22 @@ from google.genai import types
 
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+MAX_RETRIES = 3
+RETRY_DELAYS = [30, 60, 90]
+
+
+def _call_gemini_with_retry(model, contents):
+    for attempt in range(MAX_RETRIES):
+        try:
+            return client.models.generate_content(model=model, contents=contents)
+        except Exception as e:
+            if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
+                if attempt < MAX_RETRIES - 1:
+                    time.sleep(RETRY_DELAYS[attempt])
+                    continue
+            raise
+    raise Exception("Max retries exceeded for Gemini API")
 
 
 def is_base64(s: str) -> bool:
@@ -79,7 +96,9 @@ async def generate_image(base_image_data, fabric_image_data, prompt, fabric_seco
 
         contents = [
             prompt,
+            "Image 1 - BASE ROOM IMAGE:",
             types.Part.from_bytes(data=base_img_bytes, mime_type=base_mime),
+            "Image 2 - FABRIC TEXTURE:",
             types.Part.from_bytes(data=fabric_img_bytes, mime_type=fabric_mime),
         ]
 
@@ -92,14 +111,15 @@ async def generate_image(base_image_data, fabric_image_data, prompt, fabric_seco
 
             secondary_mime = get_mime_type(fabric_secondary_data)
 
-            contents.append(
+            contents.extend([
+                "Image 3 - SHEER CURTAIN FABRIC TEXTURE:",
                 types.Part.from_bytes(
                     data=secondary_bytes,
                     mime_type=secondary_mime
                 )
-            )
+            ])
 
-        response = client.models.generate_content(
+        response = _call_gemini_with_retry(
             model="gemini-2.5-flash-image",
             contents=contents
         )
@@ -123,7 +143,7 @@ async def generate_views(image_data: str, prompt: str):
         img_bytes = resize_image(url_or_base64_to_bytes(image_data))
         img_mime = get_mime_type(image_data)
 
-        response = client.models.generate_content(
+        response = _call_gemini_with_retry(
             model="gemini-2.5-flash-image",
             contents=[
                 prompt,

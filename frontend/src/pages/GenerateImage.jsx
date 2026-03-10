@@ -2,7 +2,7 @@ import bedroom1 from "../assets/bedrooms/bedroom1.png";
 import bedroom2 from "../assets/bedrooms/bedroom2.png";
 import bedroom3 from "../assets/bedrooms/bedroom3.png";
 import bedroom4 from "../assets/bedrooms/bedroom4.png";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NavBar from '../components/layout/NavBar';
 import Footer from '../components/layout/Footer';
 import GenerateImageCard from '../components/ui/GenerateImageCard';
@@ -96,9 +96,13 @@ const GenerateImage = () => {
   const params = new URLSearchParams(location.search);
   const theme = useTheme();
   const objectType = params.get('type') || 'sofa';
-  const textureUrl = params.get('texture');
+  const [textureUrl, setTextureUrl] = useState(params.get('texture'));
+  const [textureSecondary, setTextureSecondary] = useState(params.get('texture_secondary') || null);
   const roomIndex = parseInt(params.get('room'), 10);
   const uploadedRoomImage = location.state?.uploadedRoomImage || null;
+
+  const [curtainFabrics, setCurtainFabrics] = useState([]);
+  const [fabricsLoading, setFabricsLoading] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [generatedImage, setGeneratedImage] = useState(null);
@@ -111,6 +115,20 @@ const GenerateImage = () => {
   const [addingViewsToCart, setAddingViewsToCart] = useState(false);
 
   const api = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+  // Fetch curtain fabrics for inline texture switching
+  useEffect(() => {
+    if (objectType !== 'curtain') return;
+    setFabricsLoading(true);
+    fetch(`${api}/fabrics/?category=curtains`)
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch fabrics');
+        return res.json();
+      })
+      .then(data => setCurtainFabrics(data))
+      .catch(err => console.error(err))
+      .finally(() => setFabricsLoading(false));
+  }, [api, objectType]);
 
   // Get or create guest ID
   const getGuestId = () => {
@@ -139,17 +157,24 @@ const GenerateImage = () => {
       }
       const guestId = getGuestId();
       
+      const requestBody = {
+        guest_id: guestId,
+        object_type: objectType,
+        texture: textureUrl,
+        base_image_base64: roomImageBase64,
+      };
+
+      // Add secondary texture for curtains
+      if (objectType === 'curtain' && textureSecondary) {
+        requestBody.texture_secondary = textureSecondary;
+      }
+
       const response = await fetch(`${api}/generate/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          guest_id: guestId,
-          object_type: objectType,
-          texture: textureUrl,
-          base_image_base64: roomImageBase64,
-        }),
+        body: JSON.stringify(requestBody),
       });
       if (!response.ok) {
         const errorData = await response.json();
@@ -208,7 +233,12 @@ const GenerateImage = () => {
       const response = await fetch(`${api}/generate/views`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image_base64: generatedImage }),
+        body: JSON.stringify({
+          image_base64: generatedImage,
+          object_type: objectType,
+          texture_url: textureUrl || '',
+          texture_secondary: textureSecondary || '',
+        }),
       });
       if (!response.ok) {
         const errorData = await response.json();
@@ -261,20 +291,90 @@ const GenerateImage = () => {
           </div>
         </div>
         {/* Show selected room and texture info */}
-        <div className="mt-4 sm:mt-6 mb-4 sm:mb-6 flex flex-col sm:flex-row gap-4 sm:gap-6 items-center justify-center">
+        <div className="mt-4 sm:mt-6 mb-4 sm:mb-6 flex flex-row gap-4 sm:gap-6 items-center justify-center">
           {uploadedRoomImage ? (
             <img src={uploadedRoomImage} alt="Your Uploaded Room" className={`w-24 h-18 sm:w-32 sm:h-24 object-cover rounded-lg ${theme.shadowCard}`} />
           ) : roomIndex >= 0 && (roomImagesByType[objectType] || roomImagesByType['sofa'])[roomIndex] && (
             <img src={(roomImagesByType[objectType] || roomImagesByType['sofa'])[roomIndex].src} alt="Selected Room" className={`w-24 h-18 sm:w-32 sm:h-24 object-cover rounded-lg ${theme.shadowCard}`} />
           )}
           {textureUrl && (
-            <img src={textureUrl} alt="Selected Texture" className={`w-14 h-14 sm:w-16 sm:h-16 object-cover rounded ${theme.shadowCard}`} />
+            <img src={textureUrl} alt={objectType === 'curtain' ? 'Main Curtain Texture' : 'Selected Texture'} className={`w-14 h-14 sm:w-16 sm:h-16 object-cover rounded ${theme.shadowCard}`} />
+          )}
+          {objectType === 'curtain' && textureSecondary && (
+            <img src={textureSecondary} alt="Sheer Curtain Texture" className={`w-14 h-14 sm:w-16 sm:h-16 object-cover rounded ${theme.shadowCard}`} />
           )}
         </div>
         {/* Error message */}
         {error && (
           <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">{error}</div>
         )}
+        {/* Curtain texture sliders */}
+        {objectType === 'curtain' && !fabricsLoading && curtainFabrics.length > 0 && (
+          <div className="mb-6 sm:mb-8 space-y-5 max-w-2xl mx-auto">
+            {/* Main Curtain Row */}
+            <div className={`rounded-2xl p-4 sm:p-5 border ${theme.isDark ? 'bg-gray-900/80 border-amber-500/30' : 'bg-white border-gray-200'} shadow-lg backdrop-blur-sm transition-all duration-300`}>
+              <h3 className={`text-sm sm:text-base font-bold mb-3 tracking-wide uppercase flex items-center gap-2 ${theme.isDark ? 'text-amber-300' : 'text-amber-700'}`}>
+                <span className="inline-block w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]"></span>
+                Main Curtain
+              </h3>
+              <div
+                className="texture-slider overflow-x-auto flex gap-3 sm:gap-4 pb-3 px-1 snap-x snap-mandatory justify-start"
+                style={{
+                  scrollbarWidth: 'thin',
+                  scrollBehavior: 'smooth',
+                  WebkitOverflowScrolling: 'touch',
+                }}
+              >
+                {curtainFabrics.map((t) => (
+                  <div
+                    key={`main-${t.id}`}
+                    className={`snap-center shrink-0 w-[4.5rem] h-[4.5rem] sm:w-24 sm:h-24 rounded-xl overflow-hidden cursor-pointer border-[2.5px] transition-all duration-300 ease-in-out ${
+                      textureUrl === t.image
+                        ? 'border-amber-500 ring-[3px] ring-amber-400/60 shadow-[0_0_16px_rgba(245,158,11,0.45)] scale-105 z-10'
+                        : `${theme.isDark ? 'border-gray-700 hover:border-amber-400/70' : 'border-gray-200 hover:border-amber-400'} hover:shadow-sm hover:scale-[1.03]`
+                    }`}
+                    onClick={() => setTextureUrl(t.image)}
+                    title={t.name}
+                  >
+                    <img src={t.image} alt={t.name} className="w-full h-full object-cover transition-transform duration-300" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Sheer Curtain Row */}
+            <div className={`rounded-2xl p-4 sm:p-5 border ${theme.isDark ? 'bg-gray-900/80 border-purple-500/30' : 'bg-white border-gray-200'} shadow-lg backdrop-blur-sm transition-all duration-300`}>
+              <h3 className={`text-sm sm:text-base font-bold mb-3 tracking-wide uppercase flex items-center gap-2 ${theme.isDark ? 'text-purple-300' : 'text-purple-700'}`}>
+                <span className="inline-block w-3 h-3 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]"></span>
+                Sheer Curtain
+              </h3>
+              <div
+                className="texture-slider texture-slider-sheer overflow-x-auto flex gap-3 sm:gap-4 pb-3 px-1 snap-x snap-mandatory justify-start"
+                style={{
+                  scrollbarWidth: 'thin',
+                  scrollBehavior: 'smooth',
+                  WebkitOverflowScrolling: 'touch',
+                }}
+              >
+                {curtainFabrics.map((t) => (
+                  <div
+                    key={`sheer-${t.id}`}
+                    className={`snap-center shrink-0 w-[4.5rem] h-[4.5rem] sm:w-24 sm:h-24 rounded-xl overflow-hidden cursor-pointer border-[2.5px] transition-all duration-300 ease-in-out ${
+                      textureSecondary === t.image
+                        ? 'border-purple-500 ring-[3px] ring-purple-400/60 shadow-[0_0_16px_rgba(168,85,247,0.45)] scale-105 z-10'
+                        : `${theme.isDark ? 'border-gray-700 hover:border-purple-400/70' : 'border-gray-200 hover:border-purple-400'} hover:shadow-sm hover:scale-[1.03]`
+                    }`}
+                    onClick={() => setTextureSecondary(t.image)}
+                    title={t.name}
+                  >
+                    <img src={t.image} alt={t.name} className="w-full h-full object-cover transition-transform duration-300" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Card for generated image */}
         <GenerateImageCard generatedImage={generatedImage} loading={loading} />
         {/* Generate Image button */}
@@ -314,7 +414,7 @@ const GenerateImage = () => {
             <h3 className={`text-center text-lg sm:text-xl font-semibold mb-4 ${theme.text}`}>
               Orthographic Views
             </h3>
-            <div className={`animate-float-up w-full max-w-3xl mx-auto ${theme.bgCard} rounded-2xl ${theme.shadowCard} p-4 sm:p-6 flex flex-col items-center justify-center overflow-hidden border ${theme.border} transition-colors duration-300`}>
+            <div className={`animate-float-up w-full max-w-[95vw] sm:max-w-3xl mx-auto ${theme.bgCard} rounded-2xl ${theme.shadowCard} p-2 sm:p-6 flex flex-col items-center justify-center overflow-hidden border ${theme.border} transition-colors duration-300`}>
               {viewsLoading ? (
                 <div className="relative w-full h-64 sm:h-80 flex flex-col items-center justify-center">
                   <div className={`absolute inset-0 ${theme.isDark ? 'bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800' : 'bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200'} animate-pulse rounded-xl`} />
@@ -336,7 +436,7 @@ const GenerateImage = () => {
                 <img
                   src={`data:image/png;base64,${viewsImage}`}
                   alt="Orthographic Views - Top, Front, Side"
-                  className="max-w-full rounded-xl shadow-lg object-contain"
+                  className="w-full h-auto rounded-xl shadow-lg object-contain"
                 />
               ) : null}
             </div>

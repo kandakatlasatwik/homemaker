@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from services.gemini_service import generate_image, generate_views
 from prompts.object_prompts import PROMPT_MAP, ORTHOGRAPHIC_VIEWS_PROMPT
@@ -66,10 +67,15 @@ async def generate(data: GenerateRequest):
         )
 
     except Exception as e:
-
+        error_msg = str(e)
+        if "429" in error_msg or "RESOURCE_EXHAUSTED" in error_msg:
+            return JSONResponse(
+                status_code=429,
+                content={"detail": "Gemini API rate limit exceeded. Please wait a moment and try again."}
+            )
         raise HTTPException(
             status_code=500,
-            detail=f"Gemini error: {str(e)}"
+            detail=f"Gemini error: {error_msg}"
         )
 
     if not image_bytes:
@@ -101,6 +107,9 @@ async def generate(data: GenerateRequest):
 # 🔹 Request Schema for Views
 class ViewsRequest(BaseModel):
     image_base64: str
+    object_type: str = ""
+    texture_url: str = ""
+    texture_secondary: str | None = None
 
 
 # 🔹 Generate Orthographic Views
@@ -121,10 +130,15 @@ async def generate_orthographic_views(data: ViewsRequest):
         )
 
     except Exception as e:
-
+        error_msg = str(e)
+        if "429" in error_msg or "RESOURCE_EXHAUSTED" in error_msg:
+            return JSONResponse(
+                status_code=429,
+                content={"detail": "Gemini API rate limit exceeded. Please wait a moment and try again."}
+            )
         raise HTTPException(
             status_code=500,
-            detail=f"Gemini error: {str(e)}"
+            detail=f"Gemini error: {error_msg}"
         )
 
     if not image_bytes:
@@ -136,8 +150,9 @@ async def generate_orthographic_views(data: ViewsRequest):
     encoded_image = base64.b64encode(image_bytes).decode("utf-8")
 
     views_doc = {
-        "object_type": "orthographic_views",
-        "texture_url": "",
+        "object_type": data.object_type or "orthographic_views",
+        "texture_url": data.texture_url or "",
+        "texture_secondary": data.texture_secondary or "",
         "generated_image_base64": encoded_image,
         "created_at": datetime.utcnow()
     }

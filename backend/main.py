@@ -44,10 +44,12 @@ async def startup_event():
     start_cleanup_task()
 
 @app.get("/")
+@app.head("/")
 def root():
     return {"message": "Backend running successfully"}
 
 
 @app.get("/health")
+@app.head("/health")
 def health():
     return {"status": "ok"}

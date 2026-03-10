@@ -40,6 +40,7 @@ class ImageGen(BaseModel):
     guest_id: str
     object_type: str
     texture_url: str
+    texture_secondary: Optional[str] = None
     base_image_url: Optional[str] = None
     generated_image_base64: str
     created_at: datetime
@@ -51,6 +52,7 @@ class CartItem(BaseModel):
     image_id: str
     object_type: str
     texture_url: str
+    texture_secondary: Optional[str] = None
     generated_image_base64: str
     added_at: datetime
 

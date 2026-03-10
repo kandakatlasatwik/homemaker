@@ -108,7 +108,12 @@ const Hero = ({ type, productType }) => {
                     image={t.image}
                     animationDelay={index * 100}
                     onClick={() => {
-                      navigate(`/select-room?type=${encodeURIComponent(productType)}&texture=${encodeURIComponent(t.image)}`);
+                      if (productType === 'curtain') {
+                        // Curtain: first texture is main curtain, navigate to sheer texture selection
+                        navigate(`/select-sheer-texture?type=curtain&texture=${encodeURIComponent(t.image)}`);
+                      } else {
+                        navigate(`/select-room?type=${encodeURIComponent(productType)}&texture=${encodeURIComponent(t.image)}`);
+                      }
                     }}
                   />
                 ))

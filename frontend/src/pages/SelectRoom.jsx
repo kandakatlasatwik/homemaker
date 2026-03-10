@@ -93,6 +93,7 @@ const SelectRoom = () => {
   // Get params from URL
   const objectType = params.get('type') || 'sofa';
   const textureUrl = params.get('texture');
+  const textureSecondary = params.get('texture_secondary') || null;
 
   const roomImages = roomImagesByType[objectType] || roomImagesByType['sofa'];
   const typeLabel = typeLabels[objectType] || objectType;
@@ -147,15 +148,16 @@ const SelectRoom = () => {
 
   const handleNext = () => {
     if (selectedIndex === null) return;
+    const secondaryParam = textureSecondary ? `&texture_secondary=${encodeURIComponent(textureSecondary)}` : '';
     // Check if the selected image is an uploaded one
     if (selectedIndex >= roomImages.length) {
       const uploadedIdx = selectedIndex - roomImages.length;
       const uploadedImg = uploadedImages[uploadedIdx];
-      navigate(`/generate-image?type=${objectType}&texture=${encodeURIComponent(textureUrl)}&room=-1`, {
+      navigate(`/generate-image?type=${objectType}&texture=${encodeURIComponent(textureUrl)}&room=-1${secondaryParam}`, {
         state: { uploadedRoomImage: uploadedImg.src },
       });
     } else {
-      navigate(`/generate-image?type=${objectType}&texture=${encodeURIComponent(textureUrl)}&room=${selectedIndex}`);
+      navigate(`/generate-image?type=${objectType}&texture=${encodeURIComponent(textureUrl)}&room=${selectedIndex}${secondaryParam}`);
     }
   }
 
@@ -178,9 +180,18 @@ const SelectRoom = () => {
           <div className={`mb-6 p-4 ${theme.bgSecondary} rounded-lg flex items-center gap-4 border ${theme.border} transition-colors duration-300`}>
             <img src={textureUrl} alt="Selected texture" className="w-16 h-16 object-cover rounded" />
             <div>
-              <p className={`text-sm ${theme.textMuted}`}>Selected Texture</p>
+              <p className={`text-sm ${theme.textMuted}`}>{objectType === 'curtain' ? 'Main Curtain Texture' : 'Selected Texture'}</p>
               <p className={`text-sm ${theme.textSecondary}`}>Type: {typeLabel}</p>
             </div>
+            {objectType === 'curtain' && textureSecondary && (
+              <>
+                <img src={textureSecondary} alt="Sheer curtain texture" className="w-16 h-16 object-cover rounded ml-4" />
+                <div>
+                  <p className={`text-sm ${theme.textMuted}`}>Sheer Curtain Texture</p>
+                  <p className={`text-sm ${theme.textSecondary}`}>Center panel</p>
+                </div>
+              </>
+            )}
           </div>
         )}
 
