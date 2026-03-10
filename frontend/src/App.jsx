@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import SelectProducts from './pages/SelectProducts';
 import SelectTexture from './pages/SelectTexture';
+import SelectSheerTexture from './pages/SelectSheerTexture';
 import OwnerPage from './pages/OwnerPage';
 import LoginPage from './pages/LoginPage';
 import NotFound from './pages/NotFound';
@@ -20,10 +21,11 @@ function App() {
           <Route path="/generate-image" element={<GenerateImage />} />       
           <Route path="/" element={<SelectProducts />} />
           <Route path="/select-texture" element={<SelectTexture />} />
+          <Route path="/select-sheer-texture" element={<SelectSheerTexture />} />
           <Route path="/owner" element={<ProtectedRoute><OwnerPage /></ProtectedRoute>} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/select-room" element={<SelectRoom />} />
           <Route path="*" element={<NotFound />} />
-          <Route path="select-room" element={<SelectRoom />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -124,51 +124,112 @@ Under no circumstance modify the background or bed structure.
 
 CURTAIN_DUAL_PROMPT = """
 TASK:
-Perform a dual-fabric curtain visualization using the provided textures.
+Perform a precise dual-fabric curtain visualization using two provided fabric textures.
 
-CURTAIN STRUCTURE:
-The curtain system consists of two distinct curtain types:
+You will receive exactly THREE images in order, each preceded by a label:
+- "Image 1 - BASE ROOM IMAGE:" → The room photo containing the window and existing curtains.
+- "Image 2 - FABRIC TEXTURE:" → The MAIN CURTAIN fabric to use for the LEFT and RIGHT side panels.
+- "Image 3 - SHEER CURTAIN FABRIC TEXTURE:" → The SHEER CURTAIN fabric to use for the CENTER transparent panel.
 
-1. MAIN CURTAINS
-   - Located on the far LEFT and RIGHT sides of the window.
-   - Thick decorative curtains that frame the window.
-   - These curtains are typically heavier fabric.
+CRITICAL: You MUST use BOTH fabric textures. Each texture goes on a DIFFERENT part of the curtain. Do NOT apply the same texture everywhere.
 
-2. SHEER CURTAIN
-   - Located in the CENTER directly in front of the window glass.
-   - Lightweight semi-transparent curtain.
-   - Covers the full window width behind the side curtains.
+CURTAIN LAYOUT IDENTIFICATION:
 
-INPUT TEXTURES:
-- Texture Image 1 → MUST be applied to the MAIN SIDE CURTAINS (left and right panels).
-- Texture Image 2 → MUST be applied to the CENTER SHEER CURTAIN.
+The curtain system contains two distinct fabric layers that must remain separate.
+
+1️⃣ MAIN CURTAINS (SIDE PANELS)
+- Located on the far LEFT and RIGHT sides of the window.
+- These curtains frame the window.
+- They are heavier, opaque decorative curtains.
+- They hang in thick vertical folds.
+
+2️⃣ SHEER CURTAIN (CENTER PANEL)
+- Located directly in the CENTER covering the window glass.
+- Positioned BEHIND the side curtains.
+- This curtain is lightweight and semi-transparent.
+- It spans the width of the window.
+
+TEXTURE ASSIGNMENT (STRICT MAPPING):
+
+- Image 2 (labeled "FABRIC TEXTURE") → Apply ONLY to the LEFT and RIGHT SIDE CURTAINS (main panels).
+- Image 3 (labeled "SHEER CURTAIN FABRIC TEXTURE") → Apply ONLY to the CENTER SHEER CURTAIN.
+- These are TWO DIFFERENT fabrics. The output MUST show BOTH textures on their respective curtain regions.
 
 STRICT RULES:
-- Do NOT swap the textures.
-- Side curtains must ONLY use Texture 1.
-- Center curtain must ONLY use Texture 2.
-- Preserve the exact curtain layout from the original image.
-- Maintain the curtain folds, drapes, rod placement, and proportions.
-- Do not modify the window, wall, furniture, or environment.
 
-FABRIC APPLICATION:
-- Apply the main curtain texture naturally along the folds of the side panels.
-- The sheer curtain must appear semi-transparent and lightweight.
-- Maintain realistic transparency so outside light passes through the sheer curtain.
-- Keep correct scale and orientation of both fabrics.
+1. NEVER swap the textures.
+2. The main curtain texture must NEVER appear on the center sheer curtain.
+3. The sheer texture must NEVER appear on the side curtains.
+4. Do not mix the fabrics.
+5. Each curtain region must contain only its assigned texture.
 
-REALISM REQUIREMENTS:
-- Preserve original lighting and shadows.
-- Maintain natural curtain folds and gravity.
-- Ensure textures follow the vertical draping pattern.
+CURTAIN STRUCTURE PRESERVATION:
 
-Interpret the second texture as the sheer curtain and apply it only to the transparent center curtain behind the side curtains.
+Maintain the exact curtain layout from the original image:
 
-OUTPUT:
+- Curtain rod position
+- Curtain folds and pleats
+- Panel width
+- Panel height
+- Draping direction
+- Curtain tiebacks if present
+
+Do NOT move or resize curtains.
+
+TEXTURE APPLICATION RULES:
+
+MAIN CURTAINS:
+- Apply the main curtain texture naturally across the folds.
+- Preserve realistic fabric stretching along vertical drapes.
+- Maintain pattern scale and orientation.
+
+SHEER CURTAIN:
+- Apply the sheer texture as a lightweight translucent fabric.
+- Maintain semi-transparency so outside light passes through.
+- The sheer curtain must look airy and soft.
+- Avoid strong opacity or heavy texture appearance.
+
+LIGHTING & REALISM:
+
+Preserve the original scene lighting:
+
+- Keep window light passing through the sheer curtain.
+- Maintain natural shadows on the side curtains.
+- Preserve ambient room lighting.
+
+ENVIRONMENT PRESERVATION:
+
+Do NOT modify:
+
+- Window frame
+- Glass
+- Walls
+- Furniture
+- Floor
+- Decorations
+- Lighting
+- Camera angle
+- Perspective
+
+Only the curtain fabrics should change.
+
+VISUAL CONSISTENCY:
+
+- Maintain realistic curtain folds and gravity.
+- Ensure textures follow vertical drape flow.
+- Avoid texture stretching artifacts.
+- Avoid repeating patterns that look artificial.
+
+FINAL RESULT:
+
 Produce a photorealistic interior image where:
-- Left and right curtains use the main curtain texture.
-- The center curtain uses the sheer texture.
-- The overall curtain structure remains identical to the original image.
+
+• LEFT and RIGHT curtains use ONLY the main curtain texture.  
+• CENTER sheer curtain uses ONLY the sheer curtain texture.  
+• The sheer curtain appears semi-transparent and positioned behind the side curtains.  
+• The curtain arrangement remains identical to the original room image.
+
+If the curtain regions cannot be clearly distinguished, preserve the original image without altering the environment.
 """
 
 CARPET_PROMPT = """

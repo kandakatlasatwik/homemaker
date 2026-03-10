@@ -25,6 +25,18 @@ const SelectTexture = () => {
           <span className="hidden sm:inline">{'<-Back'}</span>
         </div>
         </div>
+        {product === 'curtain' && (
+          <div className="container mx-auto px-4 mt-4">
+            <div className={`text-center p-3 rounded-lg ${theme.isDark ? 'bg-amber-900/30 border border-amber-500/30' : 'bg-amber-50 border border-amber-200'}`}>
+              <p className={`text-sm font-medium ${theme.isDark ? 'text-amber-200' : 'text-amber-700'}`}>
+                Step 1 of 2: Select <span className="font-bold">Main Curtain</span> Fabric
+              </p>
+              <p className={`text-xs mt-1 ${theme.isDark ? 'text-amber-300/60' : 'text-amber-600/60'}`}>
+                This fabric will be applied to the side curtain panels
+              </p>
+            </div>
+          </div>
+        )}
         <Hero type="texture" productType={product} />
       </div>
       <Footer />

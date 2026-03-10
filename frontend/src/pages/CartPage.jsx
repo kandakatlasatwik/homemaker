@@ -181,13 +181,31 @@ const CartPage = () => {
                   <p className={`text-sm ${theme.textSecondary} mb-2 transition-colors duration-300`}>
                     Added: {new Date(item.added_at).toLocaleString()}
                   </p>
-                  <div className="mt-4">
-                    <img
-                      src={item.texture_url}
-                      alt="Texture"
-                      className={`w-20 h-20 object-cover rounded-lg border-2 ${theme.isDark ? 'border-gray-600' : 'border-gray-200'}`}
-                      title="Original texture"
-                    />
+                  <div className="mt-4 flex gap-2">
+                    {item.texture_url ? (
+                    <div>
+                      <img
+                        src={item.texture_url}
+                        alt="Texture"
+                        className={`w-20 h-20 object-cover rounded-lg border-2 ${theme.isDark ? 'border-gray-600' : 'border-gray-200'}`}
+                        title={item.object_type === 'curtain' ? 'Main curtain texture' : 'Original texture'}
+                      />
+                      {item.object_type === 'curtain' && (
+                        <p className={`text-xs mt-1 text-center ${theme.textMuted}`}>Main</p>
+                      )}
+                    </div>
+                    ) : null}
+                    {item.object_type === 'curtain' && item.texture_secondary && (
+                      <div>
+                        <img
+                          src={item.texture_secondary}
+                          alt="Sheer texture"
+                          className={`w-20 h-20 object-cover rounded-lg border-2 ${theme.isDark ? 'border-gray-600' : 'border-gray-200'}`}
+                          title="Sheer curtain texture"
+                        />
+                        <p className={`text-xs mt-1 text-center ${theme.textMuted}`}>Sheer</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

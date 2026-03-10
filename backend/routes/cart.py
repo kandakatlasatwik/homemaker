@@ -33,6 +33,7 @@ async def add_to_cart(data: AddToCartRequest):
         "image_id": data.image_id,
         "object_type": image["object_type"],
         "texture_url": image["texture_url"],
+        "texture_secondary": image.get("texture_secondary", ""),
         "generated_image_base64": image["generated_image_base64"],
         "added_at": datetime.utcnow()
     }
