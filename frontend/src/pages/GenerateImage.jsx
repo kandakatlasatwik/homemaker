@@ -2,15 +2,14 @@ import bedroom1 from "../assets/bedrooms/bedroom1.png";
 import bedroom2 from "../assets/bedrooms/bedroom2.png";
 import bedroom3 from "../assets/bedrooms/bedroom3.png";
 import bedroom4 from "../assets/bedrooms/bedroom4.png";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import NavBar from '../components/layout/NavBar';
 import Footer from '../components/layout/Footer';
 import GenerateImageCard from '../components/ui/GenerateImageCard';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeftCircle } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
-import { Grid } from 'ldrs/react'
-import 'ldrs/react/Grid.css'
+import { flippingCardSlides } from '../assets/flippingcard/flippingImages';
 
 import sofaroom1 from "../assets/sofarooms/sofaroom1.png";
 import sofaroom2 from "../assets/sofarooms/sofaroom2.png";
@@ -113,6 +112,11 @@ const GenerateImage = () => {
   const [viewsImage, setViewsImage] = useState(null);
   const [viewsImageId, setViewsImageId] = useState(null);
   const [addingViewsToCart, setAddingViewsToCart] = useState(false);
+  const [viewsFlipIndex, setViewsFlipIndex] = useState(0);
+  const [viewsFlipAngle, setViewsFlipAngle] = useState(0);
+  const viewsDirectionRef = useRef(1);
+  const viewsSlideCount = flippingCardSlides.length;
+  const supportsThreeViews = objectType === 'sofa' || objectType === 'bed';
 
   const api = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -129,6 +133,43 @@ const GenerateImage = () => {
       .catch(err => console.error(err))
       .finally(() => setFabricsLoading(false));
   }, [api, objectType]);
+
+  useEffect(() => {
+    if (!viewsLoading || viewsSlideCount === 0) return;
+
+    const intervalId = setInterval(() => {
+      setViewsFlipIndex((prev) => (prev + 2) % viewsSlideCount);
+      setViewsFlipAngle((prev) => prev + (180 * viewsDirectionRef.current));
+      viewsDirectionRef.current *= -1;
+    }, 4000);
+
+    return () => clearInterval(intervalId);
+  }, [viewsLoading, viewsSlideCount]);
+
+  useEffect(() => {
+    if (supportsThreeViews) return;
+
+    setViewsLoading(false);
+    setViewsImage(null);
+    setViewsImageId(null);
+    setViewsFlipIndex(0);
+    setViewsFlipAngle(0);
+    setAddingViewsToCart(false);
+  }, [supportsThreeViews]);
+
+  const viewsFrontSlide = viewsSlideCount > 0 ? flippingCardSlides[viewsFlipIndex % viewsSlideCount] : null;
+  const viewsBackSlide = viewsSlideCount > 0 ? flippingCardSlides[(viewsFlipIndex + 1) % viewsSlideCount] : null;
+
+  const renderViewsSlide = (slide) => {
+    if (!slide) return null;
+
+    return (
+      <div className={`w-full h-full rounded-xl p-5 bg-linear-to-br ${slide.style} text-white flex flex-col justify-between`}>
+        <p className="text-base sm:text-lg leading-relaxed font-medium">"{slide.quote}"</p>
+        <p className="text-xs sm:text-sm uppercase tracking-wider text-white/80">{slide.author}</p>
+      </div>
+    );
+  };
 
   // Get or create guest ID
   const getGuestId = () => {
@@ -225,6 +266,11 @@ const GenerateImage = () => {
   };
 
   const handleGenerateViews = async () => {
+    if (!supportsThreeViews) {
+      setError('Three views are available only for sofa and bed collections.');
+      return;
+    }
+
     if (!generatedImage) return;
     setViewsLoading(true);
     setError(null);
@@ -380,7 +426,7 @@ const GenerateImage = () => {
         {/* Generate Image button */}
         <div className="mt-4 sm:mt-6 flex justify-center gap-4 flex-wrap">
             <button
-              className="bg-linear-to-r from-amber-500 to-amber-600 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 hover:from-amber-600 hover:to-amber-700 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold"
+              className={`px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold border ${theme.isDark ? 'bg-white text-black border-white/20 hover:bg-gray-200' : 'bg-black text-white border-black/20 hover:bg-gray-800'}`}
             onClick={handleGenerate}
             disabled={loading || (!uploadedRoomImage && isNaN(roomIndex)) || !textureUrl}
           >
@@ -389,7 +435,7 @@ const GenerateImage = () => {
           
           {generatedImage && generatedImageId && (
             <button
-              className="bg-linear-to-r from-green-500 to-green-600 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 hover:from-green-600 hover:to-green-700 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold"
+              className={`px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold border ${theme.isDark ? 'bg-white text-black border-white/20 hover:bg-gray-200' : 'bg-black text-white border-black/20 hover:bg-gray-800'}`}
               onClick={handleAddToCart}
               disabled={addingToCart}
             >
@@ -397,9 +443,9 @@ const GenerateImage = () => {
             </button>
           )}
 
-          {generatedImage && (
+          {generatedImage && supportsThreeViews && (
             <button
-              className="bg-linear-to-r from-purple-500 to-purple-600 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 hover:from-purple-600 hover:to-purple-700 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold"
+              className={`px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold border ${theme.isDark ? 'bg-white text-black border-white/20 hover:bg-gray-200' : 'bg-black text-white border-black/20 hover:bg-gray-800'}`}
               onClick={handleGenerateViews}
               disabled={viewsLoading}
             >
@@ -409,28 +455,33 @@ const GenerateImage = () => {
         </div>
 
         {/* Orthographic Views Section */}
-        {(viewsLoading || viewsImage) && (
+        {supportsThreeViews && (viewsLoading || viewsImage) && (
           <div className="mt-6 sm:mt-8">
             <h3 className={`text-center text-lg sm:text-xl font-semibold mb-4 ${theme.text}`}>
               Orthographic Views
             </h3>
             <div className={`animate-float-up w-full max-w-[95vw] sm:max-w-3xl mx-auto ${theme.bgCard} rounded-2xl ${theme.shadowCard} p-2 sm:p-6 flex flex-col items-center justify-center overflow-hidden border ${theme.border} transition-colors duration-300`}>
               {viewsLoading ? (
-                <div className="relative w-full h-64 sm:h-80 flex flex-col items-center justify-center">
-                  <div className={`absolute inset-0 ${theme.isDark ? 'bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800' : 'bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200'} animate-pulse rounded-xl`} />
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent animate-[shimmer_2s_infinite] rounded-xl" style={{ backgroundSize: '200% 100%' }} />
-                  <div className="relative z-10 flex flex-col items-center gap-4">
-                    <Grid size="70" speed="1.5" color={theme.isDark ? '#a855f7' : '#7e22ce'} />
-                    <div className="flex items-center gap-2">
-                      <span className="text-purple-600 font-semibold text-base sm:text-lg">Generating Views</span>
-                      <span className="flex gap-1">
-                        <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                      </span>
+                <div className="w-full h-64 sm:h-80 flex flex-col items-center justify-center">
+                  <div className="flip-card-container" style={{ height: '100%' }}>
+                    <div className="flip-card" style={{ transform: `rotateY(${viewsFlipAngle}deg)` }}>
+                      <div className={`flip-card-face flip-card-front ${theme.isDark ? '' : 'light'}`}>
+                        {renderViewsSlide(viewsFrontSlide)}
+                      </div>
+                      <div className={`flip-card-face flip-card-back ${theme.isDark ? '' : 'light'}`}>
+                        {renderViewsSlide(viewsBackSlide)}
+                      </div>
                     </div>
-                    <span className={`${theme.textMuted} text-xs sm:text-sm`}>AI is generating orthographic views...</span>
                   </div>
+                  <div className="mt-6 flex items-center gap-2">
+                    <span className={`font-semibold text-base sm:text-lg ${theme.isDark ? 'text-white' : 'text-black'}`}>Generating Views</span>
+                    <span className="flex gap-1">
+                      <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-black'}`} style={{ animationDelay: '0ms' }} />
+                      <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-black'}`} style={{ animationDelay: '150ms' }} />
+                      <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-black'}`} style={{ animationDelay: '300ms' }} />
+                    </span>
+                  </div>
+                  <span className={`${theme.textMuted} text-xs sm:text-sm mt-2`}>AI is generating orthographic views...</span>
                 </div>
               ) : viewsImage ? (
                 <img
@@ -443,7 +494,7 @@ const GenerateImage = () => {
             {viewsImage && viewsImageId && (
               <div className="mt-4 flex justify-center">
                 <button
-                  className="bg-linear-to-r from-green-500 to-green-600 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 hover:from-green-600 hover:to-green-700 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold"
+                  className={`px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold border ${theme.isDark ? 'bg-white text-black border-white/20 hover:bg-gray-200' : 'bg-black text-white border-black/20 hover:bg-gray-800'}`}
                   onClick={handleAddViewsToCart}
                   disabled={addingViewsToCart}
                 >

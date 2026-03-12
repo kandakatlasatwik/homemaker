@@ -290,7 +290,7 @@ const SelectRoom = () => {
         {/* Next button to go to GenerateImage page */}
         {selectedIndex !== null && (
           <button
-            className="fixed bottom-4 left-4 right-4 z-50 pointer-events-auto bg-linear-to-r from-amber-500 to-amber-600 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 hover:from-amber-600 hover:to-amber-700 transform transition-all duration-300 sm:bottom-6 sm:right-6 sm:left-auto sm:w-auto sm:rounded-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base sm:text-lg font-semibold"
+            className={`fixed bottom-4 left-4 right-4 z-50 pointer-events-auto px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 transform transition-all duration-300 sm:bottom-6 sm:right-6 sm:left-auto sm:w-auto sm:rounded-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base sm:text-lg font-semibold border ${theme.isDark ? 'bg-white text-black border-white/20 hover:bg-gray-200' : 'bg-black text-white border-black/20 hover:bg-gray-800'}`}
             onClick={handleNext}
             disabled={!textureUrl}
           >
