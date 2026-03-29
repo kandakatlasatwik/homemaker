@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className={`${theme.footerBg} ${theme.footerText} py-3 mt-8 border-t ${theme.navBorder} transition-colors duration-300 animate-fade-in`}>
       <div className="container mx-auto px-4 flex flex-col sm:flex-row sm:justify-center sm:gap-20 items-center text-base">
         <div className="mb-2 sm:mb-0">
-          <h2 className={`text-base font-semibold mb-1 ${theme.footerHover} hover:cursor-pointer transition-colors duration-300`}>Contact</h2>
+          <h2 className={`text-base font-semibold mb-1 ${theme.footerHover} hover:cursor-pointer transition-colors duration-300`}><a href="https://www.homemakersshops.com/contact">Contact</a></h2>
           <p className={`text-sm ${theme.footerHover} hover:cursor-pointer transition-colors duration-300`}>Email: homemakers216@gmail.com</p>
           <p className={`text-sm ${theme.footerHover} hover:cursor-pointer transition-colors duration-300`}>Phone: +91 98807 08008</p>
               <a
@@ -26,7 +26,7 @@ const Footer = () => {
             <li className={`${theme.footerHover} transition-all duration-300 hover:translate-y-[-2px]`}>
               <a href="https://www.homemakersshops.com" target="_blank" rel="noopener noreferrer" className="hover:underline">Website</a>
             </li>
-            <li className={`${theme.footerHover} transition-all duration-300 hover:translate-y-[-2px]`}>About Us</li>
+            <li className={`${theme.footerHover} transition-all duration-300 hover:translate-y-[-2px]`}><a href="https://www.homemakersshops.com/about">About Us</a></li>
             <li className={`${theme.footerHover} transition-all duration-300 hover:translate-y-[-2px]`}>Careers</li>
             <li className={`${theme.footerHover} transition-all duration-300 hover:translate-y-[-2px]`}>Blog</li>
             <li className={`${theme.footerHover} transition-all duration-300 hover:translate-y-[-2px]`}>Support</li>

@@ -73,7 +73,7 @@ const Hero = ({ type, productType }) => {
           {type !== 'texture' && (
             <>
               <h1 className={`text-4xl md:text-5xl font-bold ${theme.textHeading} text-center mt-8 transition-colors duration-300`}>Welcome to Homemakers</h1>
-              <p className={`text-lg ${theme.textSecondary} text-center transition-colors duration-300`}>Your one-stop shop for home essentials.</p>
+              <p className={`text-lg ${theme.textSecondary} text-center transition-colors duration-300`}>Your one-stop solutions for Homes | Hotels | Hospitals.</p>
             </>
           )}
           {type === 'texture' && (
