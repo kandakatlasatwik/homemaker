@@ -56,15 +56,15 @@ Do not introduce new elements under any circumstances.
 BED_PROMPT = """
 TASK: High-precision material replacement.
 
-Replace ONLY the bedsheet fabric on the bed in the base image using the uploaded bedsheet reference image.
+Replace ONLY the bedsheet fabric AND matching pillow covers on the bed in the base image using the uploaded bedsheet reference image.
 
 STRICT INSTRUCTIONS:
 
-1. Modify ONLY the bedsheet fabric.
+1. Modify ONLY the bedsheet fabric AND the pillow cover fabric.
 2. Do NOT alter:
    - Bed frame
    - Mattress structure
-   - Pillows
+   - Pillow SHAPE or VOLUME (only the fabric cover changes)
    - Headboard
    - Wall
    - Curtains
@@ -84,26 +84,37 @@ STRICT INSTRUCTIONS:
    - Creases
    - Fabric draping
    - Edges tucked under mattress
-   - Pillow placement
+   - Pillow placement and 3D volume
+
+PILLOW TEXTURE RULES:
+
+4. Detect every pillow visible on the bed.
+5. Replace 100% of each pillow's fabric surface with the same reference texture.
+6. All pillows must use the SAME texture as the bedsheet — they are a matching set.
+7. Wrap the texture naturally around the pillow's 3D curved surface.
+8. Respect the pillow's existing highlights, shadows, and creases — do not flatten it.
+9. Corners and edges of pillows must show realistic fabric tension and fold.
+10. If a pillow is partially behind another object, replace only the visible portion.
 
 TEXTURE APPLICATION RULES:
 
-4. Use the uploaded bedsheet image as the exact fabric source.
-5. Map the texture naturally across the existing folds and drapes.
-6. Maintain realistic fabric stretching over curves and edges.
-7. Ensure correct scale of pattern (no oversized or tiny repetition).
-8. Avoid visible tiling or repetition artifacts.
-9. Preserve natural wrinkle direction and gravity flow.
-10. Align pattern direction logically with fabric orientation.
+11. Use the uploaded bedsheet image as the exact fabric source for BOTH bed and pillows.
+12. Map the texture naturally across the existing folds and drapes.
+13. Maintain realistic fabric stretching over curves and edges.
+14. Ensure correct scale of pattern (no oversized or tiny repetition).
+15. Avoid visible tiling or repetition artifacts.
+16. Preserve natural wrinkle direction and gravity flow.
+17. Align pattern direction logically with fabric orientation.
+18. Pattern scale must be consistent between the bedsheet and pillows.
 
 LIGHTING & REALISM:
 
-11. Preserve original lighting direction.
-12. Maintain existing shadows and highlights.
-13. Adapt fabric material response to scene lighting naturally.
-14. No color grading changes.
-15. No stylization.
-16. Photorealistic result only.
+19. Preserve original lighting direction.
+20. Maintain existing shadows and highlights on both bed and pillows.
+21. Adapt fabric material response to scene lighting naturally.
+22. No color grading changes.
+23. No stylization.
+24. Photorealistic result only.
 
 PROHIBITED:
 
@@ -113,13 +124,15 @@ PROHIBITED:
 - No background modifications.
 - No perspective changes.
 - No artificial enhancements.
+- Do NOT leave any pillow with its original fabric unchanged.
+- Do NOT apply a different texture to pillows than the bedsheet.
 
 FINAL RESULT:
 
-A hyper-realistic image where only the bedsheet fabric is replaced with the uploaded reference image, while the entire room, bed structure, lighting, and composition remain pixel-identical to the original.
+A hyper-realistic image where the bedsheet fabric AND all pillow covers are replaced with the uploaded reference texture as a matching set, while the entire room, bed structure, lighting, and composition remain pixel-identical to the original.
 
-If any ambiguity occurs, prioritize preserving the original image unchanged except for the bedsheet fabric.
-Under no circumstance modify the background or bed structure.
+If any ambiguity occurs, prioritize preserving the original image unchanged except for the bedsheet and pillow cover fabrics.
+Under no circumstance modify the background, bed frame, or pillow volume/shape.
 """
 
 CURTAIN_DUAL_PROMPT = """
