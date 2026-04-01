@@ -67,13 +67,33 @@ const Hero = ({ type, productType }) => {
   const { data: fabrics, loading, error } = state;
   const filteredTextures = type === 'texture' ? searchTextures(fabrics, search) : [];
   return (
-    <section className={`w-full ${theme.bg} transition-colors duration-300`}>
+    <section className={`w-full ${theme.bg} transition-colors duration-300 relative overflow-hidden`}>
+      {type !== 'texture' && (
+        <>
+          <div
+            className={`hero-blob hero-blob-left ${theme.isDark ? 'bg-amber-500/20' : 'bg-blue-500/20'}`}
+            aria-hidden="true"
+          />
+          <div
+            className={`hero-blob hero-blob-right ${theme.isDark ? 'bg-orange-400/20' : 'bg-cyan-400/20'}`}
+            aria-hidden="true"
+          />
+        </>
+      )}
       <div className="container mx-auto px-4 grid grid-cols-1 gap-8 items-center min-h-[350px]">
         <div className="flex flex-col justify-center space-y-4">
           {type !== 'texture' && (
             <>
-              <h1 className={`text-4xl md:text-5xl font-bold ${theme.textHeading} text-center mt-8 transition-colors duration-300`}>Welcome to Homemakers</h1>
-              <p className={`text-lg ${theme.textSecondary} text-center transition-colors duration-300`}>Your one-stop solutions for Homes | Hotels | Hospitals.</p>
+              <h1
+                className={`hero-title text-4xl md:text-5xl font-bold text-center mt-8 transition-colors duration-200 bg-clip-text text-transparent ${
+                  theme.isDark
+                    ? 'bg-gradient-to-r from-amber-500 via-orange-400 to-orange-200'
+                    : 'bg-gradient-to-r from-blue-500 via-indigo-600 to-blue-500'
+                }`}
+              >
+                Welcome to Homemakers
+              </h1>
+              <p className={`hero-subtitle text-lg ${theme.textSecondary} text-center transition-colors duration-300`}>Your one-stop solutions for Homes | Hotels | Hospitals.</p>
             </>
           )}
           {type === 'texture' && (
@@ -91,7 +111,7 @@ const Hero = ({ type, productType }) => {
             </div>
           )}
           
-          <div className="grid grid-cols-1 gap-5 sm:grid sm:grid-cols-3 mt-4">
+          <div className="hero-cards grid grid-cols-1 gap-5 sm:grid sm:grid-cols-3 mt-4">
             {type === 'texture' ? (
               loading ? (
                 <div className="col-span-full flex justify-center py-12">

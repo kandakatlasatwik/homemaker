@@ -4,17 +4,19 @@ import { useTheme } from '../../context/ThemeContext';
 const Footer = () => {
   const theme = useTheme();
   return ( 
-    <footer className={`${theme.footerBg} ${theme.footerText} py-3 mt-8 border-t ${theme.navBorder} transition-colors duration-300 animate-fade-in`}>
-      <div className="container mx-auto px-4 flex flex-col sm:flex-row sm:justify-center sm:gap-20 items-center text-base">
-        <div className="mb-2 sm:mb-0">
-          <h2 className={`text-base font-semibold mb-1 ${theme.footerHover} hover:cursor-pointer transition-colors duration-300`}><a href="https://www.homemakersshops.com/contact">Contact</a></h2>
-          <p className={`text-sm ${theme.footerHover} hover:cursor-pointer transition-colors duration-300`}>Email: homemakers216@gmail.com</p>
-          <p className={`text-sm ${theme.footerHover} hover:cursor-pointer transition-colors duration-300`}>Phone: +91 98807 08008</p>
+    <footer className={`${theme.footerBg} ${theme.footerText} py-5 mt-8 border-t ${theme.navBorder} transition-colors duration-300 animate-fade-in`}>
+      <div className="container mx-auto px-4 flex flex-col sm:flex-row sm:justify-center sm:gap-24 items-center text-base">
+        <div className="mb-3 sm:mb-0 text-center sm:text-left">
+          <h2 className={`text-lg font-bold mb-2 tracking-wide uppercase bg-clip-text text-transparent ${theme.isDark ? 'bg-gradient-to-r from-amber-300 via-yellow-300 to-orange-400' : 'bg-gradient-to-r from-blue-700 via-indigo-600 to-cyan-500'} transition-colors duration-300`}>
+            <a href="https://www.homemakersshops.com/contact">Contact</a>
+          </h2>
+          <p className={`text-sm md:text-base font-medium ${theme.footerHover} hover:cursor-pointer transition-colors duration-300`}>Email: homemakers216@gmail.com</p>
+          <p className={`text-sm md:text-base font-medium ${theme.footerHover} hover:cursor-pointer transition-colors duration-300`}>Phone: +91 98807 08008</p>
               <a
                 href="https://www.google.com/maps/place/5t+block,+15,+11th+Main+Rd,+5T+Block,+Vishya+Bank+Colony,+DK+Naik+Nagar,+Jayanagar,+Bengaluru,+Karnataka+560041,+India"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`flex items-center gap-2 mt-2 ${theme.accent} hover:underline hover:cursor-pointer ${theme.footerHover} transition-all duration-300 animate-pulse`}
+                className={`inline-flex items-center gap-2 mt-2 px-2 py-1 rounded-md ${theme.accent} hover:underline hover:cursor-pointer ${theme.footerHover} transition-all duration-300 ${theme.isDark ? 'hover:bg-amber-500/10' : 'hover:bg-amber-100'}`}
                 title="View location on Google Maps"
               >
                 <MapPin size={20} />
@@ -22,7 +24,7 @@ const Footer = () => {
               </a>
         </div>
         <div>
-          <ul className="flex flex-col left-1.5 hover:cursor-pointer text-sm">
+          <ul className="flex flex-col gap-1 hover:cursor-pointer text-sm md:text-base font-medium tracking-wide">
             <li className={`${theme.footerHover} transition-all duration-300 hover:translate-y-[-2px]`}>
               <a href="https://www.homemakersshops.com" target="_blank" rel="noopener noreferrer" className="hover:underline">Website</a>
             </li>
@@ -33,7 +35,7 @@ const Footer = () => {
           </ul>
         </div>
       </div>
-      <div className={`text-center mt-2 text-sm ${theme.textMuted}`}>
+      <div className={`text-center mt-3 text-xs sm:text-sm tracking-wide ${theme.textMuted}`}>
         &copy; 2026 Homemakers. All rights reserved.
       </div>
     </footer>
