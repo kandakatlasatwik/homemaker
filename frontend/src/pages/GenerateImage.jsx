@@ -6,6 +6,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import NavBar from '../components/layout/NavBar';
 import Footer from '../components/layout/Footer';
 import GenerateImageCard from '../components/ui/GenerateImageCard';
+import Waves from '../components/ui/Waves';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeftCircle } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
@@ -323,9 +324,24 @@ const GenerateImage = () => {
   };
 
   return (
-    <div className={`min-h-screen ${theme.bg} transition-colors duration-300 pt-20`}>
+    <div className={`min-h-screen ${theme.bg} transition-colors duration-300 pt-20 relative overflow-hidden`}>
+      <div className="absolute inset-0 pointer-events-none">
+        <Waves
+          lineColor={theme.isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.3)'}
+          backgroundColor={theme.isDark ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.15)'}
+          waveSpeedX={0.0125}
+          waveSpeedY={0.01}
+          waveAmpX={40}
+          waveAmpY={20}
+          friction={0.9}
+          tension={0.01}
+          maxCursorMove={120}
+          xGap={12}
+          yGap={36}
+        />
+      </div>
       <NavBar />
-      <div className="container mx-auto py-4 sm:py-8 px-3 sm:px-4">
+      <div className="container mx-auto py-4 sm:py-8 px-3 sm:px-4 relative z-10">
         {/* Back Button */}
         <div className="sm:text-center mt-2 sm:mt-2.5">
           <div
@@ -505,7 +521,9 @@ const GenerateImage = () => {
           </div>
         )}
       </div>
-      <Footer />
+      <div className="relative z-10">
+        <Footer />
+      </div>
     </div>
   );
 };
