@@ -36,7 +36,8 @@ const GenerateImageCard = ({ generatedImage, loading }) => {
   };
 
   return (
-    <div className={`animate-float-up w-full max-w-lg mx-auto ${theme.bgCard} rounded-2xl ${theme.shadowCard} p-4 sm:p-6 min-h-64 sm:min-h-80 flex flex-col items-center justify-center overflow-hidden border ${theme.border} transition-colors duration-300`}>
+    <div className={`hm-card group animate-float-up relative w-full max-w-lg mx-auto ${theme.bgCard} rounded-2xl ${theme.shadowCard} p-4 sm:p-6 min-h-64 sm:min-h-80 flex flex-col items-center justify-center overflow-hidden border ${theme.border} transition-all duration-500`}>
+      <span className="card-shine" aria-hidden="true" />
       {loading ? (
         <div className="w-full h-64 sm:h-80 flex flex-col items-center justify-center">
           <div className="flip-card-container" style={{ height: '100%' }}>

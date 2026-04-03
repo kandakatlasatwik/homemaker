@@ -312,11 +312,13 @@ const AssistantPage = () => {
             {submissions.map((item, index) => (
               <div
                 key={item.id}
-                className={`animate-float-up relative rounded-2xl overflow-hidden ${theme.shadowCard} hover:shadow-xl transition-shadow duration-300 ${theme.isDark ? 'bg-gray-900' : 'bg-white'} border ${theme.border}`}
+                className={`hm-card product-card animate-float-up relative rounded-2xl overflow-hidden ${theme.shadowCard} hover:shadow-xl transition-all duration-500 ${theme.isDark ? 'bg-gray-900' : 'bg-white'} border ${theme.border}`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="aspect-4/3">
-                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                <div className="aspect-4/3 relative overflow-hidden">
+                  <img src={item.image} alt={item.name} className="hm-card-image product-card-image w-full h-full object-cover" />
+                  <span className="hm-card-overlay product-card-overlay" aria-hidden="true" />
+                  <span className="card-shine" aria-hidden="true" />
                 </div>
 
                 {/* Status badge */}

@@ -12,23 +12,56 @@ import ProtectedRoute from './components/ProtectedRoute';
 import SelectRoom from './pages/SelectRoom';
 import GenerateImage from './pages/GenerateImage';
 import CartPage from './pages/CartPage';
+import { useTheme } from './context/ThemeContext';
+import ClickSpark from './components/ui/ClickSpark';
+
+const sharedSparkConfig = {
+  sparkSize: 10,
+  sparkRadius: 87,
+  sparkCount: 8,
+  duration: 400,
+  easing: 'ease-out',
+  extraScale: 1,
+};
+
+const ThemeSparkWrapper = ({ children }) => {
+  const theme = useTheme();
+
+  return (
+    <div style={{ width: '100%', minHeight: '100vh', position: 'relative' }}>
+      {children}
+      <div style={{ width: '1080px', height: '1080px', position: 'relative' }}>
+        <ClickSpark
+          sparkColor={theme.isDark ? '#ca7a02' : '#2302ca'}
+          {...sharedSparkConfig}
+        />
+      </div>
+    </div>
+  );
+};
+
+const AppRoutes = () => {
+  return (
+    <Routes>
+      <Route path="/login-page" element={<ThemeSparkWrapper><LoginPage /></ThemeSparkWrapper>} />
+      <Route path="/generate-image" element={<GenerateImage />} />
+      <Route path="/" element={<SelectProducts />} />
+      <Route path="/select-texture" element={<ThemeSparkWrapper><SelectTexture /></ThemeSparkWrapper>} />
+      <Route path="/select-sheer-texture" element={<ThemeSparkWrapper><SelectSheerTexture /></ThemeSparkWrapper>} />
+      <Route path="/owner" element={<ThemeSparkWrapper><ProtectedRoute allowedRoles={['seller']}><OwnerPage /></ProtectedRoute></ThemeSparkWrapper>} />
+      <Route path="/assistant" element={<ThemeSparkWrapper><ProtectedRoute allowedRoles={['assistant']}><AssistantPage /></ProtectedRoute></ThemeSparkWrapper>} />
+      <Route path="/cart" element={<ThemeSparkWrapper><CartPage /></ThemeSparkWrapper>} />
+      <Route path="/select-room" element={<ThemeSparkWrapper><SelectRoom /></ThemeSparkWrapper>} />
+      <Route path="*" element={<ThemeSparkWrapper><NotFound /></ThemeSparkWrapper>} />
+    </Routes>
+  );
+};
 
 function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
-        <Routes>
-          <Route path="/login-page" element={<LoginPage />} />   
-          <Route path="/generate-image" element={<GenerateImage />} />       
-          <Route path="/" element={<SelectProducts />} />
-          <Route path="/select-texture" element={<SelectTexture />} />
-          <Route path="/select-sheer-texture" element={<SelectSheerTexture />} />
-          <Route path="/owner" element={<ProtectedRoute allowedRoles={['seller']}><OwnerPage /></ProtectedRoute>} />
-          <Route path="/assistant" element={<ProtectedRoute allowedRoles={['assistant']}><AssistantPage /></ProtectedRoute>} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/select-room" element={<SelectRoom />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AppRoutes />
       </BrowserRouter>
     </ThemeProvider>
   );

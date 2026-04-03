@@ -168,15 +168,19 @@ const CartPage = () => {
             {cartItems.map((item, index) => (
               <div
                 key={item._id}
-                className={`animate-float-up ${theme.bgCard} rounded-xl ${theme.shadowCard} overflow-hidden hover:${theme.shadowCard} transition-shadow duration-300 border ${theme.isDark ? 'border-gray-700' : 'border-gray-200'}`}
+                className={`hm-card product-card animate-float-up relative ${theme.bgCard} rounded-xl ${theme.shadowCard} overflow-hidden transition-all duration-500 border ${theme.isDark ? 'border-gray-700' : 'border-gray-200'}`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <img
-                  src={`data:image/png;base64,${item.generated_image_base64}`}
-                  alt={item.object_type}
-                  className="w-full h-64 object-cover cursor-zoom-in"
-                  onClick={() => setPreviewImage(`data:image/png;base64,${item.generated_image_base64}`)}
-                />
+                <div className="relative overflow-hidden">
+                  <img
+                    src={`data:image/png;base64,${item.generated_image_base64}`}
+                    alt={item.object_type}
+                    className="hm-card-image product-card-image w-full h-64 object-cover cursor-zoom-in"
+                    onClick={() => setPreviewImage(`data:image/png;base64,${item.generated_image_base64}`)}
+                  />
+                  <span className="hm-card-overlay product-card-overlay" aria-hidden="true" />
+                  <span className="card-shine" aria-hidden="true" />
+                </div>
                 <div className="p-4">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className={`text-lg font-semibold ${theme.textHeading} capitalize transition-colors duration-300`}>

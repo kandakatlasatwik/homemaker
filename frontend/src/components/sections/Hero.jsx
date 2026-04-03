@@ -2,6 +2,7 @@ import React, { useState, useEffect, useReducer, useCallback } from "react";
 import { useNavigate } from 'react-router-dom';
 import ProductCard from "../ui/ProductCard";
 import TextureCard from "../ui/TextureCard";
+import GradientText from "../ui/GradientText";
 import { Search, Loader2 } from "lucide-react";
 import { searchTextures } from "../../utils/searchUtils";
 import { useTheme } from '../../context/ThemeContext';
@@ -93,7 +94,16 @@ const Hero = ({ type, productType }) => {
               >
                 Welcome to Homemakers
               </h1>
-              <p className={`hero-subtitle text-lg ${theme.textSecondary} text-center transition-colors duration-300`}>Your one-stop solutions for Homes | Hotels | Hospitals.</p>
+              <p className={`hero-subtitle text-lg text-center transition-colors duration-300`}>
+                <GradientText
+                  colors={["#ffd129", "#B19EEF", "#ffffff"]}
+                  animationSpeed={2}
+                  showBorder={false}
+                  className="custom-class"
+                >
+                  Your one-stop solutions for Homes | Hotels | Hospitals.
+                </GradientText>
+              </p>
             </>
           )}
           {type === 'texture' && (

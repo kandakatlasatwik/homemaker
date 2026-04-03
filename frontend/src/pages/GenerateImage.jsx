@@ -476,7 +476,8 @@ const GenerateImage = () => {
             <h3 className={`text-center text-lg sm:text-xl font-semibold mb-4 ${theme.text}`}>
               Orthographic Views
             </h3>
-            <div className={`animate-float-up w-full max-w-[95vw] sm:max-w-3xl mx-auto ${theme.bgCard} rounded-2xl ${theme.shadowCard} p-2 sm:p-6 flex flex-col items-center justify-center overflow-hidden border ${theme.border} transition-colors duration-300`}>
+            <div className={`hm-card group animate-float-up relative w-full max-w-[95vw] sm:max-w-3xl mx-auto ${theme.bgCard} rounded-2xl ${theme.shadowCard} p-2 sm:p-6 flex flex-col items-center justify-center overflow-hidden border ${theme.border} transition-all duration-500`}>
+              <span className="card-shine" aria-hidden="true" />
               {viewsLoading ? (
                 <div className="w-full h-64 sm:h-80 flex flex-col items-center justify-center">
                   <div className="flip-card-container" style={{ height: '100%' }}>

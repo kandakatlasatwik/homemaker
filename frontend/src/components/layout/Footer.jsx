@@ -1,5 +1,7 @@
 import { MapPin } from "lucide-react";
 import { useTheme } from '../../context/ThemeContext';
+import { Link } from 'react-router-dom';
+import GradientText from '../ui/GradientText';
 
 const Footer = () => {
   const theme = useTheme();
@@ -7,8 +9,17 @@ const Footer = () => {
     <footer className={`${theme.footerBg} ${theme.footerText} py-5 mt-8 border-t ${theme.navBorder} transition-colors duration-300 animate-fade-in`}>
       <div className="container mx-auto px-4 flex flex-col sm:flex-row sm:justify-center sm:gap-24 items-center text-base">
         <div className="mb-3 sm:mb-0 text-center sm:text-left">
-          <h2 className={`text-lg font-bold mb-2 tracking-wide uppercase bg-clip-text text-transparent ${theme.isDark ? 'bg-gradient-to-r from-amber-300 via-yellow-300 to-orange-400' : 'bg-gradient-to-r from-blue-700 via-indigo-600 to-cyan-500'} transition-colors duration-300`}>
-            <a href="https://www.homemakersshops.com/contact">Contact</a>
+          <h2 className="text-lg font-bold mb-2 tracking-wide uppercase transition-colors duration-300">
+            <Link to="/contact">
+              <GradientText
+                colors={["#ffd129", "#B19EEF", "#ffffff"]}
+                animationSpeed={2}
+                showBorder={false}
+                className="custom-class"
+              >
+                Contact
+              </GradientText>
+            </Link>
           </h2>
           <p className={`text-sm md:text-base font-medium ${theme.footerHover} hover:cursor-pointer transition-colors duration-300`}>Email: homemakers216@gmail.com</p>
           <p className={`text-sm md:text-base font-medium ${theme.footerHover} hover:cursor-pointer transition-colors duration-300`}>Phone: +91 98807 08008</p>
