@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useReducer, useCallback } from 'react'
 import { Trash2, ArrowLeftCircle, Check, X, UserPlus } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
+import StarBorder from '../components/ui/StarBorder'
 
 const CATEGORIES = ['sofa', 'curtains', 'bedsheets', 'cushions', 'rugs', 'upholstery', 'other']
 
@@ -265,7 +266,7 @@ const OwnerPage = () => {
       {/* Back Button */}
       <div className="w-full max-w-2xl flex items-center mt-2 mb-4">
         <button
-          className={`flex items-center gap-2 ${theme.text} ${theme.isDark ? 'hover:text-amber-300' : 'hover:text-gray-500'} text-base font-medium px-2 py-1 rounded-lg transition-colors`}
+          className={`flex items-center gap-2 ${theme.text} ${theme.isDark ? 'hover:text-amber-300' : 'hover:text-[#2302ca]'} text-base font-medium px-2 py-1 rounded-lg transition-colors`}
           onClick={handleBack}
         >
           <ArrowLeftCircle size={22} />
@@ -493,8 +494,12 @@ const OwnerPage = () => {
         ) : fabricsState.data.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
             {fabricsState.data.map((fabric, index) => (
-              <div
+              <StarBorder
+                as="div"
                 key={fabric.id}
+                color={theme.isDark ? '#ca7a02' : '#2302ca'}
+                secondaryColor={theme.isDark ? '#ca7a02' : '#2302ca'}
+                speed="5s"
                 className={`hm-card product-card animate-float-up relative group rounded-2xl overflow-hidden ${theme.shadowCard} hover:shadow-xl transition-all duration-500 ${theme.isDark ? 'bg-gray-900' : 'bg-white'} aspect-4/3 border ${theme.border}`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -528,7 +533,7 @@ const OwnerPage = () => {
                   <p className="text-base font-semibold tracking-wide">{fabric.name}</p>
                   <p className="text-xs mt-1 opacity-80">{fabric.color}</p>
                 </div>
-              </div>
+              </StarBorder>
             ))}
           </div>
         ) : (
@@ -551,8 +556,12 @@ const OwnerPage = () => {
         ) : pendingFabrics.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
             {pendingFabrics.map((fabric, index) => (
-              <div
+              <StarBorder
+                as="div"
                 key={fabric.id}
+                color={theme.isDark ? '#ca7a02' : '#2302ca'}
+                secondaryColor={theme.isDark ? '#ca7a02' : '#2302ca'}
+                speed="5s"
                 className={`hm-card product-card animate-float-up relative group rounded-2xl overflow-hidden ${theme.shadowCard} hover:shadow-xl transition-all duration-500 ${theme.isDark ? 'bg-gray-900' : 'bg-white'} border ${theme.border}`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -591,7 +600,7 @@ const OwnerPage = () => {
                     </button>
                   </div>
                 </div>
-              </div>
+              </StarBorder>
             ))}
           </div>
         ) : (

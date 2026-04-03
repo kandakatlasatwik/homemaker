@@ -96,8 +96,8 @@ const Hero = ({ type, productType }) => {
               </h1>
               <p className={`hero-subtitle text-lg text-center transition-colors duration-300`}>
                 <GradientText
-                  colors={["#ffd129", "#B19EEF", "#ffffff"]}
-                  animationSpeed={2}
+                  colors={["#eb8005", "#3707bb", "#d58907", "#041ee7"]}
+                  animationSpeed={3.5}
                   showBorder={false}
                   className="custom-class"
                 >

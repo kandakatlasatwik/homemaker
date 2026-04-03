@@ -51,11 +51,11 @@ const GenerateImageCard = ({ generatedImage, loading }) => {
             </div>
           </div>
           <div className="mt-6 flex items-center gap-2">
-            <span className={`font-semibold text-base sm:text-lg ${theme.isDark ? 'text-white' : 'text-black'}`}>Generating</span>
+            <span className={`font-semibold text-base sm:text-lg ${theme.isDark ? 'text-white' : 'text-[#041ee7]'}`}>Generating</span>
             <span className="flex gap-1">
-              <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-black'}`} style={{ animationDelay: '0ms' }} />
-              <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-black'}`} style={{ animationDelay: '150ms' }} />
-              <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-black'}`} style={{ animationDelay: '300ms' }} />
+              <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-[#041ee7]'}`} style={{ animationDelay: '0ms' }} />
+              <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-[#041ee7]'}`} style={{ animationDelay: '150ms' }} />
+              <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-[#041ee7]'}`} style={{ animationDelay: '300ms' }} />
             </span>
           </div>
           <span className={`${theme.textMuted} text-xs sm:text-sm mt-2`}>AI is crafting your image...</span>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { ArrowLeftCircle, Clock, CheckCircle2, LogOut } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../context/ThemeContext'
+import StarBorder from '../components/ui/StarBorder'
 
 const CATEGORIES = ['sofa', 'curtains', 'bedsheets', 'cushions', 'rugs', 'upholstery', 'other']
 
@@ -144,7 +145,7 @@ const AssistantPage = () => {
       {/* Top Bar */}
       <div className="w-full max-w-2xl flex items-center justify-between mt-2 mb-4">
         <button
-          className={`flex items-center gap-2 ${theme.text} ${theme.isDark ? 'hover:text-amber-300' : 'hover:text-gray-500'} text-base font-medium px-2 py-1 rounded-lg transition-colors`}
+          className={`flex items-center gap-2 ${theme.text} ${theme.isDark ? 'hover:text-amber-300' : 'hover:text-[#2302ca]'} text-base font-medium px-2 py-1 rounded-lg transition-colors`}
           onClick={handleBack}
         >
           <ArrowLeftCircle size={22} />
@@ -310,8 +311,12 @@ const AssistantPage = () => {
         ) : submissions.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
             {submissions.map((item, index) => (
-              <div
+              <StarBorder
+                as="div"
                 key={item.id}
+                color={theme.isDark ? '#ca7a02' : '#2302ca'}
+                secondaryColor={theme.isDark ? '#ca7a02' : '#2302ca'}
+                speed="5s"
                 className={`hm-card product-card animate-float-up relative rounded-2xl overflow-hidden ${theme.shadowCard} hover:shadow-xl transition-all duration-500 ${theme.isDark ? 'bg-gray-900' : 'bg-white'} border ${theme.border}`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -336,7 +341,7 @@ const AssistantPage = () => {
                   <p className={`text-xs ${theme.textMuted} mt-0.5`}>{item.category} &bull; {item.color}</p>
                   <p className={`text-xs ${theme.textMuted}`}>Price: ₹{item.price} &bull; Stock: {item.stock}</p>
                 </div>
-              </div>
+              </StarBorder>
             ))}
           </div>
         ) : (

@@ -1,12 +1,18 @@
 import React from 'react'
 import { useTheme } from '../../context/ThemeContext';
 import texture from "../../assets/images/texture1.png";
+import StarBorder from './StarBorder';
 
 
 const TextureCard = ({ image = texture, name = "Texture Name", description = "Texture description here.", onClick, onImageLoad, animationDelay = 0 }) => {
   const theme = useTheme();
   return (
-    <div
+    <StarBorder
+      as="button"
+      type="button"
+      color={theme.isDark ? '#ca7a02' : '#2302ca'}
+      secondaryColor={theme.isDark ? '#ca7a02' : '#2302ca'}
+      speed="5s"
       className={`hm-card product-card animate-float-up relative flex group hover:cursor-pointer transform transition-all duration-500 rounded-2xl sm:rounded-4xl aspect-[4/3] w-full h-full overflow-hidden border ${theme.isDark ? 'border-amber-500/20 hover:border-amber-400/60' : 'border-gray-200 hover:border-gray-400'} ${theme.shadowCard}`}
       style={{ animationDelay: `${animationDelay}ms` }}
       onClick={onClick}
@@ -23,7 +29,7 @@ const TextureCard = ({ image = texture, name = "Texture Name", description = "Te
         {name}
         <div className={`text-xs mt-1 ${theme.isDark ? 'opacity-80' : 'opacity-60'}`}>{description}</div>
       </div>
-    </div>
+    </StarBorder>
   );
 }
 

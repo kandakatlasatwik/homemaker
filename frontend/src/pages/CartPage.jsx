@@ -4,6 +4,7 @@ import NavBar from '../components/layout/NavBar';
 import Footer from '../components/layout/Footer';
 import '../App.css';
 import { useTheme } from '../context/ThemeContext';
+import StarBorder from '../components/ui/StarBorder';
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
@@ -117,13 +118,12 @@ const CartPage = () => {
       <NavBar />
       
       <div className="grow container mx-auto px-4 py-8">
-        <div className="mb-6">
+        <div className="mb-6 flex justify-center">
           <button
             onClick={() => navigate(-1)}
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border ${theme.isDark ? 'border-gray-600 text-gray-200 hover:bg-gray-800' : 'border-gray-300 text-gray-700 hover:bg-gray-100'} transition-colors duration-300`}
+            className={`inline-flex items-center justify-center px-6 py-3 rounded-full shadow-sm transition-all duration-300 ${theme.btnBack}`}
           >
-            <span aria-hidden="true">←</span>
-            <span>Back</span>
+            <span>{'<-Back'}</span>
           </button>
         </div>
 
@@ -158,7 +158,7 @@ const CartPage = () => {
             </p>
             <a
               href="/"
-              className={`inline-block px-8 py-3 ${theme.isDark ? 'bg-amber-500 hover:bg-amber-600 text-black' : 'bg-purple-600 hover:bg-purple-700 text-white'} rounded-lg transition-colors duration-300 font-medium`}
+              className={`inline-block px-8 py-3 ${theme.isDark ? 'bg-[#ca7a02] hover:bg-[#b56c02] text-black' : 'bg-[#2302ca] hover:bg-[#1d02a8] text-white'} rounded-lg transition-colors duration-300 font-medium`}
             >
               Start Creating
             </a>
@@ -166,8 +166,12 @@ const CartPage = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {cartItems.map((item, index) => (
-              <div
+              <StarBorder
+                as="div"
                 key={item._id}
+                color={theme.isDark ? '#ca7a02' : '#2302ca'}
+                secondaryColor={theme.isDark ? '#ca7a02' : '#2302ca'}
+                speed="5s"
                 className={`hm-card product-card animate-float-up relative ${theme.bgCard} rounded-xl ${theme.shadowCard} overflow-hidden transition-all duration-500 border ${theme.isDark ? 'border-gray-700' : 'border-gray-200'}`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -237,7 +241,7 @@ const CartPage = () => {
                     )}
                   </div>
                 </div>
-              </div>
+              </StarBorder>
             ))}
           </div>
         )}

@@ -32,9 +32,9 @@ const ProductCard = ({ onClick, type, image, animationDelay = 0 }) => {
     <StarBorder
       as="button"
       type="button"
-      color={theme.isDark ? '#ffb92d' : '#0b22f5'}
-      secondaryColor={theme.isDark ? '#ffb92d' : '#0b22f5'}
-      speed="6s"
+      color={theme.isDark ? '#ca7a02' : '#2302ca'}
+      secondaryColor={theme.isDark ? '#ca7a02' : '#2302ca'}
+      speed="5s"
       className={`product-card animate-float-up relative flex group hover:cursor-pointer transform transition-all duration-500 rounded-2xl sm:rounded-4xl aspect-[4/3] w-full h-full overflow-hidden ${theme.shadowCard}`}
       style={{ animationDelay: `${animationDelay}ms` }}
       onClick={handleClick}

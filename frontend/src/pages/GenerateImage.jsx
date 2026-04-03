@@ -374,9 +374,9 @@ const GenerateImage = () => {
         {objectType === 'curtain' && !fabricsLoading && curtainFabrics.length > 0 && (
           <div className="mb-6 sm:mb-8 space-y-5 max-w-2xl mx-auto">
             {/* Main Curtain Row */}
-            <div className={`rounded-2xl p-4 sm:p-5 border ${theme.isDark ? 'bg-gray-900/80 border-amber-500/30' : 'bg-white border-gray-200'} shadow-lg backdrop-blur-sm transition-all duration-300`}>
-              <h3 className={`text-sm sm:text-base font-bold mb-3 tracking-wide uppercase flex items-center gap-2 ${theme.isDark ? 'text-amber-300' : 'text-amber-700'}`}>
-                <span className="inline-block w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]"></span>
+            <div className={`rounded-2xl p-4 sm:p-5 border ${theme.isDark ? 'bg-gray-900/80 border-amber-500/30' : 'bg-white border-[#041ee7]/30'} shadow-lg backdrop-blur-sm transition-all duration-300`}>
+              <h3 className={`text-sm sm:text-base font-bold mb-3 tracking-wide uppercase flex items-center gap-2 ${theme.isDark ? 'text-amber-300' : 'text-[#041ee7]'}`}>
+                <span className={`inline-block w-3 h-3 rounded-full ${theme.isDark ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]' : 'bg-[#041ee7] shadow-[0_0_8px_rgba(4,30,231,0.6)]'}`}></span>
                 Main Curtain
               </h3>
               <div
@@ -392,8 +392,10 @@ const GenerateImage = () => {
                     key={`main-${t.id}`}
                     className={`snap-center shrink-0 w-[4.5rem] h-[4.5rem] sm:w-24 sm:h-24 rounded-xl overflow-hidden cursor-pointer border-[2.5px] transition-all duration-300 ease-in-out ${
                       textureUrl === t.image
-                        ? 'border-amber-500 ring-[3px] ring-amber-400/60 shadow-[0_0_16px_rgba(245,158,11,0.45)] scale-105 z-10'
-                        : `${theme.isDark ? 'border-gray-700 hover:border-amber-400/70' : 'border-gray-200 hover:border-amber-400'} hover:shadow-sm hover:scale-[1.03]`
+                        ? theme.isDark
+                          ? 'border-amber-500 ring-[3px] ring-amber-400/60 shadow-[0_0_16px_rgba(245,158,11,0.45)] scale-105 z-10'
+                          : 'border-[#041ee7] ring-[3px] ring-[#041ee7]/50 shadow-[0_0_16px_rgba(4,30,231,0.45)] scale-105 z-10'
+                        : `${theme.isDark ? 'border-gray-700 hover:border-amber-400/70' : 'border-gray-200 hover:border-[#041ee7]'} hover:shadow-sm hover:scale-[1.03]`
                     }`}
                     onClick={() => setTextureUrl(t.image)}
                     title={t.name}
@@ -405,9 +407,9 @@ const GenerateImage = () => {
             </div>
 
             {/* Sheer Curtain Row */}
-            <div className={`rounded-2xl p-4 sm:p-5 border ${theme.isDark ? 'bg-gray-900/80 border-purple-500/30' : 'bg-white border-gray-200'} shadow-lg backdrop-blur-sm transition-all duration-300`}>
-              <h3 className={`text-sm sm:text-base font-bold mb-3 tracking-wide uppercase flex items-center gap-2 ${theme.isDark ? 'text-purple-300' : 'text-purple-700'}`}>
-                <span className="inline-block w-3 h-3 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]"></span>
+            <div className={`rounded-2xl p-4 sm:p-5 border ${theme.isDark ? 'bg-gray-900/80 border-purple-500/30' : 'bg-white border-[#041ee7]/30'} shadow-lg backdrop-blur-sm transition-all duration-300`}>
+              <h3 className={`text-sm sm:text-base font-bold mb-3 tracking-wide uppercase flex items-center gap-2 ${theme.isDark ? 'text-purple-300' : 'text-[#041ee7]'}`}>
+                <span className={`inline-block w-3 h-3 rounded-full ${theme.isDark ? 'bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]' : 'bg-[#041ee7] shadow-[0_0_8px_rgba(4,30,231,0.6)]'}`}></span>
                 Sheer Curtain
               </h3>
               <div
@@ -423,8 +425,10 @@ const GenerateImage = () => {
                     key={`sheer-${t.id}`}
                     className={`snap-center shrink-0 w-[4.5rem] h-[4.5rem] sm:w-24 sm:h-24 rounded-xl overflow-hidden cursor-pointer border-[2.5px] transition-all duration-300 ease-in-out ${
                       textureSecondary === t.image
-                        ? 'border-purple-500 ring-[3px] ring-purple-400/60 shadow-[0_0_16px_rgba(168,85,247,0.45)] scale-105 z-10'
-                        : `${theme.isDark ? 'border-gray-700 hover:border-purple-400/70' : 'border-gray-200 hover:border-purple-400'} hover:shadow-sm hover:scale-[1.03]`
+                        ? theme.isDark
+                          ? 'border-purple-500 ring-[3px] ring-purple-400/60 shadow-[0_0_16px_rgba(168,85,247,0.45)] scale-105 z-10'
+                          : 'border-[#041ee7] ring-[3px] ring-[#041ee7]/50 shadow-[0_0_16px_rgba(4,30,231,0.45)] scale-105 z-10'
+                        : `${theme.isDark ? 'border-gray-700 hover:border-purple-400/70' : 'border-gray-200 hover:border-[#041ee7]'} hover:shadow-sm hover:scale-[1.03]`
                     }`}
                     onClick={() => setTextureSecondary(t.image)}
                     title={t.name}
@@ -491,11 +495,11 @@ const GenerateImage = () => {
                     </div>
                   </div>
                   <div className="mt-6 flex items-center gap-2">
-                    <span className={`font-semibold text-base sm:text-lg ${theme.isDark ? 'text-white' : 'text-black'}`}>Generating Views</span>
+                    <span className={`font-semibold text-base sm:text-lg ${theme.isDark ? 'text-white' : 'text-[#041ee7]'}`}>Generating Views</span>
                     <span className="flex gap-1">
-                      <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-black'}`} style={{ animationDelay: '0ms' }} />
-                      <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-black'}`} style={{ animationDelay: '150ms' }} />
-                      <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-black'}`} style={{ animationDelay: '300ms' }} />
+                      <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-[#041ee7]'}`} style={{ animationDelay: '0ms' }} />
+                      <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-[#041ee7]'}`} style={{ animationDelay: '150ms' }} />
+                      <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-[#041ee7]'}`} style={{ animationDelay: '300ms' }} />
                     </span>
                   </div>
                   <span className={`${theme.textMuted} text-xs sm:text-sm mt-2`}>AI is generating orthographic views...</span>
