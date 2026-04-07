@@ -28,9 +28,19 @@ const ThemeSparkWrapper = ({ children }) => {
   const theme = useTheme();
 
   return (
-    <div style={{ width: '100%', minHeight: '100vh', position: 'relative' }}>
+    <div style={{ width: '100%', minHeight: '100vh', position: 'relative', overflowX: 'hidden' }}>
       {children}
-      <div style={{ width: '1080px', height: '1080px', position: 'relative' }}>
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          width: '100vw',
+          height: '100vh',
+          overflow: 'hidden',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }}
+      >
         <ClickSpark
           sparkColor={theme.isDark ? '#ca7a02' : '#2302ca'}
           {...sharedSparkConfig}
