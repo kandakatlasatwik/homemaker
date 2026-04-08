@@ -2,7 +2,6 @@ import React, { useState, useEffect, useReducer, useCallback } from "react";
 import { useNavigate } from 'react-router-dom';
 import ProductCard from "../ui/ProductCard";
 import TextureCard from "../ui/TextureCard";
-import GradientText from "../ui/GradientText";
 import { Search, Loader2 } from "lucide-react";
 import { searchTextures } from "../../utils/searchUtils";
 import { useTheme } from '../../context/ThemeContext';
@@ -86,23 +85,18 @@ const Hero = ({ type, productType }) => {
           {type !== 'texture' && (
             <>
               <h1
-                className={`hero-title text-4xl md:text-5xl font-bold text-center mt-8 transition-colors duration-200 bg-clip-text text-transparent ${
-                  theme.isDark
-                    ? 'bg-gradient-to-r from-amber-500 via-orange-400 to-orange-200'
-                    : 'bg-gradient-to-r from-blue-500 via-indigo-600 to-blue-500'
+                className={`hero-title text-4xl md:text-5xl font-bold text-center mt-8 transition-colors duration-200 ${
+                  theme.isDark ? 'text-white' : 'text-[#041ee7]'
                 }`}
               >
                 Welcome to Homemakers
               </h1>
-              <p className={`hero-subtitle text-lg text-center transition-colors duration-300`}>
-                <GradientText
-                  colors={["#eb8005", "#3707bb", "#d58907", "#041ee7"]}
-                  animationSpeed={3.5}
-                  showBorder={false}
-                  className="custom-class"
-                >
-                  Your one-stop solutions for Homes | Hotels | Hospitals.
-                </GradientText>
+              <p
+                className={`hero-subtitle text-lg text-center transition-colors duration-300 ${
+                  theme.isDark ? 'text-white' : 'text-[#041ee7]'
+                }`}
+              >
+                CREATE YOUR OWN COLOUR for your curtains, Blinds, Sofa , Bedsheets & cushions for Home | Hotels | Hospitals.
               </p>
             </>
           )}

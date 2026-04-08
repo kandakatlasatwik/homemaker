@@ -2,6 +2,7 @@ import React from 'react';
 import { ShoppingCart, Sun, Moon, LogIn } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
+import homeMakersLogo from '../../assets/Home maker logo.avif';
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -13,13 +14,17 @@ const NavBar = () => {
           <div className={`w-full h-full ${theme.glow}`} />
       </div>
       <div className={`flex flex-row items-center justify-between px-4 sm:px-8 py-3 h-20 ${theme.navBg} w-full backdrop-blur-md relative z-10 transition-colors duration-300`}>
-          <h1
-          className={`text-2xl sm:text-3xl font-bold ${theme.navText} rounded-lg attractive-border hover:cursor-pointer cursor-pointer transition-colors duration-300`}
+          <div
+          className={`ml-4 sm:ml-6 inline-flex w-fit translate-y-1 sm:translate-y-2 ${theme.isDark ? 'bg-white rounded-xl p-2 border border-white/40' : ''}`}
           onClick={() => navigate('/')}
           title="Go to Home"
         >
-          Homemakers
-        </h1>
+          <img
+            src={homeMakersLogo}
+            alt="Homemakers"
+            className="h-10 sm:h-12 w-auto rounded-lg attractive-border hover:cursor-pointer cursor-pointer"
+          />
+        </div>
         <div className="flex flex-row items-center space-x-4 sm:space-x-6 ml-auto">
               <p 
                 className={`${theme.navText} cursor-pointer flex items-center gap-1 ${theme.navHover} transition-colors duration-300`}

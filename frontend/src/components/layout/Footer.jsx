@@ -1,7 +1,5 @@
 import { MapPin } from "lucide-react";
 import { useTheme } from '../../context/ThemeContext';
-import { Link } from 'react-router-dom';
-import GradientText from '../ui/GradientText';
 
 const Footer = () => {
   const theme = useTheme();
@@ -10,16 +8,12 @@ const Footer = () => {
       <div className="container mx-auto px-4 flex flex-col sm:flex-row sm:justify-center sm:gap-24 items-center text-base">
         <div className="mb-3 sm:mb-0 text-center sm:text-left">
           <h2 className="text-lg font-bold mb-2 tracking-wide uppercase transition-colors duration-300">
-            <Link to="/contact">
-              <GradientText
-                colors={["#ffd129", "#B19EEF", "#ffffff"]}
-                animationSpeed={2}
-                showBorder={false}
-                className="custom-class"
-              >
-                Contact
-              </GradientText>
-            </Link>
+            <a
+              href="https://www.homemakersshops.com/contact"
+              className={`hover:underline ${theme.isDark ? 'text-white' : 'text-[#041ee7]'}`}
+            >
+              Contact
+            </a>
           </h2>
           <p className={`text-sm md:text-base font-medium ${theme.footerHover} hover:cursor-pointer transition-colors duration-300`}>Email: homemakers216@gmail.com</p>
           <p className={`text-sm md:text-base font-medium ${theme.footerHover} hover:cursor-pointer transition-colors duration-300`}>Phone: +91 98807 08008</p>
