@@ -446,7 +446,7 @@ const GenerateImage = () => {
         {/* Generate Image button */}
         <div className="mt-4 sm:mt-6 flex justify-center gap-4 flex-wrap">
             <button
-                className={`px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold border ${!loading ? 'animate-pulse' : ''} ${theme.isDark ? 'bg-white text-black border-white/20 hover:bg-gray-200' : 'bg-black text-white border-black/20 hover:bg-gray-800'}`}
+                className={`px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold border ${!loading && !generatedImage ? 'animate-pulse' : ''} ${theme.isDark ? 'bg-white text-black border-white/20 hover:bg-gray-200' : 'bg-[#0b22f5] text-white border-[#0b22f5]/70 hover:bg-[#0a1ed6]'}`}
             onClick={handleGenerate}
             disabled={loading || (!uploadedRoomImage && isNaN(roomIndex)) || !textureUrl}
           >
