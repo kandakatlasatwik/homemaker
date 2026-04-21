@@ -35,7 +35,7 @@ const OwnerPage = () => {
   const [submitting, setSubmitting] = useState(false)
   const [activeCategory, setActiveCategory] = useState('curtains')
 
-  const api = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+  const api = import.meta.env.VITE_API_URL || 'https://homemakerbackend.onrender.com'
 
   // --- Fabric list state ---
   const [fabricsState, dispatch] = useReducer(fabricsReducer, {

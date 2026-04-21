@@ -23,7 +23,7 @@ const AssistantPage = () => {
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
-  const api = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+  const api = import.meta.env.VITE_API_URL || 'https://homemakerbackend.onrender.com'
 
   // --- Submissions list ---
   const [submissions, setSubmissions] = useState([])

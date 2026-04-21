@@ -118,7 +118,7 @@ const GenerateImage = () => {
   const viewsSlideCount = flippingCardSlides.length;
   const supportsThreeViews = objectType === 'sofa' || objectType === 'bed';
 
-  const api = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+  const api = import.meta.env.VITE_API_URL || 'https://homemakerbackend.onrender.com';
 
   // Fetch curtain fabrics for inline texture switching
   useEffect(() => {

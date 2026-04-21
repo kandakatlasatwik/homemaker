@@ -40,7 +40,7 @@ const Hero = ({ type, productType }) => {
     error: null,
   });
 
-  const api = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+  const api = import.meta.env.VITE_API_URL || 'https://homemakerbackend.onrender.com';
 
   const fetchFabrics = useCallback((category) => {
     dispatch({ type: 'FETCH_START' });

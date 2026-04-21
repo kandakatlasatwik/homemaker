@@ -12,11 +12,15 @@ app = FastAPI(title="Fabric Visualizer API")
 
 # Enable CORS for frontend connection
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
-# Ensure the deployed frontend URL is allowed as well
+# Ensure deployed frontend URLs are allowed as well
 allowed_origins = [FRONTEND_URL]
-prod_frontend = "https://homemakers.onrender.com"
-if prod_frontend not in allowed_origins:
-    allowed_origins.append(prod_frontend)
+prod_frontends = [
+    "https://homemakers.onrender.com",
+    "https://ai.homemakersshops.com",
+]
+for origin in prod_frontends:
+    if origin not in allowed_origins:
+        allowed_origins.append(origin)
 # Always allow localhost for development
 if "http://localhost:5173" not in allowed_origins:
     allowed_origins.append("http://localhost:5173")

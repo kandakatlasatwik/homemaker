@@ -35,7 +35,7 @@ const LoginPage = () => {
     if (!validate()) return
     setSubmitting(true)
 
-    const api = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+    const api = import.meta.env.VITE_API_URL || 'https://homemakerbackend.onrender.com'
     console.log('Attempting login to:', `${api}/seller/login`)
     try {
       const body = new URLSearchParams()
@@ -196,7 +196,7 @@ const LoginPage = () => {
                 return
               }
               setRegistering(true)
-              const api = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+              const api = import.meta.env.VITE_API_URL || 'https://homemakerbackend.onrender.com'
               try {
                 const res = await fetch(`${api}/seller/register-assistant-self`, {
                   method: 'POST',

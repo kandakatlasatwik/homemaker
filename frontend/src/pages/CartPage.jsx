@@ -5,7 +5,7 @@ import Footer from '../components/layout/Footer';
 import '../App.css';
 import { useTheme } from '../context/ThemeContext';
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API_URL = import.meta.env.VITE_API_URL || "https://homemakerbackend.onrender.com";
 
 const CartPage = () => {
   const navigate = useNavigate();
