@@ -36,7 +36,8 @@ const GenerateImageCard = ({ generatedImage, loading }) => {
   };
 
   return (
-    <div className={`animate-float-up w-full max-w-lg mx-auto ${theme.bgCard} rounded-2xl ${theme.shadowCard} p-4 sm:p-6 min-h-64 sm:min-h-80 flex flex-col items-center justify-center overflow-hidden border ${theme.border} transition-colors duration-300`}>
+    <div className={`hm-card group animate-float-up relative w-full max-w-lg mx-auto ${theme.bgCard} rounded-2xl ${theme.shadowCard} p-4 sm:p-6 min-h-64 sm:min-h-80 flex flex-col items-center justify-center overflow-hidden border ${theme.border} transition-all duration-500`}>
+      <span className="card-shine" aria-hidden="true" />
       {loading ? (
         <div className="w-full h-64 sm:h-80 flex flex-col items-center justify-center">
           <div className="flip-card-container" style={{ height: '100%' }}>
@@ -50,11 +51,11 @@ const GenerateImageCard = ({ generatedImage, loading }) => {
             </div>
           </div>
           <div className="mt-6 flex items-center gap-2">
-            <span className={`font-semibold text-base sm:text-lg ${theme.isDark ? 'text-white' : 'text-black'}`}>Generating</span>
+            <span className={`font-semibold text-base sm:text-lg ${theme.isDark ? 'text-white' : 'text-[#041ee7]'}`}>Generating</span>
             <span className="flex gap-1">
-              <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-black'}`} style={{ animationDelay: '0ms' }} />
-              <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-black'}`} style={{ animationDelay: '150ms' }} />
-              <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-black'}`} style={{ animationDelay: '300ms' }} />
+              <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-[#041ee7]'}`} style={{ animationDelay: '0ms' }} />
+              <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-[#041ee7]'}`} style={{ animationDelay: '150ms' }} />
+              <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-[#041ee7]'}`} style={{ animationDelay: '300ms' }} />
             </span>
           </div>
           <span className={`${theme.textMuted} text-xs sm:text-sm mt-2`}>AI is crafting your image...</span>

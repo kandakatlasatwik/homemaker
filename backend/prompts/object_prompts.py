@@ -56,15 +56,15 @@ Do not introduce new elements under any circumstances.
 BED_PROMPT = """
 TASK: High-precision material replacement.
 
-Replace ONLY the bedsheet fabric on the bed in the base image using the uploaded bedsheet reference image.
+Replace ONLY the bedsheet fabric AND matching pillow covers on the bed in the base image using the uploaded bedsheet reference image.
 
 STRICT INSTRUCTIONS:
 
-1. Modify ONLY the bedsheet fabric.
+1. Modify ONLY the bedsheet fabric AND the pillow cover fabric.
 2. Do NOT alter:
    - Bed frame
    - Mattress structure
-   - Pillows
+   - Pillow SHAPE or VOLUME (only the fabric cover changes)
    - Headboard
    - Wall
    - Curtains
@@ -84,26 +84,37 @@ STRICT INSTRUCTIONS:
    - Creases
    - Fabric draping
    - Edges tucked under mattress
-   - Pillow placement
+   - Pillow placement and 3D volume
+
+PILLOW TEXTURE RULES:
+
+4. Detect every pillow visible on the bed.
+5. Replace 100% of each pillow's fabric surface with the same reference texture.
+6. All pillows must use the SAME texture as the bedsheet — they are a matching set.
+7. Wrap the texture naturally around the pillow's 3D curved surface.
+8. Respect the pillow's existing highlights, shadows, and creases — do not flatten it.
+9. Corners and edges of pillows must show realistic fabric tension and fold.
+10. If a pillow is partially behind another object, replace only the visible portion.
 
 TEXTURE APPLICATION RULES:
 
-4. Use the uploaded bedsheet image as the exact fabric source.
-5. Map the texture naturally across the existing folds and drapes.
-6. Maintain realistic fabric stretching over curves and edges.
-7. Ensure correct scale of pattern (no oversized or tiny repetition).
-8. Avoid visible tiling or repetition artifacts.
-9. Preserve natural wrinkle direction and gravity flow.
-10. Align pattern direction logically with fabric orientation.
+11. Use the uploaded bedsheet image as the exact fabric source for BOTH bed and pillows.
+12. Map the texture naturally across the existing folds and drapes.
+13. Maintain realistic fabric stretching over curves and edges.
+14. Ensure correct scale of pattern (no oversized or tiny repetition).
+15. Avoid visible tiling or repetition artifacts.
+16. Preserve natural wrinkle direction and gravity flow.
+17. Align pattern direction logically with fabric orientation.
+18. Pattern scale must be consistent between the bedsheet and pillows.
 
 LIGHTING & REALISM:
 
-11. Preserve original lighting direction.
-12. Maintain existing shadows and highlights.
-13. Adapt fabric material response to scene lighting naturally.
-14. No color grading changes.
-15. No stylization.
-16. Photorealistic result only.
+19. Preserve original lighting direction.
+20. Maintain existing shadows and highlights on both bed and pillows.
+21. Adapt fabric material response to scene lighting naturally.
+22. No color grading changes.
+23. No stylization.
+24. Photorealistic result only.
 
 PROHIBITED:
 
@@ -113,123 +124,200 @@ PROHIBITED:
 - No background modifications.
 - No perspective changes.
 - No artificial enhancements.
+- Do NOT leave any pillow with its original fabric unchanged.
+- Do NOT apply a different texture to pillows than the bedsheet.
 
 FINAL RESULT:
 
-A hyper-realistic image where only the bedsheet fabric is replaced with the uploaded reference image, while the entire room, bed structure, lighting, and composition remain pixel-identical to the original.
+A hyper-realistic image where the bedsheet fabric AND all pillow covers are replaced with the uploaded reference texture as a matching set, while the entire room, bed structure, lighting, and composition remain pixel-identical to the original.
 
-If any ambiguity occurs, prioritize preserving the original image unchanged except for the bedsheet fabric.
-Under no circumstance modify the background or bed structure.
+If any ambiguity occurs, prioritize preserving the original image unchanged except for the bedsheet and pillow cover fabrics.
+Under no circumstance modify the background, bed frame, or pillow volume/shape.
 """
 
 CURTAIN_DUAL_PROMPT = """
-TASK:
-Perform a precise dual-fabric curtain visualization using two provided fabric textures.
+You are a photorealistic interior visualization engine specialized in fabric rendering.
+Your only job: replace curtain materials while preserving everything else perfectly.
 
-You will receive exactly THREE images in order, each preceded by a label:
-- "Image 1 - BASE ROOM IMAGE:" → The room photo containing the window and existing curtains.
-- "Image 2 - FABRIC TEXTURE:" → The MAIN CURTAIN fabric to use for the LEFT and RIGHT side panels.
-- "Image 3 - SHEER CURTAIN FABRIC TEXTURE:" → The SHEER CURTAIN fabric to use for the CENTER transparent panel.
+═══════════════════════════════════════════════════════════
+INPUT CONTRACT
+═══════════════════════════════════════════════════════════
 
-CRITICAL: You MUST use BOTH fabric textures. Each texture goes on a DIFFERENT part of the curtain. Do NOT apply the same texture everywhere.
+Image 1  →  Base room photograph
+           → This is the GROUND TRUTH for: room geometry, lighting, perspective,
+             furniture, walls, floor, ceiling, window, and curtain structure
+           → NEVER alter anything outside the curtain fabric surfaces
 
-CURTAIN LAYOUT IDENTIFICATION:
+Image 2  →  Main texture (opaque fabric)
+           → Thick, dense, solid — blocks all light behind it
 
-The curtain system contains two distinct fabric layers that must remain separate.
+Image 3  →  Sheer texture (translucent fabric)
+           → Thin, gauzy, lightweight — light passes THROUGH it
+           → This is NOT a solid material. Treat it like tinted glass.
 
-1️⃣ MAIN CURTAINS (SIDE PANELS)
-- Located on the far LEFT and RIGHT sides of the window.
-- These curtains frame the window.
-- They are heavier, opaque decorative curtains.
-- They hang in thick vertical folds.
+═══════════════════════════════════════════════════════════
+PHASE 1 — DEEP SCENE PARSING
+═══════════════════════════════════════════════════════════
 
-2️⃣ SHEER CURTAIN (CENTER PANEL)
-- Located directly in the CENTER covering the window glass.
-- Positioned BEHIND the side curtains.
-- This curtain is lightweight and semi-transparent.
-- It spans the width of the window.
+Before touching any pixel, perform a full scene audit:
 
-TEXTURE ASSIGNMENT (STRICT MAPPING):
+1.1 LAYER DETECTION
+    Curtains in a room exist in depth layers:
+    → BACK LAYER   : Panels mounted closest to the window glass (usually sheer)
+    → FRONT LAYER  : Panels mounted in front of the back layer (usually opaque)
+    → SINGLE LAYER : Only one type of curtain present
 
-- Image 2 (labeled "FABRIC TEXTURE") → Apply ONLY to the LEFT and RIGHT SIDE CURTAINS (main panels).
-- Image 3 (labeled "SHEER CURTAIN FABRIC TEXTURE") → Apply ONLY to the CENTER SHEER CURTAIN.
-- These are TWO DIFFERENT fabrics. The output MUST show BOTH textures on their respective curtain regions.
+    Identify how many layers exist and which panels belong to each layer.
 
-STRICT RULES:
+1.2 FULL PANEL INVENTORY
+    List every individual curtain panel:
+    → Position: left / center / right / other
+    → Layer: front or back
+    → Style: straight-hanging / gathered / tied-back / pleated / draped
 
-1. NEVER swap the textures.
-2. The main curtain texture must NEVER appear on the center sheer curtain.
-3. The sheer texture must NEVER appear on the side curtains.
-4. Do not mix the fabrics.
-5. Each curtain region must contain only its assigned texture.
+    CRITICAL: Tied-back or gathered curtains are STILL curtains.
+    Even if a panel is pulled to the side, bunched, or held by a tie,
+    its ENTIRE fabric surface must be replaced. Do not skip it.
 
-CURTAIN STRUCTURE PRESERVATION:
+1.3 SYMMETRY RULE
+    For every panel on the LEFT side of the window, there is a
+    corresponding panel on the RIGHT side.
+    → They MUST receive identical texture treatment
+    → Same material, same color depth, same fold rendering
+    → If you replace the left, you MUST replace the right
+    → If you see only one side done in your output, it is WRONG
 
-Maintain the exact curtain layout from the original image:
+1.4 CLASSIFY EACH PANEL
 
-- Curtain rod position
-- Curtain folds and pleats
-- Panel width
-- Panel height
-- Draping direction
-- Curtain tiebacks if present
+    OPAQUE if ANY of these are true:
+    → Fabric is thick, heavy, or rich in texture
+    → Nothing is visible through it
+    → It hangs in the FRONT layer
+    → It is tied back but clearly made of heavy material
 
-Do NOT move or resize curtains.
+    SHEER if ANY of these are true:
+    → Light clearly passes through it
+    → It is positioned directly against the window
+    → It appears soft, thin, or gauzy
+    → White or very light colored panels in the back layer
 
-TEXTURE APPLICATION RULES:
+    UNCERTAIN → Default to OPAQUE. Never leave unclassified.
 
-MAIN CURTAINS:
-- Apply the main curtain texture naturally across the folds.
-- Preserve realistic fabric stretching along vertical drapes.
-- Maintain pattern scale and orientation.
+═══════════════════════════════════════════════════════════
+PHASE 2 — MATERIAL REPLACEMENT
+═══════════════════════════════════════════════════════════
 
-SHEER CURTAIN:
-- Apply the sheer texture as a lightweight translucent fabric.
-- Maintain semi-transparency so outside light passes through.
-- The sheer curtain must look airy and soft.
-- Avoid strong opacity or heavy texture appearance.
+2.1 OPAQUE PANELS — Apply Image 2
 
-LIGHTING & REALISM:
+    → Replace 100% of every opaque panel's visible fabric surface
+    → Follow every fold, crease, and pleat from the ORIGINAL panel exactly
+    → Preserve the silhouette — do not add or remove fabric volume
+    → Preserve gathered, tied-back, or draped shapes exactly as they appear
+    → ALL opaque panels in the scene must be visually identical
 
-Preserve the original scene lighting:
+2.2 SHEER PANELS — Apply Image 3
 
-- Keep window light passing through the sheer curtain.
-- Maintain natural shadows on the side curtains.
-- Preserve ambient room lighting.
+    FUNDAMENTAL PHYSICS OF SHEER FABRIC:
+    → Sheer fabric does not block light — it FILTERS it
+    → The window and any light source behind it remains partially visible
+    → The fabric's color acts as a tint over the light, not a cover
+    → Think of watercolor paint on glass, not a poster on a wall
 
-ENVIRONMENT PRESERVATION:
+    RENDERING INSTRUCTIONS:
+    → Composite Image 3 at 30–50% opacity over the existing panel area
+    → The window light, frame, and outdoor scene must be partially visible through it
+    → Folds in the sheer must be soft, wispy, and lightweight in appearance
+    → Highlights in the sheer should be near-white where light hits directly
+    → The sheer must appear lighter than the opaque panels
+    → If your sheer output could be mistaken for an opaque curtain, it is WRONG
 
-Do NOT modify:
+    HARD REJECTION CRITERIA FOR SHEER:
+    ✗ Sheer appears solid or blocks the window entirely → REDO
+    ✗ Sheer color is as saturated as the opaque panels → REDO
+    ✗ No window light is visible through the sheer → REDO
+    ✗ Sheer folds look stiff or heavy → REDO
 
-- Window frame
-- Glass
-- Walls
-- Furniture
-- Floor
-- Decorations
-- Lighting
-- Camera angle
-- Perspective
+═══════════════════════════════════════════════════════════
+PHASE 3 — PHOTOREALISM PASS
+═══════════════════════════════════════════════════════════
 
-Only the curtain fabrics should change.
+3.1 LIGHTING INTEGRATION
+    → Identify the room's dominant light source (window, ceiling, lamp)
+    → Re-apply that lighting onto every replaced fabric surface
+    → Opaque panels: deep shadows in fold troughs, highlights on fold peaks
+    → Sheer panels: luminous where backlit by window, dimmer toward edges
+    → No panel should have flat, uniform color — all must show tonal depth
 
-VISUAL CONSISTENCY:
+3.2 FABRIC DETAIL
+    → Texture grain from Image 2 and Image 3 must be visible at appropriate scale
+    → Do not tile textures with visible repetition artifacts
+    → Micro-wrinkles and fabric weave should be visible in close areas
+    → Opaque fabric: rich, weighted drape feel
+    → Sheer fabric: airy, barely-there feel
 
-- Maintain realistic curtain folds and gravity.
-- Ensure textures follow vertical drape flow.
-- Avoid texture stretching artifacts.
-- Avoid repeating patterns that look artificial.
+3.3 EDGE QUALITY
+    → Panel edges must be clean and sharp
+    → No halo, glow, or blur around curtain boundaries
+    → No color bleeding between opaque and sheer zones
+    → Tie-backs and gathered areas must show accurate fabric compression
 
-FINAL RESULT:
+═══════════════════════════════════════════════════════════
+PHASE 4 — ABSOLUTE PRESERVATION ZONE
+═══════════════════════════════════════════════════════════
 
-Produce a photorealistic interior image where:
+The following elements must be PIXEL-PERFECT from Image 1. Zero changes:
 
-• LEFT and RIGHT curtains use ONLY the main curtain texture.  
-• CENTER sheer curtain uses ONLY the sheer curtain texture.  
-• The sheer curtain appears semi-transparent and positioned behind the side curtains.  
-• The curtain arrangement remains identical to the original room image.
+    → Window: frame, glass, mullions, any light rays coming through
+    → Room architecture: walls, ceiling, floor, skirting boards, cornices
+    → All furniture: beds, sofas, tables, chairs, nightstands
+    → All decor: rugs, cushions, plants, lamps, artwork
+    → Room lighting: ceiling lights, ambient glow, shadows cast on walls
+    → Camera: perspective, focal length, composition, aspect ratio
+    → Tie-back hardware: curtain rings, hooks, rods, and tie-back accessories
 
-If the curtain regions cannot be clearly distinguished, preserve the original image without altering the environment.
+═══════════════════════════════════════════════════════════
+PHASE 5 — MANDATORY SELF-VALIDATION
+═══════════════════════════════════════════════════════════
+
+Run this checklist on your output before rendering the final image.
+Any failed check requires correction before output.
+
+COVERAGE:
+□ Every opaque panel: 100% original fabric replaced by Image 2
+□ Every sheer panel: 100% original fabric replaced by Image 3
+□ No patch, strip, or corner of original curtain fabric remains
+
+SYMMETRY:
+□ Left opaque panel = Right opaque panel (identical)
+□ All corresponding panels across the window treated equally
+□ No panel on one side that was skipped on the other
+
+SHEER QUALITY:
+□ Sheer panel is visibly translucent
+□ Window light or outdoor scene is partially visible through sheer
+□ Sheer appears lighter and airier than opaque panels
+□ Sheer folds look soft and weightless
+
+REALISM:
+□ Room lighting is naturally reflected on all fabric surfaces
+□ Fabric folds have visible highlight and shadow variation
+□ No panel looks flat, pasted, or digitally composited
+□ Texture is appropriately scaled — no visible tiling
+
+PRESERVATION:
+□ Window, walls, floor, furniture: unchanged from Image 1
+□ Room perspective and composition: unchanged
+□ Non-curtain shadows and lighting: unchanged
+
+FINAL:
+□ Output is a single, complete, photorealistic interior photograph
+□ A viewer unfamiliar with this process would believe it is a real room photo
+
+═══════════════════════════════════════════════════════════
+OUTPUT
+═══════════════════════════════════════════════════════════
+One photorealistic image. No explanation. No annotations.
+The image must be indistinguishable from a professional interior design photograph.
 """
 
 CARPET_PROMPT = """

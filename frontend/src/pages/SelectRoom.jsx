@@ -177,7 +177,7 @@ const SelectRoom = () => {
         </div>
         {/* Display selected texture info */}
         {textureUrl && (
-          <div className={`mb-6 p-4 ${theme.bgSecondary} rounded-lg flex items-center gap-4 border ${theme.border} transition-colors duration-300`}>
+          <div className={`mb-6 p-4 ${theme.isDark ? theme.bgSecondary : 'bg-gray-200'} rounded-lg flex items-center gap-4 border ${theme.isDark ? theme.border : 'border-[#2302ca]/45'} transition-colors duration-300`}>
             <img src={textureUrl} alt="Selected texture" className="w-16 h-16 object-cover rounded" />
             <div>
               <p className={`text-sm ${theme.textMuted}`}>{objectType === 'curtain' ? 'Main Curtain Texture' : 'Selected Texture'}</p>
@@ -200,10 +200,10 @@ const SelectRoom = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {/* Sample room images */}
           {roomImages.map((img, idx) => (
-            <div key={`sample-${idx}`} className={`animate-float-up relative ${selectedIndex === idx ? `ring-4 ${theme.ring} rounded-2xl` : ''}`} style={{ animationDelay: `${idx * 100}ms` }}>
+            <div key={`sample-${idx}`} className={`animate-float-up relative ${selectedIndex === idx ? `ring-2 ${theme.isDark ? theme.ring : 'ring-[#041ee7]'} rounded-2xl` : ''}`} style={{ animationDelay: `${idx * 100}ms` }}>
               {loadingIdx === idx && (
                 <div className="absolute inset-0 flex items-center justify-center z-20 rounded-2xl backdrop-blur-sm" style={{ backgroundColor: theme.isDark ? 'rgba(26,26,46,0.7)' : 'rgba(243,244,246,0.7)' }}>
-                  <Metronome size="40" speed="1.6" color={theme.isDark ? '#f59e0b' : '#000'} />
+                  <Metronome size="40" speed="1.6" color={theme.isDark ? '#f59e0b' : '#041ee7'} />
                 </div>
               )}
               <TextureCard
@@ -219,10 +219,10 @@ const SelectRoom = () => {
           {uploadedImages.map((img, idx) => {
             const globalIdx = roomImages.length + idx;
             return (
-              <div key={`uploaded-${idx}`} className={`animate-float-up relative ${selectedIndex === globalIdx ? `ring-4 ${theme.ring} rounded-2xl` : ''}`} style={{ animationDelay: `${globalIdx * 100}ms` }}>
+              <div key={`uploaded-${idx}`} className={`animate-float-up relative ${selectedIndex === globalIdx ? `ring-2 ${theme.isDark ? theme.ring : 'ring-[#041ee7]'} rounded-2xl` : ''}`} style={{ animationDelay: `${globalIdx * 100}ms` }}>
                 {loadingIdx === globalIdx && (
                   <div className="absolute inset-0 flex items-center justify-center z-20 rounded-2xl backdrop-blur-sm" style={{ backgroundColor: theme.isDark ? 'rgba(26,26,46,0.7)' : 'rgba(243,244,246,0.7)' }}>
-                    <Metronome size="40" speed="1.6" color={theme.isDark ? '#f59e0b' : '#000'} />
+                    <Metronome size="40" speed="1.6" color={theme.isDark ? '#f59e0b' : '#041ee7'} />
                   </div>
                 )}
                 <TextureCard
@@ -247,7 +247,7 @@ const SelectRoom = () => {
           <div className={`animate-float-up relative flex flex-col items-center justify-center rounded-2xl sm:rounded-4xl aspect-[4/3] w-full h-full border-2 border-dashed ${theme.isDark ? 'border-amber-500/40 bg-amber-950/20' : 'border-gray-300 bg-gray-50'} gap-3 cursor-pointer transition-colors duration-300`} style={{ animationDelay: `${(roomImages.length + uploadedImages.length) * 100}ms` }}>
             {uploading && (
               <div className="absolute inset-0 flex items-center justify-center z-20 rounded-2xl backdrop-blur-sm" style={{ backgroundColor: theme.isDark ? 'rgba(26,26,46,0.7)' : 'rgba(243,244,246,0.7)' }}>
-                <Metronome size="40" speed="1.6" color={theme.isDark ? '#f59e0b' : '#000'} />
+                <Metronome size="40" speed="1.6" color={theme.isDark ? '#f59e0b' : '#041ee7'} />
               </div>
             )}
             <p className={`text-sm font-semibold ${theme.isDark ? 'text-amber-200' : 'text-gray-600'}`}>Upload Your Room</p>

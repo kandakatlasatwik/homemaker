@@ -6,6 +6,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import NavBar from '../components/layout/NavBar';
 import Footer from '../components/layout/Footer';
 import GenerateImageCard from '../components/ui/GenerateImageCard';
+import Waves from '../components/ui/Waves';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeftCircle } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
@@ -323,9 +324,24 @@ const GenerateImage = () => {
   };
 
   return (
-    <div className={`min-h-screen ${theme.bg} transition-colors duration-300 pt-20`}>
+    <div className={`min-h-screen ${theme.bg} transition-colors duration-300 pt-20 relative overflow-hidden`}>
+      <div className="absolute inset-0 pointer-events-none">
+        <Waves
+          lineColor={theme.isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.3)'}
+          backgroundColor={theme.isDark ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.15)'}
+          waveSpeedX={0.0125}
+          waveSpeedY={0.01}
+          waveAmpX={40}
+          waveAmpY={20}
+          friction={0.9}
+          tension={0.01}
+          maxCursorMove={120}
+          xGap={12}
+          yGap={36}
+        />
+      </div>
       <NavBar />
-      <div className="container mx-auto py-4 sm:py-8 px-3 sm:px-4">
+      <div className="container mx-auto py-4 sm:py-8 px-3 sm:px-4 relative z-10">
         {/* Back Button */}
         <div className="sm:text-center mt-2 sm:mt-2.5">
           <div
@@ -358,9 +374,9 @@ const GenerateImage = () => {
         {objectType === 'curtain' && !fabricsLoading && curtainFabrics.length > 0 && (
           <div className="mb-6 sm:mb-8 space-y-5 max-w-2xl mx-auto">
             {/* Main Curtain Row */}
-            <div className={`rounded-2xl p-4 sm:p-5 border ${theme.isDark ? 'bg-gray-900/80 border-amber-500/30' : 'bg-white border-gray-200'} shadow-lg backdrop-blur-sm transition-all duration-300`}>
-              <h3 className={`text-sm sm:text-base font-bold mb-3 tracking-wide uppercase flex items-center gap-2 ${theme.isDark ? 'text-amber-300' : 'text-amber-700'}`}>
-                <span className="inline-block w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]"></span>
+            <div className={`rounded-2xl p-4 sm:p-5 border ${theme.isDark ? 'bg-gray-900/80 border-amber-500/30' : 'bg-white border-[#041ee7]/30'} shadow-lg backdrop-blur-sm transition-all duration-300`}>
+              <h3 className={`text-sm sm:text-base font-bold mb-3 tracking-wide uppercase flex items-center gap-2 ${theme.isDark ? 'text-amber-300' : 'text-[#041ee7]'}`}>
+                <span className={`inline-block w-3 h-3 rounded-full ${theme.isDark ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]' : 'bg-[#041ee7] shadow-[0_0_8px_rgba(4,30,231,0.6)]'}`}></span>
                 Main Curtain
               </h3>
               <div
@@ -376,8 +392,10 @@ const GenerateImage = () => {
                     key={`main-${t.id}`}
                     className={`snap-center shrink-0 w-[4.5rem] h-[4.5rem] sm:w-24 sm:h-24 rounded-xl overflow-hidden cursor-pointer border-[2.5px] transition-all duration-300 ease-in-out ${
                       textureUrl === t.image
-                        ? 'border-amber-500 ring-[3px] ring-amber-400/60 shadow-[0_0_16px_rgba(245,158,11,0.45)] scale-105 z-10'
-                        : `${theme.isDark ? 'border-gray-700 hover:border-amber-400/70' : 'border-gray-200 hover:border-amber-400'} hover:shadow-sm hover:scale-[1.03]`
+                        ? theme.isDark
+                          ? 'border-amber-500 ring-[3px] ring-amber-400/60 shadow-[0_0_16px_rgba(245,158,11,0.45)] scale-105 z-10'
+                          : 'border-[#041ee7] ring-[3px] ring-[#041ee7]/50 shadow-[0_0_16px_rgba(4,30,231,0.45)] scale-105 z-10'
+                        : `${theme.isDark ? 'border-gray-700 hover:border-amber-400/70' : 'border-gray-200 hover:border-[#041ee7]'} hover:shadow-sm hover:scale-[1.03]`
                     }`}
                     onClick={() => setTextureUrl(t.image)}
                     title={t.name}
@@ -389,9 +407,9 @@ const GenerateImage = () => {
             </div>
 
             {/* Sheer Curtain Row */}
-            <div className={`rounded-2xl p-4 sm:p-5 border ${theme.isDark ? 'bg-gray-900/80 border-purple-500/30' : 'bg-white border-gray-200'} shadow-lg backdrop-blur-sm transition-all duration-300`}>
-              <h3 className={`text-sm sm:text-base font-bold mb-3 tracking-wide uppercase flex items-center gap-2 ${theme.isDark ? 'text-purple-300' : 'text-purple-700'}`}>
-                <span className="inline-block w-3 h-3 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]"></span>
+            <div className={`rounded-2xl p-4 sm:p-5 border ${theme.isDark ? 'bg-gray-900/80 border-purple-500/30' : 'bg-white border-[#041ee7]/30'} shadow-lg backdrop-blur-sm transition-all duration-300`}>
+              <h3 className={`text-sm sm:text-base font-bold mb-3 tracking-wide uppercase flex items-center gap-2 ${theme.isDark ? 'text-purple-300' : 'text-[#041ee7]'}`}>
+                <span className={`inline-block w-3 h-3 rounded-full ${theme.isDark ? 'bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]' : 'bg-[#041ee7] shadow-[0_0_8px_rgba(4,30,231,0.6)]'}`}></span>
                 Sheer Curtain
               </h3>
               <div
@@ -407,8 +425,10 @@ const GenerateImage = () => {
                     key={`sheer-${t.id}`}
                     className={`snap-center shrink-0 w-[4.5rem] h-[4.5rem] sm:w-24 sm:h-24 rounded-xl overflow-hidden cursor-pointer border-[2.5px] transition-all duration-300 ease-in-out ${
                       textureSecondary === t.image
-                        ? 'border-purple-500 ring-[3px] ring-purple-400/60 shadow-[0_0_16px_rgba(168,85,247,0.45)] scale-105 z-10'
-                        : `${theme.isDark ? 'border-gray-700 hover:border-purple-400/70' : 'border-gray-200 hover:border-purple-400'} hover:shadow-sm hover:scale-[1.03]`
+                        ? theme.isDark
+                          ? 'border-purple-500 ring-[3px] ring-purple-400/60 shadow-[0_0_16px_rgba(168,85,247,0.45)] scale-105 z-10'
+                          : 'border-[#041ee7] ring-[3px] ring-[#041ee7]/50 shadow-[0_0_16px_rgba(4,30,231,0.45)] scale-105 z-10'
+                        : `${theme.isDark ? 'border-gray-700 hover:border-purple-400/70' : 'border-gray-200 hover:border-[#041ee7]'} hover:shadow-sm hover:scale-[1.03]`
                     }`}
                     onClick={() => setTextureSecondary(t.image)}
                     title={t.name}
@@ -426,7 +446,7 @@ const GenerateImage = () => {
         {/* Generate Image button */}
         <div className="mt-4 sm:mt-6 flex justify-center gap-4 flex-wrap">
             <button
-              className={`px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold border ${theme.isDark ? 'bg-white text-black border-white/20 hover:bg-gray-200' : 'bg-black text-white border-black/20 hover:bg-gray-800'}`}
+                className={`px-6 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-base sm:text-lg font-semibold border ${!loading && !generatedImage ? 'animate-pulse' : ''} ${theme.isDark ? 'bg-white text-black border-white/20 hover:bg-gray-200' : 'bg-[#0b22f5] text-white border-[#0b22f5]/70 hover:bg-[#0a1ed6]'}`}
             onClick={handleGenerate}
             disabled={loading || (!uploadedRoomImage && isNaN(roomIndex)) || !textureUrl}
           >
@@ -460,7 +480,8 @@ const GenerateImage = () => {
             <h3 className={`text-center text-lg sm:text-xl font-semibold mb-4 ${theme.text}`}>
               Orthographic Views
             </h3>
-            <div className={`animate-float-up w-full max-w-[95vw] sm:max-w-3xl mx-auto ${theme.bgCard} rounded-2xl ${theme.shadowCard} p-2 sm:p-6 flex flex-col items-center justify-center overflow-hidden border ${theme.border} transition-colors duration-300`}>
+            <div className={`hm-card group animate-float-up relative w-full max-w-[95vw] sm:max-w-3xl mx-auto ${theme.bgCard} rounded-2xl ${theme.shadowCard} p-2 sm:p-6 flex flex-col items-center justify-center overflow-hidden border ${theme.border} transition-all duration-500`}>
+              <span className="card-shine" aria-hidden="true" />
               {viewsLoading ? (
                 <div className="w-full h-64 sm:h-80 flex flex-col items-center justify-center">
                   <div className="flip-card-container" style={{ height: '100%' }}>
@@ -474,11 +495,11 @@ const GenerateImage = () => {
                     </div>
                   </div>
                   <div className="mt-6 flex items-center gap-2">
-                    <span className={`font-semibold text-base sm:text-lg ${theme.isDark ? 'text-white' : 'text-black'}`}>Generating Views</span>
+                    <span className={`font-semibold text-base sm:text-lg ${theme.isDark ? 'text-white' : 'text-[#041ee7]'}`}>Generating Views</span>
                     <span className="flex gap-1">
-                      <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-black'}`} style={{ animationDelay: '0ms' }} />
-                      <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-black'}`} style={{ animationDelay: '150ms' }} />
-                      <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-black'}`} style={{ animationDelay: '300ms' }} />
+                      <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-[#041ee7]'}`} style={{ animationDelay: '0ms' }} />
+                      <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-[#041ee7]'}`} style={{ animationDelay: '150ms' }} />
+                      <span className={`w-2 h-2 rounded-full animate-bounce ${theme.isDark ? 'bg-white' : 'bg-[#041ee7]'}`} style={{ animationDelay: '300ms' }} />
                     </span>
                   </div>
                   <span className={`${theme.textMuted} text-xs sm:text-sm mt-2`}>AI is generating orthographic views...</span>
@@ -505,7 +526,9 @@ const GenerateImage = () => {
           </div>
         )}
       </div>
-      <Footer />
+      <div className="relative z-10">
+        <Footer />
+      </div>
     </div>
   );
 };

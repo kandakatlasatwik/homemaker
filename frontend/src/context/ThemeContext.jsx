@@ -41,21 +41,21 @@ export const ThemeProvider = ({ children }) => {
     navBg: isDark ? 'bg-black' : 'bg-white',
     navBorder: isDark ? 'border-gray-500' : 'border-gray-200',
     navText: isDark ? 'text-white' : 'text-gray-900',
-    navHover: isDark ? 'hover:text-amber-300' : 'hover:text-amber-600',
+    navHover: isDark ? 'hover:text-amber-300' : 'hover:text-[#2302ca]',
     footerBg: isDark ? 'bg-black' : 'bg-white',
     footerText: isDark ? 'text-white' : 'text-gray-900',
-    footerHover: isDark ? 'hover:text-amber-300' : 'hover:text-amber-600',
+    footerHover: isDark ? 'hover:text-amber-300' : 'hover:text-[#2302ca]',
     // Buttons
     btnPrimary: isDark
       ? 'bg-amber-500 text-black hover:bg-amber-400'
       : 'bg-gray-900 text-white hover:bg-gray-800',
     btnBack: isDark
-      ? 'bg-gray-800 text-white hover:bg-gray-700 border border-amber-500/30'
-      : 'bg-gray-100 text-gray-900 hover:bg-gray-200 border border-gray-300 shadow-sm shadow-black/5',
+      ? 'bg-gray-800 text-white hover:bg-gray-700 border border-[#ca7a02]'
+      : 'bg-gray-100 text-gray-900 hover:bg-gray-200 border border-[#2302ca] shadow-sm shadow-black/5',
     // Glow / accent
     glow: isDark ? 'blur-md bg-amber-500 opacity-40' : 'blur-md bg-gray-300 opacity-60',
     ring: isDark ? 'ring-amber-400' : 'ring-gray-400',
-    accent: isDark ? 'text-amber-400' : 'text-amber-600',
+    accent: isDark ? 'text-amber-400' : 'text-[#2302ca]',
   };
 
   return (
